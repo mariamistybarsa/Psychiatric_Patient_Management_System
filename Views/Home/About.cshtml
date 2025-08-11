@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="container mt-5 mb-5">
+    <h1 class="display-4 text-primary fw-bold mb-4">About Psychiatrist Portal</h1>
+
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <p class="lead text-secondary fs-5">
+                Psychiatrist Portal is dedicated to providing accessible, professional, and compassionate mental health support.
+                Our mission is to connect patients with certified psychiatrists who can help improve mental wellness through
+                timely appointments, personalized suggestions, and continuous care.
+            </p>
+            <p class="text-muted fs-6">
+                We believe mental health is equally important as physical health, and we strive to break the stigma around seeking psychiatric help.
+                Our platform leverages technology to make booking and managing appointments easy and efficient for both patients and professionals.
+            </p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">
+                <i class="bi bi-house-door-fill me-2"></i> Back to Home
+            </a>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80" alt="About Us" class="img-fluid rounded-4 shadow-lg" />
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="text-center">
+        <h2 class="fw-semibold mb-3">Our Team</h2>
+        <p class="text-muted mb-4">
+            Our team consists of experienced psychiatrists, mental health experts, and technology professionals dedicated to improving mental healthcare.
+        </p>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="card-img-top rounded-top" alt="Dr. Sarah Ahmed">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Dr. Sarah Ahmed</h5>
+                        <p class="card-text text-muted">Chief Psychiatrist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="card-img-top rounded-top" alt="Dr. Michael Rahman">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Dr. Michael Rahman</h5>
+                        <p class="card-text text-muted">Senior Psychiatrist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm">
+                    <img src="https://randomuser.me/api/portraits/women/65.jpg" class="card-img-top rounded-top" alt="Dr. Anika Chowdhury">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Dr. Anika Chowdhury</h5>
+                        <p class="card-text text-muted">Psychiatric Counselor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

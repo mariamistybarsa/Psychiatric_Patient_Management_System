@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Welcome, @User.Identity.Name 👋</h1>
+            <p class="text-muted">Here’s an overview of your system today.</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted">Total Users</h6>
+                    <h3 class="fw-bold">1,250</h3>
+                    <small class="text-success">+5% since last week</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted">Appointments</h6>
+                    <h3 class="fw-bold">320</h3>
+                    <small class="text-danger">-2% since last week</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted">Psychologists</h6>
+                    <h3 class="fw-bold">45</h3>
+                    <small class="text-success">+3% since last month</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted">Revenue</h6>
+                    <h3 class="fw-bold">$12,500</h3>
+                    <small class="text-success">+10% this month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Table -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Activities</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>User</th>
+                                <th>Activity</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>Created an appointment</td>
+                                <td>Aug 10, 2025</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>Updated profile info</td>
+                                <td>Aug 9, 2025</td>
+                                <td><span class="badge bg-warning text-dark">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>Mark Wilson</td>
+                                <td>Canceled session</td>
+                                <td>Aug 8, 2025</td>
+                                <td><span class="badge bg-danger">Canceled</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

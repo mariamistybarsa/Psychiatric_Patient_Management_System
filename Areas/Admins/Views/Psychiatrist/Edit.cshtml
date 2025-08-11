@@ -1,0 +1,46 @@
+﻿@model Psychiatrist_Management_System.Models.PsychiatristVM
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="btn btn-sm btn-info">
+                    <h3 class="mb-0">Edit Psychiatrist</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" novalidate>
+                        <input type="hidden" asp-for="id" />
+
+                        <div class="mb-4">
+                            <label asp-for="name" class="form-label fw-semibold"></label>
+                            <input asp-for="name" class="form-control form-control-lg" placeholder="Enter full name" />
+                            <span asp-validation-for="name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="email" class="form-label fw-semibold"></label>
+                            <input asp-for="email" type="email" class="form-control form-control-lg" placeholder="Enter email address" />
+                            <span asp-validation-for="email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="specialization" class="form-label fw-semibold"></label>
+                            <input asp-for="specialization" class="form-control form-control-lg" placeholder="Enter specialization" />
+                            <span asp-validation-for="specialization" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-sm btn-info">
+                            Update Psychiatrist
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
