@@ -39,7 +39,12 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a asp-area="Admins" asp-controller="ManageUser" asp-action="Index" class="nav-link">
+                        <i class="nav-icon fas fa-clipboard-list"></i>
+                        <p> Manage User Types</p>
+                    </a>
+                </li>
                 <!-- Users -->
                 <li class="nav-item">
                     <a href="~/Admin/Users" class="nav-link">
@@ -79,7 +84,8 @@
                         <p>Appointment Overview</p>
                     </a>
                 </li>
-
+             
+               
                 <!-- Payment Tracking -->
                 <li class="nav-item">
                     <a href="~/Admin/PaymentTracking" class="nav-link">

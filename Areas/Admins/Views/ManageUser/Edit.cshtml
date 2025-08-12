@@ -1,0 +1,51 @@
+﻿@model Psychiatrist_Management_System.Models.UserType
+
+@{
+    ViewData["Title"] = "Edit User Type";
+}
+
+<div class="container mt-5">
+    <div class="card shadow rounded-4 border-0 mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">@ViewData["Title"]</h4>
+        </div>
+        <div class="card-body bg-light p-4">
+
+            <form asp-action="Edit" method="post">
+
+                <!-- UserTypeId (readonly) -->
+                <div class="mb-4">
+                    <label asp-for="UserTypeId" class="form-label fw-semibold">User Type ID</label>
+                    <input asp-for="UserTypeId" class="form-control" readonly />
+                    <span asp-validation-for="UserTypeId" class="text-danger"></span>
+                </div>
+
+                <!-- UserTypeName (dropdown) -->
+                <div class="mb-4">
+                    <label asp-for="UserTypeName" class="form-label fw-semibold">User Type Name</label>
+                    <select asp-for="UserTypeName" class="form-select" required>
+                        <option value="">-- Select User Type Name --</option>
+                        <option value="User" selected="@(Model.UserTypeName == "User" ? "selected" : "")">User</option>
+                        <option value="Psychiatrist" selected="@(Model.UserTypeName == "Psychiatrist" ? "selected" : "")">Psychiatrist</option>
+                        <option value="Admin" selected="@(Model.UserTypeName == "Admin" ? "selected" : "")">Admin</option>
+                    </select>
+                    <span asp-validation-for="UserTypeName" class="text-danger"></span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4">Update</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

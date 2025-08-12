@@ -1,0 +1,27 @@
+﻿@model Psychiatrist_Management_System.Models.UserType
+
+@{
+    ViewData["Title"] = "User Type Details";
+}
+
+<div class="container mt-5">
+    <div class="card shadow rounded-4 border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">@ViewData["Title"]</h3>
+        </div>
+        <div class="card-body bg-light p-4">
+
+            <dl class="row fs-5">
+                <dt class="col-sm-4 fw-semibold text-secondary">User Type ID</dt>
+                <dd class="col-sm-8">@Model.UserTypeId</dd>
+
+                <dt class="col-sm-4 fw-semibold text-secondary">User Type Name</dt>
+                <dd class="col-sm-8">@Model.UserTypeName</dd>
+            </dl>
+
+            <a asp-action="Index" class="btn btn-outline-primary mt-3">
+                <i class="bi bi-arrow-left-circle"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>
