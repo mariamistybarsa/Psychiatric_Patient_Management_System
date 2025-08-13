@@ -1,0 +1,69 @@
+﻿<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <h4 class="card-title mb-3">Add </h4>
+            <form id="designationForm">
+                <input type="hidden" id="DesignationId" name="DesignationId" value="">
+
+                <div class="mb-3">
+                    <label for="DesignationName" class="form-label">Designation</label>
+                    <input type="text" class="form-control" id="DesignationName" name="DesignationName" placeholder="Enter your designation" required>
+                </div>
+
+                <button type="submit" id="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Submit
+                </button>
+            </form>
+
+            <div id="resultMessage" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#submit').click(function (e) {
+            e.preventDefault();
+            debugger;
+
+            // Safely get and trim value
+            const designationname = $('#DesignationName').val() ? $('#DesignationName').val().trim() : '';
+
+            if (!designationname) {
+                $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
+                return;
+            }
+
+            // Build object to match C# model property names
+            const model = {
+                DesignationId: $('#DesignationId').val(),
+                DesignationName: designationname
+            };
+
+            $.ajax({
+                url: '/Admins/Designation/Save',
+                type: 'POST',
+                data: model, // form-urlencoded style, works with MVC model binding
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        $('#resultMessage').css('color', 'red').text("Something went wrong!");
+                    }
+                },
+                error: function (xhr) {
+                    $('#resultMessage').css('color', 'red').text('Error: ' + (xhr.responseText || 'Unknown error'));
+                }
+            });
+
+            // Show message (optional, remove if redirecting immediately)
+            $('#resultMessage')
+                .text('Designation added successfully!')
+                .css('color', 'green');
+
+            // Clear input
+            $('#DesignationName').val('');
+        });
+    });
+</script>

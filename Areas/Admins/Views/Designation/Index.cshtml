@@ -1,0 +1,45 @@
+﻿<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Designation Form</h4>
+                <a asp-area="Admins" asp-controller="Designation" asp-action="Form" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add Designation
+                </a>
+            </div>
+            <p class="card-text text-muted mt-2">Manage your designations from the list below.</p>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+           
+            <th>Designation Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       
+        @foreach (var item in Model)
+        {
+            <tr>
+               
+                <td>@item.DesignationName</td>
+                <td>
+                    <!-- Action buttons -->
+                    <a asp-area="Admins" asp-controller="Designation" asp-action="Edit" asp-route-id="@item.DesignationId" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+                   <form asp-area="Admins" asp-controller="Designation" asp-action="Delete" method="post" asp-route-id="@item.DesignationId" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+</form>
+
+
+                </td>
+            </tr>
+        
+        }
+    </tbody>
+</table>

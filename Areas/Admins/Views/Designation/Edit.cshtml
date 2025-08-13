@@ -1,0 +1,36 @@
+﻿ @model Psychiatrist_Management_System.Models.DesinationVm
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="btn btn-sm btn-info">
+                    <h3 class="mb-0">Edit Psychiatrist</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" novalidate>
+                        <input type="hidden" asp-for="DesignationId" /> 
+
+                        <div class="mb-4">
+                            <label asp-for="DesignationName" class="form-label fw-semibold"></label>
+                            <input asp-for="DesignationName" class="form-control form-control-lg" placeholder="Enter full name" />
+                            <span asp-validation-for="DesignationName" class="text-danger small"></span>
+                        </div>
+
+                    
+
+                        <button type="submit" class="btn btn-sm btn-info">
+                            Update Designation
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+} 

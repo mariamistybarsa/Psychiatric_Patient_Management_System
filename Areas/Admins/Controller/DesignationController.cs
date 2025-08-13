@@ -1,7 +1,5 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Psychiatrist_Management_System.Data;
 using Psychiatrist_Management_System.Models;
 using System.Data;
@@ -9,29 +7,32 @@ using System.Data;
 namespace Psychiatrist_Management_System.Areas.Admins.Controllers
 {
     [Area("Admins")]
-    public class PsychiatristController : Controller
+    public class DesignationController : Controller
     {
         private readonly DapperContext _context;
-
-
-        public PsychiatristController(DapperContext context)
+        public DesignationController(DapperContext context)
         {
             _context = context;
         }
+
+
+        [HttpGet]
         public IActionResult Index()
         {
             try
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 2); // Get All
 
-                    var data = connection.Query<PsychiatristVM>(
-                        "Sp_Psychiatrist",
-                        parameters,
-                        commandType: CommandType.StoredProcedure
-                    );
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@flag", 2);
+                    var data = connection.Query<DesinationVm>(
+
+                      "Sp_Designation",
+                      parameters,
+                      commandType: CommandType.StoredProcedure
+                  );
+
 
                     return View(data);
                 }
@@ -42,57 +43,55 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             }
         }
 
+
+
+
+
+
+        [HttpGet]
         public IActionResult Form()
         {
             return View();
+
+
         }
-
-
 
         [HttpPost]
-        public IActionResult Save(PsychiatristVM model)
+        public IActionResult Save(DesinationVm model)
         {
-            if (!ModelState.IsValid)
-                return View("Form", model);
 
             try
             {
                 using (var connection = _context.CreateConnection())
                 {
                     var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 1); // Create
-                                                // Usually no id for create, remove if not needed
-                    parameters.Add("@name", model.name);
-                    parameters.Add("@email", model.email);
-                    parameters.Add("@specialization", model.specialization);
+                    parameters.Add("@flag", 1); // Insert
+                    parameters.Add("@DesignationId", model.DesignationId);
+                    parameters.Add("@DesignationName", model.DesignationName);
 
-                    connection.Execute(
-                        "Sp_Psychiatrist",
-                        parameters,
-                        commandType: CommandType.StoredProcedure
-                    );
+
+                    connection.Execute("Sp_Designation", parameters, commandType: CommandType.StoredProcedure);
                 }
-
                 return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                ModelState.AddModelError("", ex.Message);
+                return View("Form", model);
             }
         }
-
-        public IActionResult Edit(int id) // GET Edit to load existing data
+        public IActionResult Edit(int id)
         {
+
             try
             {
                 using (var connection = _context.CreateConnection())
                 {
                     var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 3); // Get By Id
-                    parameters.Add("@id", id);
-
-                    var data = connection.QueryFirstOrDefault<PsychiatristVM>(
-                        "Sp_Psychiatrist",
+                    parameters.Add("@flag", 3);
+                    parameters.Add("DesignationId", id);
+                    var data = connection.QueryFirstOrDefault<DesinationVm>(
+                        "Sp_Designation",
                         parameters,
                         commandType: CommandType.StoredProcedure
                     );
@@ -108,27 +107,23 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 throw;
             }
         }
-        [HttpPost]
-        public IActionResult Edit(PsychiatristVM model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("Form", model);
-            }
 
+        [HttpPost]
+        public IActionResult Edit(DesinationVm model)
+        {
             try
             {
-                using (var connection = _context.CreateConnection())
+
+                using(var connection = _context.CreateConnection())
                 {
                     var parameters = new DynamicParameters();
                     parameters.Add("@flag", 4); // Update
-                    parameters.Add("@id", model.id);
-                    parameters.Add("@name", model.name);
-                    parameters.Add("@email", model.email);
-                    parameters.Add("@specialization", model.specialization);
+                    parameters.Add("@DesignationId", model.DesignationId);
+                    parameters.Add("@DesignationName", model.DesignationName);
+
 
                     connection.Execute(
-                        "Sp_Psychiatrist",
+                        "Sp_Designation",
                         parameters,
                         commandType: CommandType.StoredProcedure
                     );
@@ -142,9 +137,9 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             }
 
 
-
-
         }
+
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             try
@@ -153,19 +148,26 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 {
                     var parameters = new DynamicParameters();
                     parameters.Add("@flag", 5); // Delete
-                    parameters.Add("@id", id);
-                    connection.Execute(
-                        "Sp_Psychiatrist",
-                        parameters,
-                        commandType: CommandType.StoredProcedure
-                    );
+                    parameters.Add("@DesignationId", id);
+                    connection.Execute("Sp_Designation", parameters, commandType: CommandType.StoredProcedure);
                 }
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                ModelState.AddModelError("", ex.Message);
+                return View("Index");
             }
         }
+
+
     }
+
+
+
+
+
+
+
+
 }
