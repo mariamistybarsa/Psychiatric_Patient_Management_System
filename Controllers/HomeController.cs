@@ -53,9 +53,13 @@ namespace Psychiatrist_Management_System.Controllers
                     {
                         redirecturl = Url.Action("Index", "Dashboard", new { area = "User" }); ;
                     }
-                    return Json(new { success = true, message = "Successful" , redirectUrl = redirecturl });
+                   
+                    else
+                    {
+                        redirecturl = Url.Action("Index", "Dashboard", new { area = "Admins" }); ;
 
-
+                    }
+                    return Json(new { success = true, message = "Successful", redirectUrl = redirecturl });
 
                 }
 

@@ -18,6 +18,8 @@ namespace Psychiatrist_Management_System.Models
         public int DesignationId { get; set; }
         public int Age { get; set; }
         public string? Address { get; set; }
-        public string? BloodGroup { get; set; } 
+        public string? BloodGroup { get; set; }
+        public string? Status { get; set; }
+
     }
 }
