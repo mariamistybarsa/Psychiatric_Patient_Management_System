@@ -1,23 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Psychiatrist_Management_System.Data.Migrations;
+using Psychiatrist_Management_System.Data;
 using Psychiatrist_Management_System.Models;
+using System.Data;
 using System.Diagnostics;
 
 namespace Psychiatrist_Management_System.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly EFDBContext _context;
-        private readonly PasswordHasher<User> _passwordHasher;
-
-        public HomeController(ILogger<HomeController> logger, EFDBContext context)
+        private readonly DapperContext _context;
+        public HomeController(DapperContext context)
         {
-            _logger = logger;
             _context = context;
-            _passwordHasher = new PasswordHasher<User>();
         }
 
         public IActionResult Index()
@@ -25,97 +21,123 @@ namespace Psychiatrist_Management_System.Controllers
             return View();
         }
 
-        // GET: Login
-        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
-        // POST: Login
         [HttpPost]
-        public IActionResult Login(User data)
+        public IActionResult Login(User model)
         {
-            var chkUser = _context.Users.FirstOrDefault(x => x.Email == data.Email);
-            if (chkUser != null)
+            using (var connection = _context.CreateConnection())
             {
-                var result = _passwordHasher.VerifyHashedPassword(chkUser, chkUser.Password, data.Password);
-                if (result == PasswordVerificationResult.Success)
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", 7);
+                parameters.Add("@Email", model.Email);
+                parameters.Add("@Password", model.Password);
+
+                var data = connection.QueryFirstOrDefault<User>(
+                    "Sp_User",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (data == null)
                 {
-                    // Session এ Email বা UserName রাখো
-                    HttpContext.Session.SetString("UserEmail", chkUser.Email);
-                    HttpContext.Session.SetString("UserName", chkUser.UserName ?? "User");
-
-                    if (chkUser.UsertypeId == 1)
-                    {
-                        return RedirectToAction("Index", "Dashboard", new { area = "Admins" });
-                    }
-                    else if (chkUser.UsertypeId == 3)
-                    {
-                        return RedirectToAction("Index", "Dashboard", new { area = "User" });
-                    }
-
-                    return RedirectToAction("Index", "Dashboard", new { area = "Psychologist" });
+                  
+                    return Json(new { success = false, message = "Invalid Entry" });
                 }
+                else
+                {
+                    var redirecturl = "";
+                    if (data.UsertypeId == 3)
+                    {
+                        redirecturl = Url.Action("Index", "Dashboard", new { area = "User" }); ;
+                    }
+                    return Json(new { success = true, message = "Successful" , redirectUrl = redirecturl });
+
+
+
+                }
+
+
+
             }
-            ViewData["LoginError"] = "Invalid Email or Password";
-            return View();
+
+
+
         }
 
-        // GET: Register
+
+
+
+
+
         [HttpGet]
         public IActionResult Register()
         {
-            ViewBag.UserTypes = new SelectList(_context.UserTypes.ToList(), "UserTypeId", "UserTypeName");
-            return View();
-        }
-
-        // POST: Register
-        [HttpPost]
-        public IActionResult Register(User data)
-        {
-            if (ModelState.IsValid)
+            try
             {
-                var existingUser = _context.Users.FirstOrDefault(u => u.Email == data.Email);
-                if (existingUser != null)
+                using (var connection = _context.CreateConnection())
                 {
-                    ViewBag.UserTypes = new SelectList(_context.UserTypes.ToList(), "UserTypeId", "UserTypeName");
-                    ViewData["Error"] = "Email already exists.";
-                    return View(data);
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@flag", 3); 
+                    var data = connection.Query<DesinationVm>(
+                        "Sp_Register",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+
+                    ViewBag.DesignationList = new SelectList(data, "DesignationId", "DesignationName");
                 }
-
-                data.Password = _passwordHasher.HashPassword(data, data.Password);
-
-                _context.Users.Add(data);
-                _context.SaveChanges();
-                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
 
-            ViewBag.UserTypes = new SelectList(_context.UserTypes.ToList(), "UserTypeId", "UserTypeName");
-            return View(data);
-        }
-
-
-
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear(); // সব Session ডেটা ক্লিয়ার করে
-            return RedirectToAction("Index", "Home"); //
-        }
-        public IActionResult Privacy()
-        {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost]
+        public IActionResult Register( User model)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-        public IActionResult About()
-        {
-            return View(); // Looks for Views/Home/About.cshtml
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    
+                    var existingEmail = connection.QueryFirstOrDefault<User>(
+                        "SELECT * FROM Users WHERE Email = @Email",
+                        new { Email = model.Email }
+                    );
+
+                    if (existingEmail != null)
+                    {
+                        return Json(new { success = false, message = "Email already exists!" });
+                    }
+
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@flag", 1); // insert user
+                    parameters.Add("@UserName", model.UserName);
+                    parameters.Add("@Password", model.Password);
+                    parameters.Add("@Email", model.Email);
+                    parameters.Add("@UsertypeId", model.UsertypeId);
+                    parameters.Add("@PhoneNumber", model.PhoneNumber);
+                    parameters.Add("@DesignationId", model.DesignationId);
+                    parameters.Add("@Age", model.Age);
+                    parameters.Add("@Address", model.Address);
+                    parameters.Add("@BloodGroup", model.BloodGroup);
+
+                    connection.Execute("Sp_Register", parameters, commandType: CommandType.StoredProcedure);
+                }
+
+                return Json(new { success = true, redirectUrl = Url.Action("Login", "Home") });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

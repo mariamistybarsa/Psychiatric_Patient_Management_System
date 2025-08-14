@@ -25,10 +25,10 @@
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             width: 350px;
+            text-align: center;
         }
 
         h2 {
-            text-align: center;
             margin-bottom: 30px;
             color: #333;
         }
@@ -50,9 +50,7 @@
             transition: border-color 0.3s;
         }
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="password"]:focus {
+        input:focus {
             border-color: #4e54c8;
         }
 
@@ -68,9 +66,9 @@
             font-size: 16px;
         }
 
-        .btn:hover {
-            background-color: #3e44a5;
-        }
+            .btn:hover {
+                background-color: #3e44a5;
+            }
 
         .error {
             color: red;
@@ -82,26 +80,65 @@
 <body>
     <div class="login-box">
         <h2>Login</h2>
-        <form asp-action="Login" method="post">
-            @if (ViewData["LoginError"] != null)
-            {
-                <div class="error">@ViewData["LoginError"]</div>
-            }
 
-            <label asp-for="Email">Email</label>
-            <input asp-for="Email" type="email" required />
-            <span asp-validation-for="Email" class="error"></span>
+        @if (ViewData["LoginError"] != null)
+        {
+            <div class="error">@ViewData["LoginError"]</div>
+        }
 
-            <label asp-for="Password">Password</label>
-            <input asp-for="Password" type="password" required />
-            <span asp-validation-for="Password" class="error"></span>
+        <div id="message"></div>
 
-            <button type="submit" class="btn">Login</button>
-        </form>
+        <label asp-for="Email">Email</label>
+        <input id="Email" asp-for="Email" type="email" required />
+        <span asp-validation-for="Email" class="error"></span>
+
+        <label asp-for="Password">Password</label>
+        <input id="Password" asp-for="Password" type="password" required />
+        <span asp-validation-for="Password" class="error"></span>
+
+        <button type="button" class="btn" id="submitBtn">Login</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#submitBtn').click(function (e) {
+                e.preventDefault();
+
+                var email = $('#Email').val().trim();
+                var password = $('#Password').val().trim();
+
+                if (!email || !password) {
+                    alert('Please fill out all required fields.');
+                    return;
+                }
+
+                var model = {
+                    Email: email,
+                    Password: password
+                };
+
+                $.ajax({
+                    url: '/Home/Login', 
+                    type: 'POST',
+                    data: model,
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Login successful!');
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            alert('Error: ' + (response.message || 'Invalid email or password.'));
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Error: ' + (xhr.responseText || 'Unknown error occurred.'));
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
