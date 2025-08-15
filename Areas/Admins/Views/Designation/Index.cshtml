@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<table class="table table-bordered table-striped">
+<table id="patientTable" class="table table-bordered table-striped">
     <thead>
         <tr>
            
@@ -43,3 +43,10 @@
         }
     </tbody>
 </table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#patientTable').DataTable();
+        });
+    </script>
+}

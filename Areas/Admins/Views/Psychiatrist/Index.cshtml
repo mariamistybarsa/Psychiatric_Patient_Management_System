@@ -10,7 +10,7 @@
     <a class="btn btn-primary" asp-controller="Psychiatrist" asp-action="Form">Add</a>
 </div>
 
-<table class="table table-striped">
+<table id="patientTable" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>#</th>
@@ -49,3 +49,10 @@
         }
     </tbody>
 </table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#patientTable').DataTable();
+        });
+    </script>
+}
