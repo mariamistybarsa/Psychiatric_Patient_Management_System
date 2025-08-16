@@ -10,8 +10,7 @@
 <div>
     <a class="btn btn-primary" asp-controller="ManageUser" asp-action="Form">Add</a>
 </div>
-
-<table class="table table-striped">
+<table id="ManageuserTable" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>#</th>
@@ -53,3 +52,12 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ManageuserTable').DataTable();
+        });
+    </script>
+}
+

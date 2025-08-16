@@ -37,9 +37,10 @@
                     <td>@user.Address</td>
                     <td>@user.BloodGroup</td>
                     <td>
-                        <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "PatientList", new { area = "Admins", id = user.UserId })">Edit</a>
-                        <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", "PatientList", new { area = "Admins", id = user.UserId })"
-                           onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                        <a class="btn btn-sm btn-warning" asp-controller="PatientList" asp-action="Edit" asp-route-id="@user.UserId" onclick="return confirm('Are you sure you want to Edit this?');">Edit</a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@user.UserId" onclick="return confirm('Are you sure you want to delete this?');">Delete</a>
+
+                        
                     </td>
                     <td id="status-@user.UserId">
                         @if (user.Status == "Pending")
