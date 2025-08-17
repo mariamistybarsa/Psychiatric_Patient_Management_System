@@ -20,6 +20,7 @@ namespace Psychiatrist_Management_System.Models
         public string? Address { get; set; }
         public string? BloodGroup { get; set; }
         public string? Status { get; set; }
+        public string? DesignationName { get; set; }
 
     }
 }

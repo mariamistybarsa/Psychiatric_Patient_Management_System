@@ -2,5 +2,9 @@
     ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 } *@
+@await Html.PartialAsync("_LoginPartial")
+
+<h2>Welcome to User Dashboard</h2>
+<p>You have successfully logged in!</p>
 <h2>Welcome to User Dashboard</h2>
 <p>You have successfully logged in!</p>

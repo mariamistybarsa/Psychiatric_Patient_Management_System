@@ -28,6 +28,7 @@ namespace Psychiatrist_Management_System.Controllers
         [HttpPost]
         public IActionResult Login(User model)
         {
+
             using (var connection = _context.CreateConnection())
             {
                 var parameters = new DynamicParameters();
@@ -43,32 +44,32 @@ namespace Psychiatrist_Management_System.Controllers
 
                 if (data == null)
                 {
-                  
                     return Json(new { success = false, message = "Invalid Entry" });
                 }
                 else
                 {
+                   
+                    if (data.UsertypeId == 3 && data.Status != "Approved")
+                    {
+                        return Json(new { success = false, message = "Your account is not approved yet." });
+                    }
+                    HttpContext.Session.SetString("UserEmail", data.Email);
+                    HttpContext.Session.SetString("UserName", data.UserName);
+
                     var redirecturl = "";
                     if (data.UsertypeId == 3)
                     {
-                        redirecturl = Url.Action("Index", "Dashboard", new { area = "User" }); ;
+
+                    
+                        redirecturl = Url.Action("Index", "Dashboard", new { area = "User" });
                     }
-                   
                     else
                     {
-                        redirecturl = Url.Action("Index", "Dashboard", new { area = "Admins" }); ;
-
+                        redirecturl = Url.Action("Index", "Dashboard", new { area = "Admins" });
                     }
                     return Json(new { success = true, message = "Successful", redirectUrl = redirecturl });
-
                 }
-
-
-
             }
-
-
-
         }
 
 
@@ -143,5 +144,14 @@ namespace Psychiatrist_Management_System.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Login", "Home");
+        }
+
     }
 }

@@ -70,6 +70,29 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             }
         }
 
+        public IActionResult Approve(int id)
+        {
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@flag", 11); // Delete
+                    parameters.Add("@UserId", id);
+                    connection.Execute(
+                       "Sp_User",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+                }
+                return RedirectToAction("PatientInfo");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
     }
 }
