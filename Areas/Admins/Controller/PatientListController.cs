@@ -19,7 +19,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
         {
             using (var connection = _context.CreateConnection())
             {
-              
+
                 var p = new DynamicParameters();
                 p.Add("@flag", 8); // Get All
                 var data = connection.Query<User>(
@@ -28,7 +28,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                     commandType: System.Data.CommandType.StoredProcedure
                 ).ToList();
 
-                return View(data); 
+                return View(data);
             }
         }
 
@@ -37,7 +37,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             using (var connection = _context.CreateConnection())
             {
                 var p = new DynamicParameters();
-                p.Add("@flag", 9); 
+                p.Add("@flag", 9);
                 p.Add("@Id", id);
                 var data = connection.QueryFirstOrDefault<User>(
                     "Sp_User",
@@ -92,8 +92,26 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 throw;
             }
         }
+        [HttpGet]
+        public IActionResult Search(string searchTerm)
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                var p = new DynamicParameters();
+                p.Add("@flag", 12);
+                p.Add("@SearchTerm", searchTerm);
+
+                var data = connection.Query<User>(
+                    "Sp_User_Search",
+                    p,
+                    commandType: System.Data.CommandType.StoredProcedure
+                ).ToList();
+
+                return View("PatientInfo", data);
+            }
 
 
+        }
     }
 }
 

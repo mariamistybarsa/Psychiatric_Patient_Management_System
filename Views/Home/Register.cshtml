@@ -128,7 +128,12 @@
                 <option value="O+">O+</option>
                 <option value="O-">O-</option>
             </select>
+            <label asp-for="UsertypeId">User Type</label>
+            <select asp-for="UsertypeId" id="UsertypeId" name="UsertypeId" asp-items="ViewBag.UserTypeList" required>
+                <option value="">-- Select User Type --</option>
+            </select>
 
+            @* </select> *@ 
             <label asp-for="DesignationId">Select Designation</label>
             <select asp-for="DesignationId" id="DesignationId" name="DesignationId" asp-items="ViewBag.DesignationList" required>
                 <option value="">-- Select Designation --</option>
@@ -149,12 +154,13 @@
                 const email = $('#Email').val().trim();
                 const phone = $('#PhoneNumber').val().trim();
                 const designation = Number($('#DesignationId').val().trim());
+                const UserType = Number($('#UsertypeId').val().trim());
                 const age =Number($('#Age').val().trim());
                 const address = $('#Address').val().trim();
                 const blood = $('#BloodGroup').val().trim();
 
                 // Basic validation
-                if (!name || !password || !email || !phone || !designation || !age || !blood) {
+                if (!name || !password || !email || !phone || !designation ||!UserType ||!age || !blood) {
                     $('#message').text('Please fill out all required fields.').css('color', 'red');
                     return;
                 }
@@ -168,7 +174,7 @@
                     Address: address,
                     BloodGroup: blood,
                     DesignationId: parseInt(designation),
-                    UsertypeId: 3 // normal user type
+                    UsertypeId: parseInt(UserType),
                 };
 
                 $.ajax({
@@ -188,6 +194,8 @@
                             $('#Address').val('');
                             $('#BloodGroup').val('');
                             $('#DesignationId').val('');
+                           $('#UsertypeId').val('');
+
 
                             // Optionally redirect
                             window.location.href = response.redirectUrl;

@@ -93,6 +93,15 @@ namespace Psychiatrist_Management_System.Controllers
                     );
 
                     ViewBag.DesignationList = new SelectList(data, "DesignationId", "DesignationName");
+                    parameters = new DynamicParameters();
+                    parameters.Add("@flag", 14); // UserTypes fetch (assuming flag 4 is for user types)
+                    var userTypes = connection.Query<UserType>(
+                        "Sp_Register",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+                    ViewBag.UserTypeList = new SelectList(userTypes, "UserTypeId", "UserTypeName");
+
                 }
             }
             catch (Exception ex)
@@ -127,6 +136,7 @@ namespace Psychiatrist_Management_System.Controllers
                     parameters.Add("@Password", model.Password);
                     parameters.Add("@Email", model.Email);
                     parameters.Add("@UsertypeId", model.UsertypeId);
+                  
                     parameters.Add("@PhoneNumber", model.PhoneNumber);
                     parameters.Add("@DesignationId", model.DesignationId);
                     parameters.Add("@Age", model.Age);
