@@ -93,27 +93,36 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             }
         }
         [HttpGet]
-        public IActionResult Search(string searchTerm)
+ 
+        public IActionResult Search(string userName)
         {
             using (var connection = _context.CreateConnection())
             {
+                // Jodi search empty hoy
+                if (string.IsNullOrEmpty(userName))
+                {
+                    return Json(new { success = false, message = "Your data is not available" });
+                }
+
                 var p = new DynamicParameters();
-                p.Add("@flag", 12);
-                p.Add("@SearchTerm", searchTerm);
+                p.Add("@flag", 12); // search flag
+                p.Add("@userName", userName);
 
                 var data = connection.Query<User>(
-                    "Sp_User_Search",
+                    "Sp_User",
                     p,
                     commandType: System.Data.CommandType.StoredProcedure
                 ).ToList();
-
+         
                 return View("PatientInfo", data);
+
             }
-
-
         }
     }
 }
+
+
+       
 
 
 

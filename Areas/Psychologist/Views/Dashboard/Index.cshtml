@@ -1,5 +1,380 @@
 ﻿@{
     ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
-<h2>Welcome to Psychologist Dashboard</h2>
-<p>You have successfully logged in!</p>
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <h1 class="m-0">Welcome, @ViewBag.UserName 👋</h1>
+        <p class="text-muted">Here’s a quick look at your health dashboard.</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- USER SNAPSHOT -->
+        <div class="row">
+            <!-- Appointments -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>2</h3>
+                        <p>Upcoming Appointments</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-calendar-check"></i></div>
+                    <a asp-controller="Appointments" asp-action="Index" class="small-box-footer">
+                        View Appointments <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Payments -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>$120</h3>
+                        <p>Pending Payments</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-money-check-alt"></i></div>
+                    <a asp-controller="Payments" asp-action="Index" class="small-box-footer">
+                        Pay Now <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mood Tracker -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>🙂</h3>
+                        <p>Today’s Mood</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-thermometer-half"></i></div>
+                    <a asp-controller="Mood" asp-action="Track" class="small-box-footer">
+                        Update Mood <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>5</h3>
+                        <p>New Notifications</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-bell"></i></div>
+                    <a asp-controller="Notifications" asp-action="Index" class="small-box-footer">
+                        View Alerts <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- UPCOMING APPOINTMENTS -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Upcoming Appointments</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Dr. Smith – 21 Aug, 10:00 AM
+                        <span class="badge badge-info">Confirmed</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Dr. Lee – 25 Aug, 02:00 PM
+                        <span class="badge badge-warning">Pending</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                        <h5 class="mt-2">Emergency</h5>
+                        <a asp-controller="Emergency" asp-action="Request" class="btn btn-danger btn-sm">Request Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-file-medical fa-2x text-info"></i>
+                        <h5 class="mt-2">Medical History</h5>
+                        <a asp-controller="Records" asp-action="History" class="btn btn-info btn-sm">View History</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-comments fa-2x text-success"></i>
+                        <h5 class="mt-2">Messages</h5>
+                        <a asp-controller="Messages" asp-action="Index" class="btn btn-success btn-sm">Go to Messages</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRESS CHART -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-chart-line"></i> Your Progress</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="progressChart" style="height:250px"></canvas>
+            </div>
+        </div>
+
+        <!-- =========================
+             PSYCHIATRIST PANEL BLOCK
+             ========================= -->
+        <!-- ROW 1: Snapshot Cards -->
+        <div class="row">
+            <!-- Today's Appointments -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>8</h3>
+                        <p>Today’s Appointments</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-calendar-day"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Appointments" asp-action="Today" class="small-box-footer">
+                        View Schedule <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pending Requests -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>3</h3>
+                        <p>Pending Requests</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-user-clock"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Patients" asp-action="Pending" class="small-box-footer">
+                        Review Now <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- New Messages -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>5</h3>
+                        <p>New Messages</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-comments"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Messages" asp-action="Index" class="small-box-footer">
+                        Open Inbox <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Earnings Today -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3>$420</h3>
+                        <p>Earnings (Today)</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-wallet"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Billing" asp-action="Summary" class="small-box-footer">
+                        View Details <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 2: Operational Status -->
+        <div class="row">
+            <!-- Patients in Queue -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>2</h3>
+                        <p>Patients in Queue</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-user-friends"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Telemed" asp-action="WaitingRoom" class="small-box-footer">
+                        Enter Waiting Room <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Teleconsultations Today -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-teal">
+                    <div class="inner">
+                        <h3>4</h3>
+                        <p>Teleconsultations</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-video"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Telemed" asp-action="Today" class="small-box-footer">
+                        Start Session <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Availability -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-secondary">
+                    <div class="inner">
+                        <h3>Online</h3>
+                        <p>Availability</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-toggle-on"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Schedule" asp-action="Availability" class="small-box-footer">
+                        Change Status <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-dark">
+                    <div class="inner text-white">
+                        <h3>4.8</h3>
+                        <p>Average Rating</p>
+                    </div>
+                    <div class="icon"><i class="fas fa-star"></i></div>
+                    <a asp-area="Psychiatrists" asp-controller="Reviews" asp-action="Index" class="small-box-footer text-white-50">
+                        Read Reviews <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-bolt"></i> Quick Actions</h3>
+            </div>
+            <div class="card-body">
+                <a asp-area="Psychiatrists" asp-controller="Telemed" asp-action="Next" class="btn btn-primary btn-sm mr-2">
+                    <i class="fas fa-play-circle"></i> Start Next Consult
+                </a>
+                <a asp-area="Psychiatrists" asp-controller="Notes" asp-action="Create" class="btn btn-info btn-sm mr-2">
+                    <i class="fas fa-notes-medical"></i> Add Clinical Note
+                </a>
+                <a asp-area="Psychiatrists" asp-controller="Schedule" asp-action="Availability" class="btn btn-secondary btn-sm mr-2">
+                    <i class="fas fa-toggle-on"></i> Set Availability
+                </a>
+                <a asp-area="Psychiatrists" asp-controller="Prescriptions" asp-action="Create" class="btn btn-success btn-sm">
+                    <i class="fas fa-prescription-bottle-alt"></i> Create Prescription
+                </a>
+            </div>
+        </div>
+
+        <!-- TODAY'S SCHEDULE -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Today’s Schedule</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10:00</td>
+                            <td>Arif H.</td>
+                            <td><span class="badge badge-info">Tele</span></td>
+                            <td><span class="badge badge-info">Confirmed</span></td>
+                            <td class="text-right">
+                                <a asp-area="Psychiatrists" asp-controller="Telemed" asp-action="Join" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-video"></i> Join
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>11:30</td>
+                            <td>Sadia M.</td>
+                            <td><span class="badge badge-secondary">In-person</span></td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td class="text-right">
+                                <a asp-area="Psychiatrists" asp-controller="Appointments" asp-action="Details" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-folder-open"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>14:00</td>
+                            <td>Rahim K.</td>
+                            <td><span class="badge badge-info">Tele</span></td>
+                            <td><span class="badge badge-success">Checked-in</span></td>
+                            <td class="text-right">
+                                <a asp-area="Psychiatrists" asp-controller="Notes" asp-action="Create" class="btn btn-sm btn-success">
+                                    <i class="fas fa-notes-medical"></i> Note
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- APPOINTMENTS TREND (Chart.js) -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-chart-line"></i> Appointments This Week</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="apptTrend" style="height:250px"></canvas>
+            </div>
+        </div>
+
+    </div><!-- /.container-fluid -->
+</section><!-- /.content -->
+@section Scripts {
+    <script>
+        // Progress line chart
+        var ctx = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["Mon","Tue","Wed","Thu","Fri"],
+                datasets: [{
+                    label: 'Mood Score',
+                    data: [3,4,5,4,5],
+                    borderColor: '#17a2b8',
+                    fill: false
+                }]
+            }
+        });
+
+        // Weekly appointments bar chart
+        var ctx2 = document.getElementById('apptTrend').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+                datasets: [{
+                    label: 'Appointments',
+                    data: [5, 7, 6, 8, 9, 3, 2],
+                    backgroundColor: '#17a2b8'
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+}
