@@ -1,0 +1,113 @@
+﻿<p>Create your profile</p>
+@model Psychiatrist_Management_System.Models.PsyProfileVM
+
+@{
+    ViewData["Title"] = "Psychiatrist Profile Form";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Psychiatrist Profile</h4>
+        </div>
+        <div class="card-body">
+            <form id="profileForm" enctype="multipart/form-data">
+                @* <input type="hidden" asp-for="ProfileId" id="ProfileId" /> *@
+
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label">Bio</label>
+                    <textarea asp-for="Bio" id="Bio" class="form-control" rows="3" placeholder="Write about yourself..."></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Specialization" class="form-label">Specialization</label>
+                    <input asp-for="Specialization" id="Specialization" class="form-control" placeholder="Enter Specialization" />
+                    <span asp-validation-for="Specialization" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Experience" class="form-label">Experience</label>
+                    <input asp-for="Experience" id="Experience" class="form-control" placeholder="Enter Experience" />
+                    <span asp-validation-for="Experience" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EmergencyContact" class="form-label">Emergency Contact</label>
+                    <input asp-for="EmergencyContact" id="EmergencyContact" class="form-control" placeholder="Enter Emergency Contact" />
+                    <span asp-validation-for="EmergencyContact" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Imageurl" class="form-label">Profile Picture</label>
+                    <input type="file" asp-for="Imageurl" id="Imageurl" class="form-control" />
+                    <span asp-validation-for="Imageurl" class="text-danger"></span>
+                </div>
+
+                <div id="resultMessage" class="mb-3"></div>
+
+                <div class="d-grid">
+                    <button type="button" id="submitProfile" class="btn btn-success btn-lg">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#submitProfile').click(function (e) {
+                e.preventDefault();
+                debugger;
+
+               
+                const bio = $('#Bio').val();
+                const specialization = $('#Specialization').val();
+                const experience = $('#Experience').val();
+                const emergencyContact = $('#EmergencyContact').val();
+                const imageFile = $('#Imageurl')[0].files[0];
+
+                // Validation
+                if (!bio || !specialization || !experience || !emergencyContact) {
+                    $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
+                    return;
+                }
+
+                // FormData for file + text
+                const model = {
+                    PsychiatristId: 0,
+                   
+                    Bio: bio,
+                   Specialization:specialization,
+                   Experience:experience,
+                    EmergencyContact: emergencyContact,
+
+                    ImageFile: imageFile}
+
+                $.ajax({
+                    url: '/Psychologist/PsyProfile/Save',
+                    type: 'POST',
+                    data: model,
+                    
+                    success: function (response) {
+                        if (response.success) {
+                            $('#resultMessage').text('Profile saved successfully!').css('color', 'green');
+                            $('#profileForm')[0].reset();
+
+                            setTimeout(function () {
+                                window.location.href = '/Psychologist/PsyProfile/Index';
+                            }, 2000);
+                        } else {
+                            $('#resultMessage').text('Error: ' + response.message).css('color', 'red');
+                        }
+                    },
+                    error: function (xhr) {
+                        $('#resultMessage').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
+                    }
+                });
+            });
+        });
+    </script>
+}
