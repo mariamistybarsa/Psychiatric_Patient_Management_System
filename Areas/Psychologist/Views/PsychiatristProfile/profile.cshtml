@@ -1,0 +1,59 @@
+﻿@model Psychiatrist_Management_System.Models.ProfilePsychiatrist
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Column: Profile Picture -->
+        <div class="col-md-4 text-center mb-4">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            {
+                <img src="~/images/profiles/@Model.ProfilePicture" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="max-width:200px;">
+            }
+            else
+            {
+                <div class="bg-secondary rounded-circle mb-3" style="width:200px; height:200px;"></div>
+            }
+        </div>
+
+        <!-- Right Column: Profile Info -->
+        <div class="col-md-8">
+            <!-- Bio / Experience -->
+            <div class="mb-3">
+                <h5 class="fw-semibold">Bio / Experience</h5>
+                <p>@Model.Bio</p>
+            </div>
+
+            <!-- Specialization -->
+            <div class="mb-3">
+                <h5 class="fw-semibold">Specialization</h5>
+                <p>@Model.Specialization</p>
+            </div>
+
+            <!-- Experience -->
+            <div class="mb-3">
+                <h5 class="fw-semibold">Experience</h5>
+                <p>@Model.Experience</p>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="mb-3">
+                <h5 class="fw-semibold">Emergency Contact</h5>
+                <p>@Model.EmergencyContact</p>
+            </div>
+
+            <!-- Availability -->
+            @if (!string.IsNullOrEmpty(Model.Availability))
+            {
+                <div class="mb-3">
+                    <h5 class="fw-semibold">Availability</h5>
+                    <p>@Model.Availability</p>
+                </div>
+            }
+
+            <!-- Actions -->
+            <div class="mt-4">
+                <a href="#" class="btn btn-primary me-2">Book Appointment</a>
+                <a href="#" class="btn btn-outline-secondary">Message Doctor</a>
+            </div>
+        </div>
+    </div>
+</div>

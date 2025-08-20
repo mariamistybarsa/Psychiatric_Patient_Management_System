@@ -1,0 +1,94 @@
+﻿@model Psychiatrist_Management_System.Models.ProfilePsychiatrist
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Complete Your Profile</h3>
+        </div>
+        <div class="card-body">
+
+            <div id="resultMessage"></div>
+
+            <!-- Bio -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Bio / Experience</label>
+                <textarea class="form-control" id="bio" rows="4" placeholder="Enter your experience"></textarea>
+            </div>
+
+            <!-- Specialization -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Specialization</label>
+                <input type="text" class="form-control" id="specialization" placeholder="e.g., Depression, Anxiety" />
+            </div>
+
+            <!-- Experience -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Experience</label>
+                <input type="text" class="form-control" id="experience" placeholder="e.g., 10 years" />
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Emergency Contact</label>
+                <input type="text" class="form-control" id="emergencyContact" placeholder="Phone or Email" />
+            </div>
+
+            <!-- Submit Button -->
+            <button id="submit" class="btn btn-primary">Save Profile</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#submit').click(function (e) {
+                e.preventDefault();
+
+                const bio = $('#bio').val().trim();
+                const specialization = $('#specialization').val().trim();
+                const experience = $('#experience').val().trim();
+                const emergencyContact = $('#emergencyContact').val().trim();
+
+                if (!bio || !specialization || !experience || !emergencyContact) {
+                    $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
+                    return;
+                }
+
+                const model = {
+                    Bio: bio,
+                    Specialization: specialization,
+                    Experience: experience,
+                    EmergencyContact: emergencyContact
+                };
+
+                $.ajax({
+                    url: '/Psychologist/PsychiatristProfile/Save',
+                    type: 'POST',
+                    data: model,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#resultMessage').text('Profile saved successfully!').css('color', 'green');
+                            // Redirect to profile page after 1 second
+                            setTimeout(() => {
+                                window.location.href = response.redirectUrl;
+                            }, 1000);
+                        } else {
+                            $('#resultMessage').text('Error: ' + response.message).css('color', 'red');
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#resultMessage').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
+                    }
+                });
+
+                // Optionally clear form
+                $('#bio, #specialization, #experience, #emergencyContact').val('');
+            });
+        });
+    </script>
+}

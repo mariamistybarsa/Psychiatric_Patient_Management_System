@@ -1,9 +1,12 @@
-﻿<aside class="main-sidebar sidebar-dark-primary elevation-4" style="min-height: 100vh;">
+﻿@using Microsoft.AspNetCore.Http
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="min-height: 100vh;">
     <!-- Brand Logo -->
     <a href="~/Admin/index3.html" class="brand-link">
         <img src="~/Admin/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Admin Panel</span>
     </a>
+    @if (Context.Session.GetString("UsertypeId") == "1"){
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -45,29 +48,44 @@
                         <p> Manage User Types</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="Designation" asp-action="Index" class="nav-link">
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>Users - Designation</p>
-                    </a>
-                </li>
-                <!-- Users -->
-                <li class="nav-item">
-                    <a href="~/Admin/Users" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>Users</p>
-                    </a>
-                </li>
+               
+                    <li class="nav-item">
+                        <a asp-area="Admins" asp-controller="Designation" asp-action="Index" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Users - Designation</p>
+                        </a>
+                    </li>
+              
+
+             
+                
+                @* @if (Context.Session.GetString("UsertypeId") == "3")
+                {
+                    <li class="nav-item">
+                        <a asp-area="Admins" asp-controller="Designation" asp-action="Index" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Users - ihsdifas</p>
+                        </a>
+                    </li>
+                }
+               *@
 
                 <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="Psychiatrist" asp-action="Index" class="nav-link">
+                    <a asp-area="Admins" asp-controller="Appointment" asp-action="getSchedule" class="nav-link">
                         <i class="nav-icon fas fa-user-md"></i>
-                        <p>Psychiatrist</p>
+                        <p>Schedule</p>
                     </a>
                 </li>
 
 
                 <!-- Patients -->
+                <li class="nav-item">
+                    <a asp-area="Admins" asp-controller="PatientList" asp-action="Psychiatrist" class="nav-link">
+                        <i class="nav-icon fas fa-procedures"></i>
+                        <p>PsychiatristList</p>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a asp-area="Admins" asp-controller="PatientList" asp-action="PatientInfo" class="nav-link">
                         <i class="nav-icon fas fa-procedures"></i>
@@ -77,7 +95,7 @@
 
                 <!-- Appointments -->
                 <li class="nav-item">
-                    <a href="~/Admin/Appointments" class="nav-link">
+                    <a asp-area="Admins" asp-controller="Appointment" asp-action="Index" class="nav-link">
                         <i class="nav-icon fas fa-calendar-check"></i>
                         <p>Appointments</p>
                     </a>
@@ -143,8 +161,51 @@
         </nav>
         <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
-</aside>
+    }
+    @if (Context.Session.GetString("UsertypeId") == "2")
+    {
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <div class="sidebar">
+                <!-- Sidebar user (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="~/Admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">
+                            @Context.Session.GetString("UserName")
+                        </a>
+                    </div>
+                </div>
+           
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                        <li class="nav-item">
+                            <a asp-area="Psychologist" asp-controller="PsychiatristProfile" asp-action="Form" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-list"></i>
+                                <p>Profile Creates</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                        <li class="nav-item">
+                            <a asp-area="Psychologist" asp-controller="PsychiatristSchedule" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-list"></i>
+                                <p>Schedule</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+    }
+
 
        
 

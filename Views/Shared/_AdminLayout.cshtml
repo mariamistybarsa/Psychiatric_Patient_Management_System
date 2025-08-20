@@ -152,17 +152,28 @@
                     </a>
                 </li>
             </ul>
+
             <partial name="_LoginPartial.cshtml" />
         </nav>
 
         <!-- /.navbar -->
         <!-- Main Sidebar Container -->
         <!-- Main Sidebar Container -->
+
+           @if (Context.Session.GetString("UsertypeId") == "1")
+        {
         <partial name="~/Views/Shared/_SideBar.cshtml" />
 
-    
-        <!-- Main Sidebar Container -->
-        <partial name="~/Views/Shared/_SideBar.cshtml" />
+        }
+        @if (Context.Session.GetString("UsertypeId") == "3")
+        {
+            <partial name="~/Views/Shared/_UserSideBar.cshtml" />
+        }
+        @if (Context.Session.GetString("UsertypeId") == "2")
+        {
+            <partial name="~/Views/Shared/_SideBar.cshtml" />
+        }
+       
 
         <!-- Content Wrapper -->
         <div class="content-wrapper">

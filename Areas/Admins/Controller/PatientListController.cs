@@ -21,7 +21,23 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             {
 
                 var p = new DynamicParameters();
-                p.Add("@flag", 8); // Get All
+                p.Add("@flag", 8); 
+                var data = connection.Query<User>(
+                    "Sp_User",
+                    p,
+                    commandType: System.Data.CommandType.StoredProcedure
+                ).ToList();
+
+                return View(data);
+            }
+        }
+        public IActionResult Psychiatrist()
+        {
+            using (var connection = _context.CreateConnection())
+            {
+
+                var p = new DynamicParameters();
+                p.Add("@flag", 13); // Get All
                 var data = connection.Query<User>(
                     "Sp_User",
                     p,

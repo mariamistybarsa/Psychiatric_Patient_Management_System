@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .btn-save {
+        background-color:darkcyan;
+        color: white;
+        padding: 10px 20px;
+        font-size: 15px;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+        .btn-save:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .btn-save:active {
+            background-color: #1e7e34;
+            transform: scale(0.95);
+        }
+
+    table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    thead {
+        background: deepskyblue;
+        color: white;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 12px 15px;
+        text-align: center;
+    }
+
+    tbody tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background: #f1f1f1;
+        cursor: pointer;
+    }
+
+    th {
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    td {
+        font-size: 15px;
+    }
+
+    .status-available {
+        color: deepskyblue;
+        font-weight: bold;
+    }
+
+    .status-booked {
+        color: deepskyblue;
+        font-weight: bold;
+
+    }
+
+    .banner {
+        background-color: darkcyan;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        padding: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+    }
+</style>
+<div class="banner">
+    Psychiatrist Schedule
+</div>
+<a asp-controller="PsychiatristSchedule" asp-action="Form" class="btn btn-info">➕ Add</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Time-Start</th>
+            <th>Time-End</th>
+            <th>Status</th>
+            <th>Actions</th> <!-- Added Actions header -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in Model)
+        {
+            <tr>
+                <td>@schedule.StartDay - @schedule.EndDay</td>
+                <td>@schedule.StartTime</td>
+                <td>@schedule.EndTime</td>
+                <td >
+                    @schedule.Status
+                </td>
+                <td>
+                    <!-- Edit button -->
+                    <a asp-area="Psychologist"
+                       asp-controller="PsychiatristSchedule"
+                       asp-action="Edit"
+                       asp-route-id="@schedule.PsychiatristScheduleId"
+                       class="btn btn-info">
+                        ✏️ 
+                    </a>
+                  
+                    <form asp-controller="PsychiatristSchedule" asp-action="Delete" asp-route-id="@schedule.PsychiatristScheduleId" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this schedule?');">🗑 </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

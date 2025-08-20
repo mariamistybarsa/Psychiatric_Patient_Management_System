@@ -1,0 +1,131 @@
+﻿@model Psychiatrist_Management_System.Models.AppointmentPsychiatrist
+
+@{
+    ViewData["Title"] = "Create Appointment";
+}
+
+<h2>Create Appointment</h2>
+
+<!-- Add a div to show AJAX result messages -->
+<div id="resultMessage" class="mb-3"></div>
+
+<form asp-action="Create" method="post" class="form-horizontal" id="appointmentForm">
+
+    <!-- Hidden UserId -->
+    <input asp-for="UserId" type="hidden" />
+
+    <!-- Startday Dropdown -->
+    <div class="form-group mb-3">
+        <label asp-for="Startday" class="control-label"></label>
+        <select asp-for="Startday" id="Startday" class="form-control">
+            <option value="">-- Select Start Day --</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+        </select>
+        <span asp-validation-for="Startday" class="text-danger"></span>
+    </div>
+
+    <!-- Endday Dropdown -->
+    <div class="form-group mb-3">
+        <label asp-for="Endday" class="control-label"></label>
+        <select asp-for="Endday" id="Endday" class="form-control">
+            <option value="">-- Select End Day --</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+        </select>
+        <span asp-validation-for="Endday" class="text-danger"></span>
+    </div>
+
+    <!-- Start Time Dropdown -->
+    <div class="form-group mb-3">
+        <label asp-for="StartTime" class="control-label"></label>
+        <select asp-for="StartTime" id="StartTime" class="form-control">
+            <option value="">-- Select Start Time --</option>
+            <option value="08:30-09:30">8:30 AM - 9:30 AM</option>
+            <option value="09:30-10:30">9:30 AM - 10:30 AM</option>
+            <option value="10:30-11:30">10:30 AM - 11:30 AM</option>
+            <option value="11:30-12:30">11:30 AM - 12:30 PM</option>
+            <option value="12:30-13:30">12:30 PM - 1:30 PM</option>
+            <option value="19:30-20:30">7:30 PM - 8:30 PM</option>
+            <option value="20:30-21:30">8:30 PM - 9:30 PM</option>
+            <option value="21:30-22:30">9:30 PM - 10:30 PM</option>
+        </select>
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <!-- End Time Dropdown -->
+    <div class="form-group mb-3">
+        <label asp-for="EndTime" class="control-label"></label>
+        <select asp-for="EndTime" id="EndTime" class="form-control">
+            <option value="">-- Select End Time --</option>
+            <option value="20:30-21:30">8:30 PM - 9:30 PM</option>
+            <option value="21:30-22:30">9:30 PM - 10:30 PM</option>
+            <option value="22:30-23:30">10:30 PM - 11:30 PM</option>
+        </select>
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#appointmentForm').submit(function (e) {
+            e.preventDefault(); // prevent page reload
+            debugger;
+            const Startday = $('#Startday').val().trim();
+            const Endday = $('#Endday').val().trim();
+            const StartTime = $('#StartTime').val().trim();
+            const EndTime = $('#EndTime').val().trim();
+            const UserId = $('#UserId').val().trim();
+
+            // Basic validation
+            if (!Startday || !Endday || !StartTime || !EndTime) {
+                $('#resultMessage').text('Please fill all required fields.').css('color', 'red');
+                return;
+            }
+
+            const AppointmentPsychiatrist = {
+                Startday: Startday,
+                Endday: Endday,
+                StartTime: StartTime,
+                EndTime: EndTime,
+                UserId: UserId
+            };
+
+            $.ajax({
+                url: '/Admins/Appointment/Save', // Change to your actual controller/action
+                type: 'POST',
+                data: AppointmentPsychiatrist,
+                success: function (response) {
+                    if (response.success) {
+                        $('#resultMessage').css('color', 'green').text(response.message || 'Appointment added successfully!');
+                        $('#appointmentForm')[0].reset();
+
+                        setTimeout(function () {
+                            window.location.href = '/Admins/Appointment/Index';
+                        }, 2000);
+                    } else {
+                        $('#resultMessage').css('color', 'red').text(response.message || 'Error: Unexpected response.');
+                    }
+                },
+                error: function (xhr) {
+                    $('#resultMessage').css('color', 'red').text('Error: ' + (xhr.responseText || 'Unknown error'));
+                }
+            });
+        });
+    });
+</script>

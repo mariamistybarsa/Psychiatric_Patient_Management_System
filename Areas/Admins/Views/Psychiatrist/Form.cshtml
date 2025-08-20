@@ -1,80 +1,80 @@
-﻿<div id="psychiatristForm" style="max-width: 500px; margin: 40px auto; padding: 25px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
-    <h2 class="mb-4 text-center" style="font-weight: 700; color: #333;">Add Psychiatrist</h2>
+﻿@model Psychiatrist_Management_System.Models.ProfilePsychiatrist
 
-    <div class="form-group mb-3">
-        <label for="name" style="font-weight: 600;">Name</label>
-        <input type="text" class="form-control" id="name" placeholder="Enter full name" />
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Complete Your Profile</h3>
+        </div>
+        <div class="card-body">
+            <div id="resultMessage"></div>
+
+            <div class="mb-3">
+                <label asp-for="Bio" class="form-label fw-semibold">Bio / Experience</label>
+                <textarea class="form-control" id="bio" rows="4" placeholder="Enter your experience"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Specialization" class="form-label fw-semibold">Specialization</label>
+                <input type="text" class="form-control" id="specialization" placeholder="e.g., Depression, Anxiety" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Experience" class="form-label fw-semibold">Experience</label>
+                <input type="text" class="form-control" id="experience" placeholder="e.g., 10 years" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EmergencyContact" class="form-label fw-semibold">Emergency Contact</label>
+                <input type="text" class="form-control" id="emergencyContact" placeholder="Phone or Email" />
+            </div>
+
+            <button id="submit" class="btn btn-primary">Save Profile</button>
+        </div>
     </div>
-
-    <div class="form-group mb-3">
-        <label for="email" style="font-weight: 600;">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Enter email address" />
-    </div>
-
-    <div class="form-group mb-4">
-        <label for="specialization" style="font-weight: 600;">Specialization</label>
-        <input type="text" class="form-control" id="specialization" placeholder="Enter specialization" />
-    </div>
-
-    <button id="submit" type="submit" class="btn btn-primary w-100" style="font-weight: 600; padding: 10px;">Submit</button>
 </div>
 
-<div id="resultMessage" style="max-width: 500px; margin: 10px auto; text-align: center; font-weight: 600;"></div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#submit').click(function (e) {
-            e.preventDefault(); // prevent page reload
+            e.preventDefault();
+            debugger;
 
-             debugger; // Uncomment for debugging if needed
-            const name = $('#name').val().trim();
-            const email = $('#email').val().trim();
+            const bio = $('#bio').val().trim();
             const specialization = $('#specialization').val().trim();
+            const experience = $('#experience').val().trim();
+            const emergencyContact = $('#emergencyContact').val().trim();
 
-            // Basic form validation
-            if (!name || !email || !specialization) {
+            if (!bio || !specialization || !experience || !emergencyContact) {
                 $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
                 return;
             }
 
-            // Simulate form submission (you could send this to a backend with AJAX)
             const model = {
-                name: name,
-                email: email,
-                specialization: specialization
+                Bio: bio,
+                Specialization: specialization,
+                Experience: experience,
+                EmergencyContact: emergencyContact
             };
 
-              $.ajax({
-      url: '/Admins/Psychiatrist/Save',
-      type: 'POST',
-      data: model,
-      success: function (response) {
-        if (response.success) {
-          // Redirect manually based on response
-          window.location.href = response.redirectUrl;
-        } else {
-          $('#resultMessage').css('color', 'red').text('Error: Unexpected response.');
-        }
-      },
-      error: function (xhr) {
-        $('#resultMessage').css('color', 'red').text('Error: ' + (xhr.responseText || 'Unknown error'));
-      }
-    });
-
-
-            // For demonstration, just show a success message
-            $('#resultMessage')
-                .text('Psychiatrist added successfully!')
-                .css('color', 'green');
+            $.ajax({
+                url: '/Admins/Psychiatrist/SaveProfile',
+                type: 'POST',
+                data: model,
+                success: function(response) {
+                    if (response.success) {
+                        $('#resultMessage').text('Profile saved successfully!').css('color', 'green');
+                    } else {
+                        $('#resultMessage').text('Error saving profile.').css('color', 'red');
+                    }
+                },
+                error: function(xhr) {
+                    $('#resultMessage').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
+                }
+            });
 
             // Optionally clear form
-            $('#name').val('');
-            $('#email').val('');
-            $('#specialization').val('');
+            $('#bio, #specialization, #experience, #emergencyContact').val('');
         });
     });
 </script>

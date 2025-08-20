@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Psychiatrist_Management_System.Data;
@@ -48,25 +49,38 @@ namespace Psychiatrist_Management_System.Controllers
                 }
                 else
                 {
-                   
+
                     if (data.UsertypeId == 3 && data.Status != "Approved")
                     {
                         return Json(new { success = false, message = "Your account is not approved yet." });
                     }
-                    HttpContext.Session.SetString("UserEmail", data.Email);
+                    else
+                    {
+                        if (data.UsertypeId == 2 && data.Status != "Approved")
+                        {
+                            return Json(new { success = false, message = "Your account is not approved yet." });
+                        }
+                    }
+                        HttpContext.Session.SetString("UserEmail", data.Email);
                     HttpContext.Session.SetString("UserName", data.UserName);
+                    HttpContext.Session.SetString("UserId", data.UserId.ToString());
+                    HttpContext.Session.SetString("UsertypeId", data.UsertypeId.ToString());
 
                     var redirecturl = "";
+
                     if (data.UsertypeId == 3)
                     {
-
-                    
                         redirecturl = Url.Action("Index", "Dashboard", new { area = "User" });
+                    }
+                    else if (data.UsertypeId == 2)
+                    {
+                        redirecturl = Url.Action("Index", "Dashboard", new { area = "Psychologist" });
                     }
                     else
                     {
                         redirecturl = Url.Action("Index", "Dashboard", new { area = "Admins" });
                     }
+
                     return Json(new { success = true, message = "Successful", redirectUrl = redirecturl });
                 }
             }
@@ -76,8 +90,7 @@ namespace Psychiatrist_Management_System.Controllers
 
 
 
-
-        [HttpGet]
+                    [HttpGet]
         public IActionResult Register()
         {
             try

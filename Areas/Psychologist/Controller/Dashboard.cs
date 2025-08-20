@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Authorization.Areas.Psychologist.Controllers
+namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 {
     [Area("Psychologist")]
     public class DashboardController : Controller
