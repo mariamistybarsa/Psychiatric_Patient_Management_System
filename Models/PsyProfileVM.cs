@@ -9,6 +9,9 @@
         public string? Experience { get; set; }
         public string? EmergencyContact { get; set; }
         public string? Imageurl { get; set; }
+        public string? UserName { get; set; }
+        public string? Address { get; set; }
+        public string Email { get; set; }
 
 
     }

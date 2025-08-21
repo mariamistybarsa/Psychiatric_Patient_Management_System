@@ -16,31 +16,23 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            try
-            {
-                using (var connection = _context.CreateConnection())
-                {
+      public IActionResult Index()
+{
+    using (var connection = _context.CreateConnection())
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("@flag", 2); // Get profile for current user
+        parameters.Add("@PsychiatristId", Convert.ToInt32(HttpContext.Session.GetString("UserId")));
 
-                    var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 2);
-                    var data = connection.Query<PsyProfileVM>(
+        var profile = connection.Query<PsyProfileVM>(
+            "Sp_PsyProfileVM",
+            parameters,
+            commandType: CommandType.StoredProcedure
+        ).FirstOrDefault(); // ✅ Single profile
 
-                      "Sp_PsyProfileVM",
-                      parameters,
-                      commandType: CommandType.StoredProcedure
-                  );
-
-
-                    return View(data);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        return View(profile);
+    }
+}
         public IActionResult Form()
         {
             return View();
@@ -73,6 +65,28 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@flag", 3); // Delete
+                    parameters.Add("@PsychiatristId", id);
+                    connection.Execute("Sp_PsyProfileVM", parameters, commandType: CommandType.StoredProcedure);
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View("Index");
             }
         }
 
