@@ -1,0 +1,36 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Psychiatrist_Management_System.Data;
+
+namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
+{
+    [Area("Psychologist")]
+    public class PsychiatristProfile : Controller
+    {
+        private readonly DapperContext _context;
+        public PsychiatristProfile(DapperContext context)
+        {
+            _context = context;
+        }
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+        public IActionResult Form()
+        {
+
+            return View();
+        }
+
+
+
+
+
+
+
+
+
+        //"Sp_ProfilePsychiatrist"
+    }
+}
