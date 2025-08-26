@@ -1,0 +1,67 @@
+﻿@* Edit.cshtml *@
+
+@model Psychiatrist_Management_System.Models.PsyProfileVM
+
+@{
+    ViewData["Title"] = "Edit Psychiatrist Profile";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Edit Psychiatrist Profile</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <!-- Hidden fields -->
+                <input type="hidden" asp-for="ProfileId" />
+                <input type="hidden" asp-for="Imageurl" />
+
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label">Bio</label>
+                    <textarea asp-for="Bio" class="form-control" rows="3" placeholder="Write about yourself..."></textarea>
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Specialization" class="form-label">Specialization</label>
+                    <input asp-for="Specialization" class="form-control" placeholder="Enter Specialization" />
+                    <span asp-validation-for="Specialization" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Experience" class="form-label">Experience</label>
+                    <input asp-for="Experience" class="form-control" placeholder="Enter Experience" />
+                    <span asp-validation-for="Experience" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EmergencyContact" class="form-label">Emergency Contact</label>
+                    <input asp-for="EmergencyContact" class="form-control" placeholder="Enter Emergency Contact" />
+                    <span asp-validation-for="EmergencyContact" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageFile" class="form-label">Profile Picture</label>
+                    <input type="file" asp-for="ImageFile" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                @* Show existing image preview if available *@
+                @if (!string.IsNullOrEmpty(Model.Imageurl))
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Current Picture</label>
+                        <div>
+                            <img src="~/Images/Psychiatrist/@Model.Imageurl" alt="Profile Picture" class="img-thumbnail" style="max-width:150px;" />
+                        </div>
+                    </div>
+                }
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">Update Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

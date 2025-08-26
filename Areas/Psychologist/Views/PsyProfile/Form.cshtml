@@ -11,7 +11,7 @@
             <h4 class="mb-0">Psychiatrist Profile</h4>
         </div>
         <div class="card-body">
-            <form id="profileForm" enctype="multipart/form-data">
+            <form id="profileForm" asp-action="Save" enctype="multipart/form-data">
                 @* <input type="hidden" asp-for="ProfileId" id="ProfileId" /> *@
 
                 <div class="mb-3">
@@ -39,15 +39,15 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Imageurl" class="form-label">Profile Picture</label>
-                    <input type="file" asp-for="Imageurl" id="Imageurl" class="form-control" />
-                    <span asp-validation-for="Imageurl" class="text-danger"></span>
+                    <label asp-for="ImageFile" class="form-label">Profile Picture</label>
+                    <input type="file" asp-for="ImageFile" id="ImageFile" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
 
                 <div id="resultMessage" class="mb-3"></div>
 
                 <div class="d-grid">
-                    <button type="button" id="submitProfile" class="btn btn-success btn-lg">Save Profile</button>
+                    <button type="submit" id="submitProfile" class="btn btn-success btn-lg">Save Profile</button>
                 </div>
             </form>
         </div>
@@ -57,57 +57,57 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#submitProfile').click(function (e) {
-                e.preventDefault();
-                debugger;
+        // $(document).ready(function () {
+        //     $('#submitProfile').click(function (e) {
+        //         e.preventDefault();
+        //         debugger;
 
                
-                const bio = $('#Bio').val();
-                const specialization = $('#Specialization').val();
-                const experience = $('#Experience').val();
-                const emergencyContact = $('#EmergencyContact').val();
-                const imageFile = $('#Imageurl')[0].files[0];
+        //         const bio = $('#Bio').val();
+        //         const specialization = $('#Specialization').val();
+        //         const experience = $('#Experience').val();
+        //         const emergencyContact = $('#EmergencyContact').val();
+        //         const imageFile = $('#ImageFile')[0].files[0];
 
-                // Validation
-                if (!bio || !specialization || !experience || !emergencyContact) {
-                    $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
-                    return;
-                }
+        //         Validation
+        //         if (!bio || !specialization || !experience || !emergencyContact) {
+        //             $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
+        //             return;
+        //         }
 
-                // FormData for file + text
-                const model = {
-                    PsychiatristId: 0,
+        //         FormData for file + text
+        //         const model = {
+        //             PsychiatristId: 0,
                    
-                    Bio: bio,
-                   Specialization:specialization,
-                   Experience:experience,
-                    EmergencyContact: emergencyContact,
+        //             Bio: bio,
+        //            Specialization:specialization,
+        //            Experience:experience,
+        //             EmergencyContact: emergencyContact,
 
-                    ImageFile: imageFile}
+        //             ImageFile: imageFile}
 
-                $.ajax({
-                    url: '/Psychologist/PsyProfile/Save',
-                    type: 'POST',
-                    data: model,
+        //         $.ajax({
+        //             url: '/Psychologist/PsyProfile/Save',
+        //             type: 'POST',
+        //             data: model,
                     
-                    success: function (response) {
-                        if (response.success) {
-                            $('#resultMessage').text('Profile saved successfully!').css('color', 'green');
-                            $('#profileForm')[0].reset();
+        //             success: function (response) {
+        //                 if (response.success) {
+        //                     $('#resultMessage').text('Profile saved successfully!').css('color', 'green');
+        //                     $('#profileForm')[0].reset();
 
-                            setTimeout(function () {
-                                window.location.href = '/Psychologist/PsyProfile/Index';
-                            }, 2000);
-                        } else {
-                            $('#resultMessage').text('Error: ' + response.message).css('color', 'red');
-                        }
-                    },
-                    error: function (xhr) {
-                        $('#resultMessage').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
-                    }
-                });
-            });
-        });
+        //                     setTimeout(function () {
+        //                         window.location.href = '/Psychologist/PsyProfile/Index';
+        //                     }, 2000);
+        //                 } else {
+        //                     $('#resultMessage').text('Error: ' + response.message).css('color', 'red');
+        //                 }
+        //             },
+        //             error: function (xhr) {
+        //                 $('#resultMessage').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
+        //             }
+        //         });
+        //     });
+        // });
     </script>
 }
