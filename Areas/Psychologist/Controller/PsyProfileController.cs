@@ -156,36 +156,6 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpPost]
         public IActionResult Delete(int id)
         {
