@@ -16,6 +16,19 @@
                 <!-- Hidden fields -->
                 <input type="hidden" asp-for="ProfileId" />
                 <input type="hidden" asp-for="Imageurl" />
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label">User Name</label>
+                    <input asp-for="UserName" class="form-control" placeholder="Enter Name" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label">Address</label>
+                    <input asp-for="Address" class="form-control" placeholder="Enter Address" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
 
                 <div class="mb-3">
                     <label asp-for="Bio" class="form-label">Bio</label>
