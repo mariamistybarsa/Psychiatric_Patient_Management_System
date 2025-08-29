@@ -22,7 +22,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
 
                 var p = new DynamicParameters();
                 p.Add("@flag", 8); 
-                var data = connection.Query<User>(
+                var data = connection.Query<UserVM>(
                     "Sp_User",
                     p,
                     commandType: System.Data.CommandType.StoredProcedure
@@ -38,7 +38,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
 
                 var p = new DynamicParameters();
                 p.Add("@flag", 13); // Get All
-                var data = connection.Query<User>(
+                var data = connection.Query<UserVM>(
                     "Sp_User",
                     p,
                     commandType: System.Data.CommandType.StoredProcedure
@@ -55,7 +55,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 var p = new DynamicParameters();
                 p.Add("@flag", 9);
                 p.Add("@Id", id);
-                var data = connection.QueryFirstOrDefault<User>(
+                var data = connection.QueryFirstOrDefault<UserVM>(
                     "Sp_User",
                     p,
                     commandType: System.Data.CommandType.StoredProcedure
@@ -124,7 +124,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 p.Add("@flag", 12); // search flag
                 p.Add("@userName", userName);
 
-                var data = connection.Query<User>(
+                var data = connection.Query<UserVM>(
                     "Sp_User",
                     p,
                     commandType: System.Data.CommandType.StoredProcedure

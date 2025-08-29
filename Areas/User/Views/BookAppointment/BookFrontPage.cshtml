@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/psychiatrist/@item.Imageurl" class="card-img-top" alt="@item.UserName" style="height:200px; object-fit:cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.UserName</h5>
+                        <p class="card-text"><strong>Email:</strong> @item.Email</p>
+                        <p class="card-text"><strong>Address:</strong> @item.Address</p>
+                        <p class="card-text"><strong>Specialization:</strong> @item.Specialization</p>
+                        <p class="card-text"><strong>Experience:</strong> @item.Experience years</p>
+                        <p class="card-text"><strong>Bio:</strong> @item.Bio</p>
+                        <p class="card-text"><strong>Emergency Contact:</strong> @item.EmergencyContact</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="#" class="btn btn-primary">Book Appointment</a>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-area="User"
+                           asp-controller="BookAppointment"
+                           asp-action="Schedule"
+                           asp-route-PsychiatristId="@item.PsychiatristId"
+                           class="btn btn-primary">
+                            See the Schedule
+                        </a>
+                    </div>
+
+
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

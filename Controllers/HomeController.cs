@@ -27,7 +27,7 @@ namespace Psychiatrist_Management_System.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(User model)
+        public IActionResult Login(UserVM model)
         {
 
             using (var connection = _context.CreateConnection())
@@ -37,7 +37,7 @@ namespace Psychiatrist_Management_System.Controllers
                 parameters.Add("@Email", model.Email);
                 parameters.Add("@Password", model.Password);
 
-                var data = connection.QueryFirstOrDefault<User>(
+                var data = connection.QueryFirstOrDefault<UserVM>(
                     "Sp_User",
                     parameters,
                     commandType: CommandType.StoredProcedure
@@ -126,14 +126,14 @@ namespace Psychiatrist_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register( User model)
+        public IActionResult Register( UserVM model)
         {
             try
             {
                 using (var connection = _context.CreateConnection())
                 {
                     
-                    var existingEmail = connection.QueryFirstOrDefault<User>(
+                    var existingEmail = connection.QueryFirstOrDefault<UserVM>(
                         "SELECT * FROM Users WHERE Email = @Email",
                         new { Email = model.Email }
                     );

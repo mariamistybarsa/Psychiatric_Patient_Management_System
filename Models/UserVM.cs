@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Psychiatrist_Management_System.Models
 {
-    public class User
+    public class UserVM
     {
         [Key]
         public int UserId { get; set; }

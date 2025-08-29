@@ -9,7 +9,7 @@ namespace Psychiatrist_Management_System.Data.Migrations
             : base(options)
         {
         }
-        public DbSet<Psychiatrist_Management_System.Models.User> Users { get; set; }
+        public DbSet<Psychiatrist_Management_System.Models.UserVM> Users { get; set; }
         public DbSet<Psychiatrist_Management_System.Models.UserType> UserTypes { get; set; }
     }
 }
