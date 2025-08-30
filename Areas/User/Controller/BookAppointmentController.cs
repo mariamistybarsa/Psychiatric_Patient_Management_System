@@ -184,5 +184,31 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
         return timeList;
     }
+        [HttpPost]
+        public IActionResult CancelBooking(int bookingId)
+        {
+            try
+            {
+                using var connection = _context.CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", 6); // Assuming flag 6 in your stored procedure handles cancellation
+                parameters.Add("@BookingId", bookingId);
+
+                connection.Execute(
+                    "Sp_BookAppointment",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                TempData["Message"] = "Booking cancelled successfully.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error cancelling booking: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
     }
 }

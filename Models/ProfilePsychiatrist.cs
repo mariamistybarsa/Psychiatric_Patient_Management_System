@@ -1,4 +1,4 @@
-﻿////ProfilePsychiatrist.cs
+﻿///ProfilePsychiatrist.cs
 
 //using Psychiatrist_Management_System.Models;
 

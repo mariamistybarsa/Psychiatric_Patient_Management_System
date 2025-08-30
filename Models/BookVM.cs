@@ -10,5 +10,7 @@ public int BookingId { get; set; }
         public string AppointmentTime { get; set; }
         public string AppointmentDay { get; set; }
         public string notes { get; set; }
+
+        public string Status { get; set; }  
     }
 }
