@@ -1,0 +1,100 @@
+﻿@model Psychiatrist_Management_System.Models.BookVM
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h4 class="mb-0">📅 Book Appointment</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Book" method="post">
+                        @* Hidden IDs *@
+                       <input type="hidden" id="PsychiatristId" asp-for="PsychiatristId" value="@ViewBag.PsychiatristId" />
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="PsychiatristScheduleId" />
+                        <input type="hidden" asp-for="AppointmentDay" id="AppointmentDay" />
+                        <div class="form-group mb-3">
+                            <label asp-for="AppointmentDate" class="form-label fw-bold">Appointment Date</label>
+                            <input id="AppointmentDate" asp-for="AppointmentDate" type="date" class="form-control" />
+                            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                        </div>
+                      
+
+                        <!-- Appointment Time -->
+                        <div class="form-group mb-3">
+                            <label asp-for="AppointmentTime" class="form-label fw-bold">Select Time</label>
+                            <select asp-for="AppointmentTime" class="form-select">
+                                <option value="">Select Time</option>
+                            </select>
+                            <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                        </div>
+
+                        <!-- Appointment Date -->
+                    
+
+                        <!-- Notes -->
+                        <div class="form-group mb-3">
+                            <label asp-for="notes" class="form-label fw-bold">Notes</label>
+                            <textarea asp-for="notes" class="form-control" rows="3" placeholder="Write any notes..."></textarea>
+                            <span asp-validation-for="notes" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill shadow-sm">
+                                ✅ Confirm Booking
+                            </button>
+                            <a asp-action="BookFrontPage" class="btn btn-outline-secondary rounded-pill">⬅ Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $('#AppointmentDate').change(function(){
+            var data = {
+                PsychiatristId: $('#PsychiatristId').val(),
+                AppointmentDate: $(this).val() // send the changed date
+            };
+
+            $.ajax({
+                url: '@Url.Action("GetScheduleByAppointmentDate", "BookAppointment")', // controller action
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    if(response){
+                        debugger;
+                         $('#AppointmentDay').val(response.dayName);
+                                // var $select = $('#AppointmentTime');
+        var $select = $('#AppointmentTime');
+
+        for (var i = 0; i < response.times.length - 1; i++) {
+            var optionText = response.times[i] + " - " + response.times[i + 1];
+            $select.append($('<option></option>').val(response.times[i]).text(optionText));
+        }
+
+        // Optionally, add the last item if you want to show it as a single time
+        // $select.append($('<option></option>').val(response[response.length - 1]).text(response[response.length - 1]));
+
+                        alert("Appointment date updated successfully!");
+                    } else {
+                        alert("Failed to update date: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("AJAX error: " + error);
+                }
+            });
+        });
+    </script>
+}

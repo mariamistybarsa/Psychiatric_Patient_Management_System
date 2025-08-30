@@ -1,0 +1,37 @@
+﻿@model List<Psychiatrist_Management_System.Models.BookingHistoryVM>
+
+<h3>Booking History</h3>
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Psychiatrist</th>
+            <th>User</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Day</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PsychiatristName</td>
+                    <td>@item.UserName</td>
+                    <td>@item.AppointmentDate.ToString("dd-MM-yyyy")</td>
+                    <td>@item.AppointmentTime</td>
+                    <td>@item.AppointmentDay</td>
+                    <td>@item.Notes</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">No bookings found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

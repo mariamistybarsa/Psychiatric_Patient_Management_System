@@ -21,7 +21,9 @@
                         <p class="card-text"><strong>Emergency Contact:</strong> @item.EmergencyContact</p>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="#" class="btn btn-primary">Book Appointment</a>
+                        <a asp-area="User"
+                           asp-controller="BookAppointment"
+                           asp-action="Book" asp-route-PsychiatristId="@item.PsychiatristId" class="btn btn-primary">Book Appointment</a>
                     </div>
                     <div class="card-footer text-center">
                         <a asp-area="User"
