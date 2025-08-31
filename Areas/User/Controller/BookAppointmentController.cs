@@ -69,14 +69,17 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
                 using var connection = _context.CreateConnection();
                 var parameters = new DynamicParameters();
-                parameters.Add("@flag", 5);
-                parameters.Add("@UserId", userId); // pass current user to filter bookings
+                parameters.Add("@flag", 5); // flag 5 gets all bookings for the user
+                parameters.Add("@UserId", userId); // current logged-in user
 
                 var data = connection.Query<BookingHistoryVM>(
                     "Sp_BookAppointment",
                     parameters,
                     commandType: CommandType.StoredProcedure
                 ).ToList();
+
+                // Optional: set a flag for pending notifications
+                ViewBag.PendingCount = data.Count(b => b.ApprovalStatus == "Pending");
 
                 return View(data);
             }
@@ -85,6 +88,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                 throw;
             }
         }
+
 
 
 

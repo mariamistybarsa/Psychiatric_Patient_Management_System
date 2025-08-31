@@ -59,16 +59,7 @@
 
              
                 
-                @* @if (Context.Session.GetString("UsertypeId") == "3")
-                {
-                    <li class="nav-item">
-                        <a asp-area="Admins" asp-controller="Designation" asp-action="Index" class="nav-link">
-                            <i class="nav-icon fas fa-clipboard-list"></i>
-                            <p>Users - ihsdifas</p>
-                        </a>
-                    </li>
-                }
-               *@
+              
 
                 <li class="nav-item">
                     <a asp-area="Admins" asp-controller="Appointment" asp-action="getSchedule" class="nav-link">
@@ -95,7 +86,7 @@
 
                 <!-- Appointments -->
                 <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="Appointment" asp-action="Index" class="nav-link">
+                        <a asp-area="Admins" asp-controller="BookAppointmentPatients" asp-action="AppointmentPatientLists" class="nav-link">
                         <i class="nav-icon fas fa-calendar-check"></i>
                         <p>Appointments</p>
                     </a>

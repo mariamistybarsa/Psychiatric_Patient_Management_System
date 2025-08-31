@@ -1,8 +1,10 @@
 ﻿@model List<Psychiatrist_Management_System.Models.BookingHistoryVM>
 
 <h3 class="mb-4">Booking History</h3>
-
-<!-- Alert message for cancellation -->
+<form method="get" asp-controller="PatientList" asp-action="Search" class="d-flex mb-3">
+    <input type="text" name="UserName" class="form-control me-2" placeholder="Search by ID, Name, or Email" />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-info text-center">
@@ -18,19 +20,48 @@
             <div class="col-md-6 mb-3">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        Booking History @* Booking #: @item.BookingId *@
+                        Booking #: @item.BookingId
                     </div>
                     <div class="card-body">
                         <p><strong>Psychiatrist:</strong> @item.PsychiatristName</p>
-                        <p><strong>User:</strong> @item.UserName</p>
+                        <p><strong>Patient:</strong> @item.PatientName</p>
                         <p><strong>Date:</strong> @item.AppointmentDate.ToString("dd-MM-yyyy")</p>
                         <p><strong>Time:</strong> @item.AppointmentTime</p>
                         <p><strong>Day:</strong> @item.AppointmentDay</p>
                         <p><strong>Notes:</strong> @item.Notes</p>
-                        <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                            <input type="hidden" name="bookingId" value="@item.BookingId" />
-                            <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
-                        </form>
+                        <p>
+                            <strong>Approval Status:</strong>
+                            <span class="badge @(item.ApprovalStatus == "Pending" ? "bg-warning text-dark" :
+                                                                                    item.ApprovalStatus == "Rejected" ? "bg-danger" :
+                                                                                    "bg-success")">
+                        @item.ApprovalStatus
+                    </span>
+                </p>
+                <p>
+                    <strong>Payment Status:</strong>
+                    <span class="badge @(item.PaymentStatus == "Paid" ? "bg-success" : "bg-secondary")">
+                        @item.PaymentStatus
+                    </span>
+                </p>
+
+                        @* Buttons based on status *@
+                @if (item.ApprovalStatus == "Pending" || item.ApprovalStatus == "Rejected")
+                        {
+                            <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+                            </form>
+                        }
+                        else if (item.ApprovalStatus == "Approved" && item.PaymentStatus == "NotPaid")
+                        {
+                            <form asp-action="PayBooking" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                <button type="submit" class="btn btn-success btn-sm">Pay Now</button>
+                            </form>
+                            <small class="text-danger">Please make the payment within 24 hours</small>
+                        }
                     </div>
                 </div>
             </div>

@@ -1,0 +1,100 @@
+﻿@model List<Psychiatrist_Management_System.Models.BookingHistoryVM>
+
+@{
+    ViewData["Title"] = "Pending Appointments";
+}
+
+<h3 class="mb-3">Pending Appointments</h3>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Psychiatrist</th>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Day</th>
+                <th>Notes</th>
+                <th>Approval</th>
+                <th>Payment</th>
+                <th style="width:160px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var i = 1;
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.PsychiatristName</td>
+                    <td>@item.PatientName</td>
+                    <td>@item.AppointmentDate.ToString("dd-MM-yyyy")</td>
+                    <td>@item.AppointmentTime</td>
+                    <td>@item.AppointmentDay</td>
+                    <td>@item.Notes</td>
+                    <td>
+                        <span class="badge @(item.ApprovalStatus == "Pending" ? "bg-secondary" : "bg-success")">
+                            @item.ApprovalStatus
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge @(item.PaymentStatus == "Paid" ? "bg-success" : "bg-warning text-dark")">
+                            @item.PaymentStatus
+                        </span>
+                    </td>
+                    <td>
+                        @if (item.ApprovalStatus == "Pending")
+                        {
+                            <form asp-area="Admins"
+                                  asp-controller="BookAppointmentPatients"
+                                  asp-action="ApproveBooking"
+                                  method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Approve this booking?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                        }
+
+                        <form asp-area="Admins"
+                              asp-controller="BookAppointmentPatients"
+                              asp-action="RejectBooking"
+                              method="post"
+                              class="d-inline ms-1"
+                              onsubmit="return confirm('Reject this booking?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="bookingId" value="@item.BookingId" />
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No pending appointments found.</div>
+}
+
+<style>
+    .table {
+        border: 3px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(90deg, #A8DADC, #457B9D);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+</style>
