@@ -174,7 +174,7 @@ namespace Psychiatrist_Management_System.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-            return RedirectToAction("Login", "Home");
+            return RedirectToAction("Index", "Home");
         }
 
     }
