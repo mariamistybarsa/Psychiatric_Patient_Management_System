@@ -57,5 +57,29 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             TempData["Message"] = "Booking rejected successfully.";
             return RedirectToAction("AppointmentPatientLists");
         }
-    } 
+        [HttpGet]
+        public IActionResult AppointmentDetails(int userId)
+        {
+            using var connection = _context.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", 10);
+            parameters.Add("@UserId", userId);
+
+            var data = connection.Query<BookingHistoryVM>(
+                "Sp_BookAppointment",
+                parameters,
+                commandType: CommandType.StoredProcedure
+            ).ToList();
+
+            if (data == null || data.Count == 0)
+            {
+                TempData["Message"] = "No appointment details found for this user.";
+                return RedirectToAction("PatientInfo");
+            }
+
+            return View(data);
+        }
+
     }
+}
+   

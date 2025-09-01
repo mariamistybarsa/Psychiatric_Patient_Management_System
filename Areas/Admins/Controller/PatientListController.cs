@@ -48,21 +48,64 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             }
         }
 
+        // GET: Edit page
         public IActionResult Edit(int id)
         {
             using (var connection = _context.CreateConnection())
             {
                 var p = new DynamicParameters();
-                p.Add("@flag", 9);
-                p.Add("@Id", id);
+                p.Add("@flag", 9); // Fetch single user
+                p.Add("@UserId", id); // Correct parameter name
                 var data = connection.QueryFirstOrDefault<UserVM>(
                     "Sp_User",
                     p,
-                    commandType: System.Data.CommandType.StoredProcedure
+                    commandType: CommandType.StoredProcedure
                 );
                 return View(data);
             }
         }
+
+        // POST: Update user
+        [HttpPost]
+        
+        public IActionResult Edit(UserVM model)
+        {
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var p = new DynamicParameters();
+                    p.Add("@flag", 14);
+                    p.Add("@UserId", model.UserId);
+                    p.Add("@UserName", model.UserName);
+                    p.Add("@Email", model.Email);
+                    p.Add("@PhoneNumber", model.PhoneNumber);
+                    p.Add("@DesignationName", model.DesignationName);
+                    p.Add("@DesignationId", model.DesignationId);
+                    p.Add("@Age", model.Age);
+                    p.Add("@Address", model.Address);
+                    p.Add("@BloodGroup", model.BloodGroup);
+
+                    connection.Execute(
+                        "Sp_User",
+                        p,
+                        commandType: CommandType.StoredProcedure
+                    );
+                }
+
+                TempData["Message"] = "User updated successfully!";
+                return RedirectToAction("PatientInfo");
+            }
+            catch (Exception ex)
+            {
+                // Optional: log the error
+                TempData["Error"] = "An error occurred while updating the user: " + ex.Message;
+                return View(model);
+            }
+        }
+
+
+
         public IActionResult Delete(int id)
         {
             try

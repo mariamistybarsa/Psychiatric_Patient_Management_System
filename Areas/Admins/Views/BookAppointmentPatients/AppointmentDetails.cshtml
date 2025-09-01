@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Psychiatrist_Management_System.Models.BookingHistoryVM>
+
+<h3 class="mb-4">Appointment Details</h3>
+
+<style>
+    body {
+        background-color: #f6f6f6;
+        margin-top: 20px;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 10px;
+        border: none;
+        position: relative;
+        margin-bottom: 30px;
+        box-shadow: 0 0.46875rem 2.1875rem rgba(90,97,105,0.1), 0 0.9375rem 1.40625rem rgba(90,97,105,0.1), 0 0.25rem 0.53125rem rgba(90,97,105,0.12), 0 0.125rem 0.1875rem rgba(90,97,105,0.1);
+    }
+
+        .card .card-header {
+            border-bottom-color: red;
+            line-height: 30px;
+            width: 100%;
+            padding: 10px 25px;
+            display: flex;
+            align-items: center;
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card .card-body {
+            padding: 20px 25px;
+        }
+
+    .row.mb-2 {
+        margin-bottom: 10px;
+    }
+
+    .row div {
+        padding: 2px 0;
+    }
+
+    .badge {
+        vertical-align: middle;
+        padding: 5px 10px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+
+    .btn-back {
+        margin-top: 20px;
+    }
+</style>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <div class="card-header">
+                Booking ID: @item.BookingId
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Patient Name:</b></div>
+                    <div class="col-md-8">@item.PatientName</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Psychiatrist:</b></div>
+                    <div class="col-md-8">@item.PsychiatristName</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Date:</b></div>
+                    <div class="col-md-8">@item.AppointmentDate.ToString("dd-MMM-yyyy")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Time:</b></div>
+                    <div class="col-md-8">@item.AppointmentTime</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Day:</b></div>
+                    <div class="col-md-8">@item.AppointmentDay</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Notes:</b></div>
+                    <div class="col-md-8">@item.Notes</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Approval Status:</b></div>
+                    <div class="col-md-8">
+                        @if (item.ApprovalStatus == "Pending")
+                        {
+                            <span class="badge bg-warning">Pending</span>
+                        }
+                        else if (item.ApprovalStatus == "Approved")
+                        {
+                            <span class="badge bg-success">Approved</span>
+                        }
+                        else if (item.ApprovalStatus == "Rejected")
+                        {
+                            <span class="badge bg-danger">Rejected</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Unknown</span>
+                        }
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><b>Payment Status:</b></div>
+                    <div class="col-md-8">@item.PaymentStatus</div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info">No appointment details found.</div>
+}
+
+<a class="btn btn-secondary btn-back" asp-area="Admins" asp-controller="PatientList" asp-action="PatientInfo">
+    ← Back
+</a>

@@ -1,1 +1,53 @@
-﻿edit patient
+﻿@model Psychiatrist_Management_System.Models.UserVM
+
+@{
+    ViewData["Title"] = "Edit Patient";
+}
+
+<h3 class="mb-3">Edit Patient Details</h3>
+
+<div class="card p-4 shadow-sm">
+    <form asp-controller="PatientList" asp-action="Edit" method="post">
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="DesignationId" /> @* এটা SP update এর জন্য দরকার *@
+
+
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">Name</label>
+            <input asp-for="UserName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label">Phone</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DesignationName" class="form-label">Designation</label>
+            <input asp-for="DesignationName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Age" class="form-label">Age</label>
+            <input asp-for="Age" class="form-control" type="number" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">Address</label>
+            <textarea asp-for="Address" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BloodGroup" class="form-label">Blood Group</label>
+            <input asp-for="BloodGroup" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-action="PatientInfo" class="btn btn-secondary ms-2">Back</a>
+    </form>
+</div>
