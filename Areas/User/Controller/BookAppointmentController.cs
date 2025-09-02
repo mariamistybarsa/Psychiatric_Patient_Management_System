@@ -178,7 +178,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
             List<string> timeList = new List<string>();
             DateTime start, end;
 
-            string[] formats = { "H:mm", "HH:mm", "h:mmtt", "hh:mmtt" }; // supports 24h and 12h with AM/PM
+            string[] formats = { "H:mm", "HH:mm", "h:mmtt", "hh:mmtt" }; // supports 24h and 12h wit;;h AM/PM
 
             if (!DateTime.TryParseExact(startTimeStr, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out start))
                 throw new FormatException($"Invalid start time: {startTimeStr}");
