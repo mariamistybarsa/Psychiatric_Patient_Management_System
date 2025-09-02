@@ -24,5 +24,8 @@
         public string? Status { get; set; }
         public string? DesignationName { get; set; }
         public string PhoneNumber { get; set; }
+        public string? Specialization { get; set; }
+        public string? Experience { get; set; }
+        public string? EmergencyContact { get; set; }
     }
 }

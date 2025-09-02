@@ -55,29 +55,46 @@
                         }
                         else if (item.ApprovalStatus == "Approved" && item.PaymentStatus == "NotPaid")
                         {
-                            <form asp-action="PayBooking" method="post">
+                            @* <form asp-action="PayBooking" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="bookingId" value="@item.BookingId" />
                                 <button type="submit" class="btn btn-success btn-sm">Pay Now</button>
-                            </form>
-                            <small class="text-danger">Please make the payment within 24 hours</small>
-                        }
+                            </form> *@
+                         
+
+
                         <!-- Pay Now button triggers the modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal-@item.BookingId">
                             Pay Now
                         </button>
 
 
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="paymentModal-@item.BookingId" tabindex="-1" aria-labelledby="paymentModalLabel-@item.BookingId" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="paymentModalLabel">Payment</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="paymentModalLabel-@item.BookingId">Payment</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
+                                        <div class="mb-3 border p-2 rounded bg-light">
+                                            <h6 class="text-primary">Psychiatrist Information</h6>
+                                            <p><strong>Name:</strong> @item.PsychiatristName</p>
+                                            <p><strong>Specialization:</strong> @item.Specialization</p>
+                                            <p><strong>Experience:</strong> @item.Experience</p>
+                                            <p><strong>Emergency Contact:</strong> @item.EmergencyContact</p>
+                                        </div>
+                                            <!-- Appointment Info -->
+                                            <div class="mb-3 border p-2 rounded bg-light">
+                                                <h6 class="text-primary">Appointment Information</h6>
+                                                <p><strong>Date:</strong> @item.AppointmentDate.ToString("dd-MM-yyyy")</p>
+                                                <p><strong>Time:</strong> @item.AppointmentTime</p>
+                                                <p><strong>Day:</strong> @item.AppointmentDay</p>
+                                                <p><strong>Notes:</strong> @item.Notes</p>
+                                            </div>
+                                        <!-- Payment Form Here -->
+                         
+
                                         <!-- Payment Options -->
                                         <div class="mb-3">
                                             <label class="form-label">Choose Payment Method:</label>
@@ -92,16 +109,16 @@
                                         <!-- Payment form -->
                                         <form>
                                             <div class="mb-3">
-                                                <label for="cardNumber" class="form-label">Card Number</label>
-                                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456">
+                                                <label for="cardNumber-@item.BookingId" class="form-label">Card Number</label>
+                                                <input type="text" class="form-control" id="cardNumber-@item.BookingId" placeholder="1234 5678 9012 3456">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="expiry" class="form-label">Expiry Date</label>
-                                                <input type="month" class="form-control" id="expiry" placeholder="MM/YY">
+                                                <label for="expiry-@item.BookingId" class="form-label">Expiry Date</label>
+                                                <input type="month" class="form-control" id="expiry-@item.BookingId" placeholder="MM/YY">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="cvv" class="form-label">CVV</label>
-                                                <input type="text" class="form-control" id="cvv" placeholder="123">
+                                                <label for="cvv-@item.BookingId" class="form-label">CVV</label>
+                                                <input type="text" class="form-control" id="cvv-@item.BookingId" placeholder="123">
                                             </div>
                                         </form>
                                     </div>
@@ -112,6 +129,9 @@
                                 </div>
                             </div>
                         </div>
+                            <small class="text-danger">Please make the payment within 24 hours</small>
+                        }
+
 
 
                     </div>

@@ -80,8 +80,8 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                     commandType: CommandType.StoredProcedure
                 ).ToList();
 
-                // Optional: set a flag for pending notifications
-                ViewBag.PendingCount = data.Count(b => b.ApprovalStatus == "Pending");
+                //// Optional: set a flag for pending notifications
+                //ViewBag.PendingCount = data.Count(b => b.ApprovalStatus == "Pending");
 
                 return View(data);
             }
@@ -186,7 +186,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
             if (!DateTime.TryParseExact(endTimeStr, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out end))
                 throw new FormatException($"Invalid end time: {endTimeStr}");
             var parameters = new DynamicParameters();
-            parameters.Add("@@PsychiatristId", userId);
+            parameters.Add("@PsychiatristId", userId);
             parameters.Add("@Flag", 12);
             parameters.Add("@AppointmentDate", appDate);
             // add other parameters as needed
