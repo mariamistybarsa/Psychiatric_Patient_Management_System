@@ -13,6 +13,7 @@
         public string? Address { get; set; }
         public string Email { get; set; }
         public int UserId { get; set; }
+        public decimal VisitFee { get; set; }
         
 
         public IFormFile? ImageFile { get; set; }

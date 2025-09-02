@@ -80,6 +80,8 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
                     parameters.Add("@Experience", p.Experience);
                     parameters.Add("@EmergencyContact", p.EmergencyContact);
                     parameters.Add("@Imageurl", uniqueFileName);
+                    parameters.Add("@VisitFee", p.VisitFee);
+
 
 
                     connection.Execute("Sp_PsyProfileVM", parameters, commandType: CommandType.StoredProcedure);
@@ -141,6 +143,7 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
                     parameters.Add("@UserId", p.UserId);
                     parameters.Add("@UserName", p.UserName);
                     parameters.Add("@Address", p.Address);
+                    parameters.Add("@VisitFee", p.VisitFee);
 
                     connection.Execute("Sp_PsyProfileVM", parameters, commandType: CommandType.StoredProcedure);
                 }

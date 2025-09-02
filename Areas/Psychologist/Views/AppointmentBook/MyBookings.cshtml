@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Psychiatrist_Management_System.Models.BookingHistoryVM>
+
+<h3 class="mb-4">My Bookings</h3>
+
+<div class="table-responsive shadow-sm rounded">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Booking ID</th>
+                <th>Patient</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Designation</th>
+                <th>Phone</th>
+                <th>Age</th>
+                <th>Blood Group</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Day</th>
+                <th>Notes</th>
+                <th>Approval</th>
+                <th>Payment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.BookingId</td>
+                    <td>@item.PatientName</td>
+                    <td>@item.Email</td>
+                    <td>@item.Address</td>
+                    <td>@item.DesignationName</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.Age</td>
+                    <td>@item.BloodGroup</td>
+                    <td>@item.AppointmentDate.ToShortDateString()</td>
+                    <td>@item.AppointmentTime</td>
+                    <td>@item.AppointmentDay</td>
+                    <td>@item.Notes</td>
+                    <td>
+                        @if (item.ApprovalStatus == "Approved")
+                        {
+                            <span class="badge bg-success">@item.ApprovalStatus</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">@item.ApprovalStatus</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.PaymentStatus == "Paid")
+                        {
+                            <span class="badge bg-success">@item.PaymentStatus</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@item.PaymentStatus</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="MarkCompleted" asp-route-id="@item.BookingId" class="btn btn-success btn-sm mb-1">Complete</a>
+                        <a asp-action="RejectBooking" asp-route-id="@item.BookingId" class="btn btn-danger btn-sm mb-1">Reject</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

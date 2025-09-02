@@ -3,6 +3,9 @@
     public class BookingHistoryVM
     {
         public int BookingId { get; set; }
+        public int UserId { get; set; }
+
+        public int PsychiatristId { get; set; }
         public string UserName { get; set; }
         public string PatientName { get; set; }       // new
         public string PsychiatristName { get; set; }
@@ -14,5 +17,12 @@
         // Add these
         public string ApprovalStatus { get; set; }
         public string PaymentStatus { get; set; }
+        public string Email { get; set; }
+        public int Age { get; set; }
+        public string? Address { get; set; }
+        public string? BloodGroup { get; set; }
+        public string? Status { get; set; }
+        public string? DesignationName { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

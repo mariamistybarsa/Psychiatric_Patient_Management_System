@@ -196,12 +196,26 @@
                         </li>
                     </ul>
                 </nav>
-                <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="BookAppointmentPatients" asp-action="AppointmentPatientLists" class="nav-link">
-                        <i class="nav-icon fas fa-calendar-check"></i>
-                        <p>Appointments</p>
-                    </a>
-                </li>
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                        <li class="nav-item">
+                            <a asp-area="Psychologist" asp-controller="AppointmentBook" asp-action="MyBookings" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-list"></i>
+                                <p>Patient-Appointment</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                @* <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                        <li class="nav-item">
+                            <a asp-area="Psychologist" asp-controller="AppointmentBook" asp-action="MyBookings" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-list"></i>
+                                <p>Patient-Appointment</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav> *@
 
                 <!-- /.sidebar-menu -->
             </div>

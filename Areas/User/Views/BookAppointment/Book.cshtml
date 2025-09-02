@@ -22,9 +22,14 @@ Book.cshtml *@
                         <input type="hidden" asp-for="AppointmentDay" id="AppointmentDay" />
                         <div class="form-group mb-3">
                             <label asp-for="AppointmentDate" class="form-label fw-bold">Appointment Date</label>
-                            <input id="AppointmentDate" asp-for="AppointmentDate" type="date" class="form-control" />
+                            <input id="AppointmentDate"
+                                   asp-for="AppointmentDate"
+                                   type="date"
+                                   class="form-control"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                             <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                         </div>
+
                       
 
                         <!-- Appointment Time -->

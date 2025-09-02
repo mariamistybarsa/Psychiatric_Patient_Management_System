@@ -25,6 +25,7 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 
                     var parameters = new DynamicParameters();
                     parameters.Add("@flag", 2);
+                    parameters.Add("@UserId", Convert.ToInt32(HttpContext.Session.GetString("UserId")));
                     var data = connection.Query<PsychiatristSchedule>(
 
                       "Sp_PsychiatristSchedule",

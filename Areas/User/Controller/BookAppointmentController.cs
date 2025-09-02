@@ -7,6 +7,8 @@ using Psychiatrist_Management_System.Models;
 using System.Data;
 using System.Globalization;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Psychiatrist_Management_System.Areas.User.Controllers
 {
@@ -154,7 +156,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                     );
                     if(res != null)
                     {
-                        var times = GetHourlyTimes(res.StartTime, res.Endtime);
+                        var times = GetHourlyTimes(res.StartTime, res.Endtime,data.PsychiatristId,data.AppointmentDate,_context);
                         return Json(new { times = times, dayName = dayName });
                     }
                     return Json(null);                 
@@ -167,27 +169,50 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
 
-
-
-
         }
 
-       static List<string> GetHourlyTimes(string startTimeStr, string endTimeStr)
-    {
-        List<string> timeList = new List<string>();
 
-        // Correct format for "8.00AM"
-        DateTime start = DateTime.ParseExact(startTimeStr, "h.mmtt", CultureInfo.InvariantCulture);
-        DateTime end = DateTime.ParseExact(endTimeStr, "h.mmtt", CultureInfo.InvariantCulture);
 
-        while (start <= end)
+        static List<string> GetHourlyTimes(string startTimeStr, string endTimeStr,int? userId,DateTime? appDate,DapperContext context)
         {
-            timeList.Add(start.ToString("h.mmtt")); // keeps same format
-            start = start.AddHours(1); // hourly increment
+            List<string> timeList = new List<string>();
+            DateTime start, end;
+
+            string[] formats = { "H:mm", "HH:mm", "h:mmtt", "hh:mmtt" }; // supports 24h and 12h with AM/PM
+
+            if (!DateTime.TryParseExact(startTimeStr, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out start))
+                throw new FormatException($"Invalid start time: {startTimeStr}");
+
+            if (!DateTime.TryParseExact(endTimeStr, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out end))
+                throw new FormatException($"Invalid end time: {endTimeStr}");
+            var parameters = new DynamicParameters();
+            parameters.Add("@@PsychiatristId", userId);
+            parameters.Add("@Flag", 12);
+            parameters.Add("@AppointmentDate", appDate);
+            // add other parameters as needed
+
+            var bookedTimeStrings  = context.CreateConnection().Query<dynamic>(
+         "Sp_BookAppointment",
+         parameters,
+         commandType: CommandType.StoredProcedure
+     ).ToList();
+            var bookedTimes = bookedTimeStrings
+        .Select(t => DateTime.ParseExact(t.AppointmentTime, "h.mmtt", CultureInfo.InvariantCulture))
+        .ToList();
+
+            while (start <= end)
+            {
+
+                if (!bookedTimes.Any(t => t.TimeOfDay == start.TimeOfDay))
+                {
+                    timeList.Add(start.ToString("HH:mm")); // add only if available
+                }
+                start = start.AddHours(1);
+            }
+
+            return timeList;
         }
 
-        return timeList;
-    }
         [HttpPost]
         public IActionResult CancelBooking(int bookingId)
         {
@@ -195,7 +220,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
             {
                 using var connection = _context.CreateConnection();
                 var parameters = new DynamicParameters();
-                parameters.Add("@flag", 6); // Assuming flag 6 in your stored procedure handles cancellation
+                parameters.Add("@flag", 6); 
                 parameters.Add("@BookingId", bookingId);
 
                 connection.Execute(
@@ -212,6 +237,16 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                 TempData["Message"] = "Error cancelling booking: " + ex.Message;
                 return RedirectToAction("Index");
             }
+        }
+
+
+
+        //Payment
+        public IActionResult Payment()
+        {
+
+            return View();
+
         }
 
     }
