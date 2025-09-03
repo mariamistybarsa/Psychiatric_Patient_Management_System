@@ -80,8 +80,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                     commandType: CommandType.StoredProcedure
                 ).ToList();
 
-                //// Optional: set a flag for pending notifications
-                //ViewBag.PendingCount = data.Count(b => b.ApprovalStatus == "Pending");
+           
 
                 return View(data);
             }
@@ -197,8 +196,9 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
          commandType: CommandType.StoredProcedure
      ).ToList();
             var bookedTimes = bookedTimeStrings
-        .Select(t => DateTime.ParseExact(t.AppointmentTime, "h.mmtt", CultureInfo.InvariantCulture))
-        .ToList();
+    .Select(t => DateTime.ParseExact(t.AppointmentTime, "HH:mm", CultureInfo.InvariantCulture))
+    .ToList();
+
 
             while (start <= end)
             {
