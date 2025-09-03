@@ -20,7 +20,7 @@
             <div class="col-md-6 mb-3">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        Booking #: @item.BookingId
+                        Booking History:@item.AppointmentDay
                     </div>
                     <div class="card-body">
                         <p><strong>Psychiatrist:</strong> @item.PsychiatristName</p>
@@ -99,7 +99,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Choose Payment Method:</label>
                                             <div class="d-flex gap-2 flex-wrap">
-                                                <button type="button" class="btn btn-outline-primary">Bkash</button>
+                                                    <a asp-action="BkashPay" asp-route-bookingId="@item.BookingId" id="bKash_button" class="btn btn-outline-primary">Bkash</a>
                                                 <button type="button" class="btn btn-outline-success">Nagad</button>
                                                 <button type="button" class="btn btn-outline-info">PayPal</button>
                                                 <button type="button" class="btn btn-outline-warning">Rocket</button>

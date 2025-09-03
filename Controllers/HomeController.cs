@@ -28,6 +28,7 @@ namespace Psychiatrist_Management_System.Controllers
         {
             return View();
         }
+        
         [HttpPost]
         public IActionResult Login(UserVM model)
         {
