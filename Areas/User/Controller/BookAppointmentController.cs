@@ -113,7 +113,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                     commandType: CommandType.StoredProcedure
                 ).ToList();
 
-           
+
 
                 return View(data);
             }
@@ -181,20 +181,20 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                     parameters.Add("@AppointmentDay", dayName);
                     // add other parameters as needed
 
-                  var res= await connection.QueryFirstOrDefaultAsync(
-                        "Sp_BookAppointment",
-                        parameters,
-                        commandType: CommandType.StoredProcedure
-                    );
-                    if(res != null)
+                    var res = await connection.QueryFirstOrDefaultAsync(
+                          "Sp_BookAppointment",
+                          parameters,
+                          commandType: CommandType.StoredProcedure
+                      );
+                    if (res != null)
                     {
-                        var times = GetHourlyTimes(res.StartTime, res.Endtime,data.PsychiatristId,data.AppointmentDate,_context);
+                        var times = GetHourlyTimes(res.StartTime, res.Endtime, data.PsychiatristId, data.AppointmentDate, _context);
                         return Json(new { times = times, dayName = dayName });
                     }
-                    return Json(null);                 
+                    return Json(null);
                 }
 
-            
+
             }
             catch (Exception ex)
             {
@@ -205,7 +205,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
 
 
-        static List<string> GetHourlyTimes(string startTimeStr, string endTimeStr,int? userId,DateTime? appDate,DapperContext context)
+        static List<string> GetHourlyTimes(string startTimeStr, string endTimeStr, int? userId, DateTime? appDate, DapperContext context)
         {
             List<string> timeList = new List<string>();
             DateTime start, end;
@@ -223,7 +223,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
             parameters.Add("@AppointmentDate", appDate);
             // add other parameters as needed
 
-            var bookedTimeStrings  = context.CreateConnection().Query<dynamic>(
+            var bookedTimeStrings = context.CreateConnection().Query<dynamic>(
          "Sp_BookAppointment",
          parameters,
          commandType: CommandType.StoredProcedure
@@ -253,7 +253,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
             {
                 using var connection = _context.CreateConnection();
                 var parameters = new DynamicParameters();
-                parameters.Add("@flag", 6); 
+                parameters.Add("@flag", 6);
                 parameters.Add("@BookingId", bookingId);
 
                 connection.Execute(
