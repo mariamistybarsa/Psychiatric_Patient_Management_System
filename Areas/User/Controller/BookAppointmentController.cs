@@ -134,6 +134,12 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ProcessPayment(Payment model)
+        {
+            return Json(1);
+        }
+            [HttpPost]
         public IActionResult Book(BookVM b)
         {
             try

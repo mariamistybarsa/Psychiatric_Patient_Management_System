@@ -27,5 +27,6 @@
         public string? Specialization { get; set; }
         public string? Experience { get; set; }
         public string? EmergencyContact { get; set; }
+        public decimal? VisitFee { get; set; }
     }
 }
