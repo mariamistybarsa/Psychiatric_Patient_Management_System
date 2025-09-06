@@ -133,13 +133,41 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
             return View();
         }
 
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult ProcessPayment(Payment model)
+        public IActionResult ProcessPayment([FromBody] Payment payment)
         {
-            return Json(1);
+            if (payment == null || string.IsNullOrEmpty(payment.PaymentMethod) || string.IsNullOrEmpty(payment.AccountNumber))
+            {
+                return Json(new { success = false, message = "Please fill all required fields." });
+            }
+
+            try
+            {
+                using var connection = _context.CreateConnection();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", 1);
+
+                parameters.Add("@PaymentAmount", payment.PaymentAmount);
+
+                parameters.Add("@BookingId", payment.BookingId);
+                parameters.Add("@AccountNumber", payment.AccountNumber);
+                parameters.Add("@PaymentMethod", payment.PaymentMethod);
+                parameters.Add("@CardExpiryDate", payment.CardExpiryDate);
+                parameters.Add("@CardCvv", payment.CardCvv);
+
+                connection.Execute("Sp_Payment", parameters, commandType: System.Data.CommandType.StoredProcedure);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
-            [HttpPost]
+
+        [HttpPost]
         public IActionResult Book(BookVM b)
         {
             try

@@ -34,8 +34,8 @@
                         <p>
                             <strong>Approval Status:</strong>
                             <span class="badge @(item.ApprovalStatus == "Pending" ? "bg-warning text-dark" :
-                                                                                                      item.ApprovalStatus == "Rejected" ? "bg-danger" :
-                                                                                                      "bg-success")">
+                                                                                                                     item.ApprovalStatus == "Rejected" ? "bg-danger" :
+                                                                                                                     "bg-success")">
                         @item.ApprovalStatus
                     </span>
                 </p>
@@ -54,7 +54,7 @@
                         @if (item.ApprovalStatus == "Pending" || item.ApprovalStatus == "Rejected")
                         {
                             <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                                @Html.AntiForgeryToken()
+
                                 <input type="hidden" name="bookingId" value="@item.BookingId" />
                                 <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
                             </form>
@@ -89,85 +89,66 @@
                                             <div class="mb-3">
                                                 <label class="form-label">Payment Amount:</label>
                                                 <div class="d-flex gap-2 flex-wrap">
-                                                 <span>@item.VisitFee</span>
+                                                    <span>@item.VisitFee</span>
                                                 </div>
                                             </div>
 
-                                            <!-- Forms (hidden by default) -->
+                                            <!-- Payment Forms -->
+                                            <!-- Payment Forms -->
                                             <div id="bkash-@item.BookingId" class="payment-form d-none">
                                                 <h6 class="text-primary">Bkash Payment</h6>
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="BookingId" value="@item.BookingId" />
-                                                    <input type="hidden" name="Method" value="Bkash" />
+                                                <input type="hidden" name="BookingId" value="@item.BookingId" />
+                                                <input type="hidden" name="Method" value="Bkash" />
+                                                <input type="hidden" name="PaymentAmount" value="@item.VisitFee" />  <!-- ✅ Add this -->
 
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Account Number</label>
-                                                        <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">PIN</label>
-                                                        <input type="password" name="Pin" class="form-control" placeholder="Enter PIN" autocomplete="new-password" />
-                                                    </div>
-                                                    <button type="button" class="btn btn-primary pay-now-btn">Pay Now</button>
-                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Account Number</label>
+                                                    <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
+                                                </div>
+
+                                                <button type="button" class="btn btn-primary pay-now-btn">Pay Now</button>
                                             </div>
+
 
                                             <div id="nagad-@item.BookingId" class="payment-form d-none">
                                                 <h6 class="text-success">Nagad Payment</h6>
-                                               
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="BookingId" value="@item.BookingId" />
-                                                    <input type="hidden" name="Method" value="Nagad" />
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Account Number</label>
-                                                        <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">PIN</label>
-                                                        <input type="password" name="Pin" class="form-control" placeholder="Enter PIN" autocomplete="new-password" />
-                                                    </div>
-                                                    <button type="button" class="btn btn-success pay-now-btn">Pay Now</button>
-                                              
+                                                <input type="hidden" name="BookingId" value="@item.BookingId" />
+                                                <input type="hidden" name="Method" value="Nagad" />
+                                                <div class="mb-3">
+                                                    <label class="form-label">Account Number</label>
+                                                    <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
+                                                </div>
+                                                <button type="button" class="btn btn-success pay-now-btn">Pay Now</button>
                                             </div>
-
 
                                             <div id="rocket-@item.BookingId" class="payment-form d-none">
                                                 <h6 class="text-warning">Rocket Payment</h6>
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="BookingId" value="@item.BookingId" />
-                                                    <input type="hidden" name="Method" value="Rocket" />
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Account Number</label>
-                                                        <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">PIN</label>
-                                                        <input type="password" name="Pin" class="form-control" placeholder="Enter PIN" autocomplete="new-password" />
-                                                    </div>
-                                                    <button type="button" class="btn btn-warning pay-now-btn">Pay Now</button>
-                                            
+                                                <input type="hidden" name="BookingId" value="@item.BookingId" />
+                                                <input type="hidden" name="Method" value="Rocket" />
+                                                <div class="mb-3">
+                                                    <label class="form-label">Account Number</label>
+                                                    <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
+                                                </div>
+                                                <button type="button" class="btn btn-warning pay-now-btn">Pay Now</button>
                                             </div>
 
                                             <div id="card-@item.BookingId" class="payment-form d-none">
                                                 <h6 class="text-info">Card Payment</h6>
-                                              
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Card Number</label>
-                                                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Expiry Date</label>
-                                                        <input type="month" class="form-control">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">CVV</label>
-                                                        <input type="text" class="form-control" placeholder="123">
-                                                    </div>
-                                                    <button type="button" class="btn btn-info pay-now-btn">Pay Now</button>
-                                               
+                                                <div class="mb-3">
+                                                    <label class="form-label">Card Number</label>
+                                                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Expiry Date</label>
+                                                    <input type="month" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">CVV</label>
+                                                    <input type="text" class="form-control" placeholder="123">
+                                                </div>
+                                                <button type="button" class="btn btn-info pay-now-btn">Pay Now</button>
                                             </div>
+
                                         </div>
 
                                         <div class="modal-footer">
@@ -191,68 +172,74 @@ else
     </div>
 }
 
-<!-- Bootstrap -->
+<!-- Bootstrap & jQuery -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         // Show selected payment form
-        window.showForm = function(type, bookingId) {
-            var $modal = $(`#paymentModal-${bookingId}`);
-            $modal.find('.payment-form').addClass('d-none'); // hide all
-            $(`#${type}-${bookingId}`).removeClass('d-none'); // show selected
+        window.showForm = function (type, bookingId) {
+            debugger; // Pause here to check which type & bookingId is clicked
+            // Hide all forms first
+            $(`#paymentModal-${bookingId} .payment-form`).addClass('d-none');
+            // Show selected
+            $(`#${type}-${bookingId}`).removeClass('d-none');
         };
 
-        // Reset modal when closed
+        // Reset modal on close
         $('.modal').on('hidden.bs.modal', function () {
-            $(this).find('.payment-form').addClass('d-none'); // hide all forms
-            $(this).find('input[type="text"], input[type="password"], input[type="month"], input[type="hidden"]').val(''); // clear inputs
+            debugger; // Pause when modal is closed to check reset behavior
+            $(this).find('.payment-form').addClass('d-none');
+            $(this).find('input').val('');
         });
 
-        // Delegate click for dynamically shown buttons
-        $(document).on('click', '.pay-now-btn', function() {
-            var $form = $(this).closest('.payment-form'); // get correct div
-            var bookingId = $form.find('input[name="BookingId"]').val();
-            var method = $form.find('input[name="Method"]').val();
+        // Pay Now AJAX
+        $(document).on('click', '.pay-now-btn', function () {
+            debugger; // Pause when Pay Now button is clicked
+            const $form = $(this).closest('.payment-form');
+            const bookingId = $form.find('input[name="BookingId"]').val();
+            const paymentMethod = $form.find('input[name="Method"]').val();
+            const accountNumber = $form.find('input[name="AccountNumber"]').val()?.trim();
+            const paymentAmount = $form.find('input[name="PaymentAmount"]').val()?.trim();
+            debugger; // Pause here to inspect the data before sending
 
-            if (!bookingId || !method) {
-                alert('Invalid payment data!');
+            if (!bookingId || !paymentMethod || !accountNumber) {
+                alert('Please fill all required fields!');
                 return;
             }
 
-            // Collect all input values
-            var data = { BookingId: bookingId, PaymentMethod: method };
-            $form.find('input').each(function() {
-                var name = $(this).attr('name');
-                var value = $(this).val();
-                data[name] = value;
-            });
+            const data = {
+                BookingId: bookingId,
+                PaymentMethod: paymentMethod,
+                AccountNumber: accountNumber,
+                PaymentAmount:paymentAmount,
 
-            // Get the correct anti-forgery token for this form
-            var token = $form.find('input[name="__RequestVerificationToken"]').val();
+            };
 
-            $.ajax({
-                url: '@Url.Action("ProcessPayment", "BookAppointment")',
-                type: 'POST',
-                contentType: 'application/json',
-                headers: { 'RequestVerificationToken': token },
-                data: JSON.stringify(data),
-                success: function(response) {
-                    if (response.success) {
-                        alert('Payment Successful!');
-                        location.reload();
-                    } else {
-                        alert('Payment Failed: ' + response.message);
-                    }
-                },
-                error: function(err) {
-                    console.error(err);
-                    alert('Something went wrong. Please try again.');
-                }
-            });
+            debugger; // Pause before sending AJAX
+
+             $.ajax({
+        url: '/User/BookAppointment/ProcessPayment',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            if (response.success) {
+                alert('Payment Successful!');
+                location.reload();
+            } else {
+                alert('Payment Failed: ' + response.message);
+            }
+        },
+        error: function (xhr) {
+            alert('Something went wrong! ' + (xhr.responseText || ''));
+        }
+    });
+
         });
 
     });
 </script>
+
