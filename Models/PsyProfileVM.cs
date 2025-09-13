@@ -14,7 +14,9 @@
         public string Email { get; set; }
         public int UserId { get; set; }
         public decimal VisitFee { get; set; }
-        
+        public decimal TestFee  { get; set; }
+
+
 
         public IFormFile? ImageFile { get; set; }
 

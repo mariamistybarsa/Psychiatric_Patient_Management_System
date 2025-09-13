@@ -11,5 +11,7 @@
         public string? CardCvv { get; set; }
         public int PaymentId { get; set; }
         public decimal PaymentAmount { get; set; }
+        public decimal VisitFee { get; set; }
+        public decimal TestFee { get; set; }
     }
 }

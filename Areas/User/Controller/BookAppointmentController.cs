@@ -156,6 +156,9 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                 parameters.Add("@PaymentMethod", payment.PaymentMethod);
                 parameters.Add("@CardExpiryDate", payment.CardExpiryDate);
                 parameters.Add("@CardCvv", payment.CardCvv);
+                parameters.Add("@VisitFee", payment.VisitFee);
+                parameters.Add("@TestFee", payment.TestFee);
+
 
                 connection.Execute("Sp_Payment", parameters, commandType: System.Data.CommandType.StoredProcedure);
 

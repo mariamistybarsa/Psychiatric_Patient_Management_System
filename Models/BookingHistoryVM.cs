@@ -28,5 +28,9 @@
         public string? Experience { get; set; }
         public string? EmergencyContact { get; set; }
         public decimal? VisitFee { get; set; }
+        public decimal? TestFee { get; set; }
+        public int? PaymentAmount { get; set; }
+        public int? HoursDifference { get; set; }
+
     }
 }

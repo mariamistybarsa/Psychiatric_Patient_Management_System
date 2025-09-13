@@ -2,6 +2,7 @@
 @using Psychiatrist_Management_System.Models
 
 <h3 class="mb-4">Booking History</h3>
+
 <form method="get" asp-controller="PatientList" asp-action="Search" class="d-flex mb-3">
     <input type="text" name="UserName" class="form-control me-2" placeholder="Search by ID, Name, or Email" />
     <button type="submit" class="btn btn-primary">Search</button>
@@ -9,9 +10,7 @@
 
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-info text-center">
-        @TempData["Message"]
-    </div>
+    <div class="alert alert-info text-center">@TempData["Message"]</div>
 }
 
 @if (Model != null && Model.Count > 0)
@@ -19,54 +18,64 @@
     <div class="row">
         @foreach (var item in Model)
         {
+
             <div class="col-md-6 mb-3">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        Booking History: @item.AppointmentDay
+                        Booking: @item.AppointmentDay
                     </div>
                     <div class="card-body">
                         <p><strong>Psychiatrist:</strong> @item.PsychiatristName</p>
                         <p><strong>Patient:</strong> @item.PatientName</p>
                         <p><strong>Date:</strong> @item.AppointmentDate.ToString("dd-MM-yyyy")</p>
                         <p><strong>Time:</strong> @item.AppointmentTime</p>
-                        <p><strong>Day:</strong> @item.AppointmentDay</p>
                         <p><strong>Notes:</strong> @item.Notes</p>
+
                         <p>
                             <strong>Approval Status:</strong>
                             <span class="badge @(item.ApprovalStatus == "Pending" ? "bg-warning text-dark" :
-                                                                                                                     item.ApprovalStatus == "Rejected" ? "bg-danger" :
-                                                                                                                     "bg-success")">
+                                                                                    item.ApprovalStatus == "Rejected" ? "bg-danger" : "bg-success")">
                         @item.ApprovalStatus
                     </span>
                 </p>
-                <p>
-                    <strong>Payment Status:</strong>
-                    <span class="badge @(item.PaymentStatus == "Paid" ? "bg-success" : "bg-secondary")">
-                        @item.PaymentStatus
-                    </span>
-                    @if (item.PaymentStatus == "NotPaid")
-                            {
-                                <span class="text-danger ms-2">Please pay within 24 hours</span>
-                            }
+
+                        <p>
+                            <strong>Payment Status:</strong>
+                            <span class="badge @(item.PaymentStatus == "Paid" ? "bg-success" : "bg-secondary")">
+                                @item.PaymentStatus
+                            </span>
                         </p>
 
-                        @* Buttons based on status *@
-                        @if (item.ApprovalStatus == "Pending" || item.ApprovalStatus == "Rejected")
+                        @* Cancel Booking Logic *@
+                @if (item.PaymentStatus == "Paid" && item.HoursDifference >= 0)
                         {
-                            <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-
-                                <input type="hidden" name="bookingId" value="@item.BookingId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
-                            </form>
+                            if (item.HoursDifference <= 24)
+                            {
+                                <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Cancel this booking? You will get 15% refund.');">
+                                    <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                    <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
+                                    <small class="text-muted ms-2">Cancel within 24 hours → 15% refund</small>
+                                    <small class="text-muted ms-2">Hours : @item.HoursDifference</small>
+                                </form>
+                            }
+                           else
+    {
+        <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Cancel this booking? You cannot get refund.');">
+            <input type="hidden" name="bookingId" value="@item.BookingId" />
+            <button type="submit" class="btn btn-danger btn-sm">Cancel Booking (No Refund)</button>
+            <small class="text-muted ms-2">No refund after 24 hours</small>
+        </form>
+    }
                         }
-                        else if (item.ApprovalStatus == "Approved" && item.PaymentStatus == "NotPaid")
+
+
+                        @* Payment Button & Modal *@
+                        @if (item.ApprovalStatus == "Pending" && item.PaymentStatus == "NotPaid")
                         {
-                            <!-- Pay Now button triggers the modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal-@item.BookingId">
+                            <button type="button" class="btn btn-primary pay-btn" data-bs-toggle="modal" data-bs-target="#paymentModal-@item.BookingId">
                                 Pay Now
                             </button>
 
-                            <!-- Modal -->
                             <div class="modal fade" id="paymentModal-@item.BookingId" tabindex="-1" aria-labelledby="paymentModalLabel-@item.BookingId" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -74,9 +83,7 @@
                                             <h5 class="modal-title" id="paymentModalLabel-@item.BookingId">Payment</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-
                                         <div class="modal-body">
-                                            <!-- Payment Options -->
                                             <div class="mb-3">
                                                 <label class="form-label">Choose Payment Method:</label>
                                                 <div class="d-flex gap-2 flex-wrap">
@@ -86,51 +93,69 @@
                                                     <button type="button" class="btn btn-outline-info" onclick="showForm('card', @item.BookingId)">Card</button>
                                                 </div>
                                             </div>
+
+
                                             <div class="mb-3">
+                                                <label class="form-label">Select Payment Type:</label>
+                                                <div class="d-flex gap-3 flex-wrap">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input fee-checkbox"
+                                                               type="checkbox"
+                                                               id="visitFee-@item.BookingId"
+                                                               data-amount="@item.VisitFee"
+                                                               value="Visit" />
+                                                        <label class="form-check-label" for="visitFee-@item.BookingId">
+                                                            Visiting Fee (@item.VisitFee BDT)
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input fee-checkbox"
+                                                               type="checkbox"
+                                                               id="testFee-@item.BookingId"
+                                                               data-amount="@item.TestFee"
+                                                               value="Test" />
+                                                        <label class="form-check-label" for="testFee-@item.BookingId">
+                                                            Test Fee (@item.TestFee BDT)
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Hidden fields to store selected values -->
+                                                <input type="hidden" name="PaymentType" id="PaymentType-@item.BookingId" />
+                                                <input type="hidden" name="PaymentAmount" id="PaymentAmount-@item.BookingId" />
+                                            </div>
+
+                                            <div class="mb-3 payment-form">
                                                 <label class="form-label">Payment Amount:</label>
-                                                <div class="d-flex gap-2 flex-wrap">
-                                                    <span>@item.VisitFee</span>
+                                                <div class="d-flex gap-3 flex-wrap">
+                                                    
+                                                    <span><b>Total: <span id="total-@item.BookingId">0</span> BDT</b></span>
                                                 </div>
+
+                                                <!-- Hidden fields for AJAX -->
+                                                <input type="hidden" class="TotalPaymentAmount" name="PaymentAmount" id="PaymentAmount-@item.BookingId" />
+                                                @* <input type="hidden" name="PaymentType" id="PaymentType-@item.BookingId" /> *@
                                             </div>
+
+
+
+                                         
 
                                             <!-- Payment Forms -->
-                                            <!-- Payment Forms -->
-                                            <div id="bkash-@item.BookingId" class="payment-form d-none">
-                                                <h6 class="text-primary">Bkash Payment</h6>
-                                                <input type="hidden" name="BookingId" value="@item.BookingId" />
-                                                <input type="hidden" name="Method" value="Bkash" />
-                                                <input type="hidden" name="PaymentAmount" value="@item.VisitFee" />  <!-- ✅ Add this -->
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Account Number</label>
-                                                    <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
+                                            @foreach (var method in new[] { "bkash", "nagad", "rocket" })
+                                            {
+                                                <div id="@method-@item.BookingId" class="payment-form d-none">
+                                                    <h6 class="text-@((method == "bkash") ? "primary" : (method == "nagad") ? "success" : "warning")">@method.ToUpper() Payment</h6>
+                                                    <input type="hidden" name="BookingId" value="@item.BookingId" />
+                                                    <input type="hidden" name="Method" value="@method" />
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Account Number</label>
+                                                        <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
+                                                    </div>
+                                                    <button type="button" class="btn btn-@((method == "bkash") ? "primary" : (method == "nagad") ? "success" : "warning") pay-now-btn">Pay Now</button>
                                                 </div>
-
-                                                <button type="button" class="btn btn-primary pay-now-btn">Pay Now</button>
-                                            </div>
-
-
-                                            <div id="nagad-@item.BookingId" class="payment-form d-none">
-                                                <h6 class="text-success">Nagad Payment</h6>
-                                                <input type="hidden" name="BookingId" value="@item.BookingId" />
-                                                <input type="hidden" name="Method" value="Nagad" />
-                                                <div class="mb-3">
-                                                    <label class="form-label">Account Number</label>
-                                                    <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
-                                                </div>
-                                                <button type="button" class="btn btn-success pay-now-btn">Pay Now</button>
-                                            </div>
-
-                                            <div id="rocket-@item.BookingId" class="payment-form d-none">
-                                                <h6 class="text-warning">Rocket Payment</h6>
-                                                <input type="hidden" name="BookingId" value="@item.BookingId" />
-                                                <input type="hidden" name="Method" value="Rocket" />
-                                                <div class="mb-3">
-                                                    <label class="form-label">Account Number</label>
-                                                    <input type="text" name="AccountNumber" class="form-control" placeholder="Enter Account Number" autocomplete="off" />
-                                                </div>
-                                                <button type="button" class="btn btn-warning pay-now-btn">Pay Now</button>
-                                            </div>
+                                            }
 
                                             <div id="card-@item.BookingId" class="payment-form d-none">
                                                 <h6 class="text-info">Card Payment</h6>
@@ -148,9 +173,7 @@
                                                 </div>
                                                 <button type="button" class="btn btn-info pay-now-btn">Pay Now</button>
                                             </div>
-
                                         </div>
-
                                         <div class="modal-footer">
                                             <small class="text-danger me-auto">Please make the payment within 24 hours</small>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -159,11 +182,23 @@
                                 </div>
                             </div>
                         }
+                        @if (item.ApprovalStatus == "Pending" && item.PaymentStatus != "Paid" )
+                        {
+                            <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+                            </form>
+                        }
+                        else if (item.PaymentStatus == "Paid")
+                        {
+                            <span class="badge bg-success">Payment Done — Waiting for Admin Approval</span>
+                        }
                     </div>
                 </div>
             </div>
         }
     </div>
+
 }
 else
 {
@@ -176,70 +211,105 @@ else
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-    $(document).ready(function () {
 
+<script>
+
+    $(document).ready(function () {
         // Show selected payment form
         window.showForm = function (type, bookingId) {
-            debugger; // Pause here to check which type & bookingId is clicked
-            // Hide all forms first
             $(`#paymentModal-${bookingId} .payment-form`).addClass('d-none');
-            // Show selected
             $(`#${type}-${bookingId}`).removeClass('d-none');
         };
 
         // Reset modal on close
         $('.modal').on('hidden.bs.modal', function () {
-            debugger; // Pause when modal is closed to check reset behavior
             $(this).find('.payment-form').addClass('d-none');
             $(this).find('input').val('');
         });
 
+
+        $(document).on("change", ".fee-checkbox", function () {
+        const bookingId = $(this).closest(".modal-body").find(".fee-checkbox").first().attr("id").split('-')[1];
+
+        let totalAmount = 0;
+        let selectedTypes = [];
+
+        $(`#paymentModal-${bookingId} .fee-checkbox:checked`).each(function () {
+            totalAmount += parseFloat($(this).data("amount"));
+            selectedTypes.push($(this).val());
+        });
+
+        // Update total span
+        $(`#total-${bookingId}`).text(totalAmount);
+
+        // Update hidden inputs for AJAX
+        $(`#PaymentAmount-${bookingId}`).val(totalAmount);
+        $(`#PaymentType-${bookingId}`).val(selectedTypes.join("+"));
+    });
+
+
+
         // Pay Now AJAX
         $(document).on('click', '.pay-now-btn', function () {
-            debugger; // Pause when Pay Now button is clicked
+
+
+            debugger;
+
+           let amounts = [];
+
             const $form = $(this).closest('.payment-form');
             const bookingId = $form.find('input[name="BookingId"]').val();
             const paymentMethod = $form.find('input[name="Method"]').val();
             const accountNumber = $form.find('input[name="AccountNumber"]').val()?.trim();
-            const paymentAmount = $form.find('input[name="PaymentAmount"]').val()?.trim();
-            debugger; // Pause here to inspect the data before sending
+            const paymentAmount = $(`#PaymentAmount-${bookingId}`).val()?.trim();
+          $(`#paymentModal-${bookingId} .fee-checkbox:checked`).each(function() {
+        amounts.push({
+            reason: $(this).val(),       // "Visit" or "Test"
+            amount: parseFloat($(this).data('amount'))
+        });
+    });
+                       
+
+
 
             if (!bookingId || !paymentMethod || !accountNumber) {
                 alert('Please fill all required fields!');
                 return;
             }
 
-            const data = {
-                BookingId: bookingId,
-                PaymentMethod: paymentMethod,
-                AccountNumber: accountNumber,
-                PaymentAmount:paymentAmount,
+               const data = {
+        BookingId: bookingId,
+        PaymentMethod: paymentMethod,
+        AccountNumber: accountNumber,
+        PaymentAmount: amounts.reduce((sum, a) => sum + a.amount, 0), // total amount
+        TestFee: amounts.find(s => s.reason === 'Test')?.amount || 0,
+        VisitFee: amounts.find(s => s.reason === 'Visit')?.amount || 0
+    };
 
-            };
-
-            debugger; // Pause before sending AJAX
-
-             $.ajax({
-        url: '/User/BookAppointment/ProcessPayment',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function (response) {
-            if (response.success) {
-                alert('Payment Successful!');
-                location.reload();
-            } else {
-                alert('Payment Failed: ' + response.message);
-            }
-        },
-        error: function (xhr) {
-            alert('Something went wrong! ' + (xhr.responseText || ''));
-        }
-    });
-
+            $.ajax({
+                url: '/User/BookAppointment/ProcessPayment',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+                        alert('Payment Successful!');
+                        const $cardBody = $(`#paymentModal-${bookingId}`).closest('.card-body');
+                        $cardBody.find('span.badge.payment-status').first()
+                                 .removeClass('bg-secondary')
+                                 .addClass('bg-success')
+                                 .text('Paid');
+                        $cardBody.find('.pay-now-btn').remove();
+                        $cardBody.append('<span class="badge bg-success">Payment Done — Waiting for Admin Approval</span>');
+                        $(`#paymentModal-${bookingId}`).modal('hide');
+                    } else {
+                        alert('Payment Failed: ' + response.message);
+                    }
+                },
+                error: function (xhr) {
+                    alert('Something went wrong! ' + (xhr.responseText || ''));
+                }
+            });
         });
-
     });
 </script>
-

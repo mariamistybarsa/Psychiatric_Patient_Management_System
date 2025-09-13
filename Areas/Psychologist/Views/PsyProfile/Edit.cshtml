@@ -64,6 +64,11 @@
                     <input asp-for="VisitFee" class="form-control" placeholder="Enter VisitFee" />
                     <span asp-validation-for="VisitFee" class="text-danger"></span>
                 </div>
+                <div class="mb-3">
+                    <label asp-for="TestFee" class="form-label">TestFee</label>
+                    <input asp-for="TestFee" class="form-control" placeholder="Enter TestFee" />
+                    <span asp-validation-for="TestFee" class="text-danger"></span>
+                </div>
 
                 @* Show existing image preview if available *@
                 @if (!string.IsNullOrEmpty(Model.Imageurl))

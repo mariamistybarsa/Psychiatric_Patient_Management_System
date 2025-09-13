@@ -144,6 +144,7 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
                     parameters.Add("@UserName", p.UserName);
                     parameters.Add("@Address", p.Address);
                     parameters.Add("@VisitFee", p.VisitFee);
+                    parameters.Add("@TestFee", p.TestFee);
 
                     connection.Execute("Sp_PsyProfileVM", parameters, commandType: CommandType.StoredProcedure);
                 }
