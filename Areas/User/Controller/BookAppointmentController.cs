@@ -186,6 +186,7 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                     parameters.Add("@AppointmentTime", b.AppointmentTime);
                     parameters.Add("@AppointmentDay", b.AppointmentDay);
                     parameters.Add("@notes", b.notes);
+                    
                     var data = connection.Execute(
                         "Sp_BookAppointment",
                         parameters,
@@ -308,10 +309,62 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
                 return RedirectToAction("Index");
             }
         }
+        [HttpPost]
+        public IActionResult CancelBookingfor24hours(int bookingId)
+        {
+            try
+            {
+                using var connection = _context.CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", 14);
+                parameters.Add("@BookingId", bookingId);
+
+                connection.Execute(
+                    "Sp_BookAppointment",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                TempData["Message"] = "Booking cancelled successfully.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error cancelling booking: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult InvoicePayment(int bookingId)
+        {
+            try
+            {
+                using var connection = _context.CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", 15); // SP flag to get booking by BookingId
+                parameters.Add("@BookingId", bookingId);
+
+                var data = connection.QueryFirstOrDefault<BookingHistoryVM>(
+                    "Sp_BookAppointment",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (data == null)
+                {
+                    TempData["Message"] = "Booking not found.";
+                    return RedirectToAction("Index");
+                }
+
+                return View(data); // single model for Invoice.cshtml
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error loading invoice: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
 
 
-
-        //Payment
         public IActionResult Payment()
         {
 

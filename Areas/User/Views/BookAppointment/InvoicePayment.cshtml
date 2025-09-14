@@ -1,0 +1,130 @@
+﻿@model Psychiatrist_Management_System.Models.BookingHistoryVM
+@{
+    ViewData["Title"] = "Invoice Payment";
+}
+
+<div class="container my-4">
+    <div class="card shadow p-4" id="invoiceArea">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h4>Psychiatrist Appointment Invoice</h4>
+            <p class="mb-0">Psychiatrist Management System</p>
+            <p class="mb-0">Dhaka, Bangladesh</p>
+        </div>
+
+        <!-- Info Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6 class="border-bottom pb-1">Patient Information</h6>
+                <p><strong>Name:</strong> @Model.PatientName</p>
+                <p><strong>Age:</strong> @Model.Age</p>
+                <p><strong>Phone:</strong> @Model.UserPhoneNumber</p>
+                <p><strong>Email:</strong> @Model.UserEmail</p>
+                <p><strong>Address:</strong> @Model.UserAddress</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="border-bottom pb-1">Invoice Information</h6>
+                <p><strong>Invoice No:</strong> INV-2025-001</p>
+                <p><strong>Created Date:</strong>@Model.CreatedAt </p>
+                <p><strong>Psychiatrist:</strong> @Model.PsychiatristName</p>
+                <p><strong>Appointment Date:</strong> @Model.AppointmentDate</p>
+                <p><strong>Day:</strong> @Model.AppointmentDay</p>
+                <p><strong>Appointment Time:</strong> @Model.AppointmentTime</p>
+            </div>
+        </div>
+
+        <!-- Payment Details -->
+        <table class="table table-bordered mb-4">
+            <thead class="table-light">
+                <tr>
+                   
+                    <th>Payment Account</th>
+                    <th>Payment Amount</th>
+                    <th>Refund Amount</th>
+                    <th>VisitFee</th>
+                    <th>TestFee</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                   
+                      
+                     <td>@Model.PaymentMethod</td>
+                    <td>@Model.PaymentAmount BDT</td>
+                    <td>@Model.RefundAmount BDT</td>
+                    <td>@Model.VisitFee</td>
+                    <td>@Model.TestFee</td>
+
+                    </tr>
+              
+            </tbody>
+        </table>
+
+        <!-- Total -->
+        <div class="text-end mb-3">
+            @{
+                // Use Model.PaymentAmount if it's already set, otherwise default to 0
+                var totalAmount = Model.PaymentAmount ?? 0;
+            }
+            <p><strong>Total: @totalAmount BDT</strong></p>
+            <p><em>In Words: @NumberToWords(totalAmount) Taka Only</em></p>
+        </div>
+
+        @functions {
+            private string NumberToWords(decimal number)
+            {
+                if (number == 0) return "Zero";
+
+                var units = new[] { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+                var tens = new[] { "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+
+                string ConvertNumber(long n)
+                {
+                    if (n < 20) return units[n];
+                    if (n < 100) return tens[n / 10] + (n % 10 > 0 ? " " + units[n % 10] : "");
+                    if (n < 1000) return units[n / 100] + " Hundred" + (n % 100 > 0 ? " " + ConvertNumber(n % 100) : "");
+                    if (n < 100000) return ConvertNumber(n / 1000) + " Thousand" + (n % 1000 > 0 ? " " + ConvertNumber(n % 1000) : "");
+                    return n.ToString();
+                }
+
+                return ConvertNumber((long)number);
+            }
+        }
+
+
+        <!-- Signatures -->
+        <div class="d-flex justify-content-between signatures">
+            <div class="text-center flex-fill">
+                <hr class="mb-1">
+                <p>Patient Signature</p>
+            </div>
+            <div class="text-center flex-fill">
+                <hr class="mb-1">
+                <p>Authorized Signature</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center mt-3 mb-0">Thank you for trusting our Psychiatrist Service.</p>
+    </div>
+
+    <!-- Print Button -->
+    <div class="text-end mt-3">
+        <button class="btn btn-primary" onclick="printInvoice()">🖨 Print Invoice</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function printInvoice() {
+            var printContents = document.getElementById("invoiceArea").innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload(); // reload to restore dashboard layout
+        }
+    </script>
+}
