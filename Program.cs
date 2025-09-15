@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Psychiatrist_Management_System.Data;
 using Psychiatrist_Management_System.Data.Migrations;
+using Psychiatrist_Management_System.Interface;
+using Psychiatrist_Management_System.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IMail, MailService>();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

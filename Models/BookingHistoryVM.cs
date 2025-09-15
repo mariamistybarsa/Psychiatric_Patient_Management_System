@@ -38,13 +38,14 @@
         public int? PaymentAmount { get; set; }
         public int? HoursDifference { get; set; }
         public decimal RefundAmount { get; set; }
-        public decimal BookingSerial { get; set; }
+        public string? BookingSerial { get; set; }
         // Booking Info
       
         public DateTime CreatedAt { get; set; }
        
         public string? PaymentMethod { get; set; }
         public string? AccountNumber { get; set; }
+      
        
 
     }

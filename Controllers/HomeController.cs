@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Psychiatrist_Management_System.Data;
+using Psychiatrist_Management_System.Interface;
 using Psychiatrist_Management_System.Models;
 using System.Data;
 using System.Diagnostics;
@@ -14,9 +15,12 @@ namespace Psychiatrist_Management_System.Controllers
     public class HomeController : Controller
     {
         private readonly DapperContext _context;
-        public HomeController(DapperContext context)
+        private readonly IMail _mail;
+
+        public HomeController(DapperContext context, IMail mail)
         {
             _context = context;
+            _mail = mail;
         }
 
         public IActionResult Index()
@@ -32,7 +36,7 @@ namespace Psychiatrist_Management_System.Controllers
         [HttpPost]
         public IActionResult Login(UserVM model)
         {
-
+             _mail.SendEmailAsync(model.Email, "Signup Successful", $"Your account has been created successfully. Your UserName : {model.Email} And password is: {model.Password}");
             using (var connection = _context.CreateConnection())
             {
                 var parameters = new DynamicParameters();
@@ -84,7 +88,7 @@ namespace Psychiatrist_Management_System.Controllers
                         redirecturl = Url.Action("Index", "Dashboard", new { area = "Admins" });
                     }
 
-                    return Json(new { success = true, message = "Successful", redirectUrl = redirecturl });
+                    return Json(new { success = true, message = "Successful", redirectUrl = redirecturl,userInfo =data });
                 }
             }
         }
@@ -177,6 +181,8 @@ namespace Psychiatrist_Management_System.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
         }
+
+      
 
     }
 }

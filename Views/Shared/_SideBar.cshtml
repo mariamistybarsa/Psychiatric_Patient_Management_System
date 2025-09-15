@@ -62,10 +62,6 @@
                     </li>
               
 
-             
-                
-              
-
                 <li class="nav-item">
                     <a asp-area="Admins" asp-controller="Appointment" asp-action="getSchedule" class="nav-link">
                         <i class="nav-icon fas fa-user-md"></i>
@@ -77,8 +73,8 @@
                 <!-- Patients -->
                 <li class="nav-item">
                     <a asp-area="Admins" asp-controller="PatientList" asp-action="Psychiatrist" class="nav-link">
-                        <i class="nav-icon fas fa-procedures"></i>
-                        <p>PsychiatristList</p>
+                        <i class="nav-icon fas fa-user-md"></i>
+                        <p>Psychiatrists</p>
                     </a>
                 </li>
 
@@ -93,7 +89,7 @@
                 <li class="nav-item">
                         <a asp-area="Admins" asp-controller="BookAppointmentPatients" asp-action="AppointmentPatientLists" class="nav-link">
                         <i class="nav-icon fas fa-calendar-check"></i>
-                        <p>Appointments</p>
+                        <p>Appointmented Patient</p>
                     </a>
                 </li>
 
@@ -110,7 +106,7 @@
                 <li class="nav-item">
                     <a href="~/Admin/PaymentTracking" class="nav-link">
                         <i class="nav-icon fas fa-money-check-alt"></i>
-                        <p>Payment Tracking</p>
+                        <p>Payment List</p>
                     </a>
                 </li>
 
@@ -122,21 +118,21 @@
                     </a>
                 </li>
 
-                <!-- Emergency Contact -->
+                @* <!-- Emergency Contact -->
                 <li class="nav-item">
                     <a href="~/Admin/EmergencyContact" class="nav-link">
                         <i class="nav-icon fas fa-phone-alt"></i>
                         <p>Emergency Contact</p>
                     </a>
-                </li>
+                </li> *@
 
-                <!-- Patient & Admin Management -->
+                @* <!-- Patient & Admin Management -->
                 <li class="nav-item">
                     <a href="~/Admin/Management" class="nav-link">
                         <i class="nav-icon fas fa-user-cog"></i>
                         <p>Patient & Admin Management</p>
                     </a>
-                </li>
+                </li> *@
 
                 <!-- Reports -->
                 <li class="nav-item">
@@ -145,6 +141,8 @@
                         <p>Reports</p>
                     </a>
                 </li>
+                 
+
 
                 <!-- Logout -->
                 <li class="nav-item">

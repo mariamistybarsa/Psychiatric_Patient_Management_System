@@ -20,15 +20,19 @@
         {
             <div class="col-md-6 mb-3">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        Booking: @item.BookingId
+                    <div class="card-header bg-info text-white">
+                        BookingSerial: @item.BookingSerial
                     </div>
                     <div class="card-body">
                         <p><strong>Psychiatrist:</strong> @item.PsychiatristName</p>
                         <p><strong>Patient:</strong> @item.PatientName</p>
-                        <p><strong>Date:</strong> @item.AppointmentDate.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Time:</strong> @item.AppointmentTime</p>
-                        <p><strong>Notes:</strong> @item.Notes</p>
+                        <div class="d-flex">
+                            <p class="mb-0" style="width: 120px;"><strong>Date:</strong> @item.AppointmentDate.ToString("dd-MM-yyyy")</p>
+                            <p class="mb-0" style="width: 100px;"><strong>Time:</strong> @item.AppointmentTime</p>
+                            <p class="mb-0" style="width: 130px;"><strong>Day:</strong> @item.AppointmentDay</p>
+                        </div>
+
+                       
 
                         <p>
                             <strong>Approval Status:</strong>
@@ -37,19 +41,45 @@
                         @item.ApprovalStatus
                     </span>
                 </p>
-                @if (item.ApprovalStatus != "Cancel")
+                @if (item.PaymentStatus == "Paid")
                         {
-                            <p>
-                                <strong>Payment Status:</strong>
-                                <span class="badge payment-status @(item.PaymentStatus == "Paid" ? "bg-success" : "bg-secondary")">
-                                    @item.PaymentStatus
-                                </span>
-                            </p>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap" style="min-height: 50px;">
+                                <div class="d-flex flex-wrap gap-2">
+                                    @* Cancel Booking Form (only if not canceled) *@
+                                    @if (item.ApprovalStatus != "Cancel")
+                                    {
+                                        @if (item.HoursDifference <= 24)
+                                        {
+                                            <form asp-action="CancelBookingfor24hours" method="post" class="d-inline"
+                                                  onsubmit="return confirm('Cancel this booking? You will get 15% refund.');">
+                                                <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                                <button type="submit" class="btn btn-info btn-sm">Cancel</button>
+                                                <small class="text-muted ms-1">Within 24 (15% Refund) Hours Is: @item.HoursDifference</small>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="CancelBooking" method="post" class="d-inline"
+                                                  onsubmit="return confirm('Cancel this booking? You cannot get refund.');">
+                                                <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                                <button type="submit" class="btn btn-info btn-sm">Cancel (No Refund)</button>
+                                            </form>
+                                        }
+                                    }
+                                </div>
+
+                                @* Invoice Button always visible for paid bookings *@
+                                <a asp-controller="BookAppointment" asp-action="InvoicePayment" asp-route-bookingId="@item.BookingId"
+                                   class="btn btn-info btn-sm">
+                                    View Invoice
+                                </a>
+                            </div>
                         }
-                      
+
+
 
                         <!-- Cancel Booking Logic -->
-                @if (item.PaymentStatus == "Paid" && item.HoursDifference >= 0 && item.ApprovalStatus != "Cancel")
+                @* @if (item.PaymentStatus == "Paid" && item.HoursDifference >= 0 && item.ApprovalStatus != "Cancel")
                         {
                             if (item.HoursDifference <= 24)
                             {
@@ -75,14 +105,23 @@
                                class="btn btn-info btn-sm mt-2">
                                 View Invoice
                             </a>
-                        }
+                        } *@
 
                         <!-- Payment Modal -->
                         @if (item.ApprovalStatus == "Pending" && item.PaymentStatus == "NotPaid")
                         {
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal-@item.BookingId">
-                                Pay Now
-                            </button>
+                            @if (item.ApprovalStatus == "Pending" && item.PaymentStatus != "Paid")
+                            {
+                                <button type="button" class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#paymentModal-@item.BookingId">
+                                    Pay Now
+                                </button>
+
+                                <!-- Cancel Booking Form -->
+                                <form asp-action="CancelBooking" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                    <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                    <button type="submit" class="btn btn-info btn-sm">Cancel Booking</button>
+                                </form>
+                            }
 
                             <div class="modal fade" id="paymentModal-@item.BookingId" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -173,16 +212,12 @@
                                         </div>
                                     </div>
                                 </div>
+                               
                             </div>
+
                         }
 
-                        @if (item.ApprovalStatus == "Pending" && item.PaymentStatus != "Paid")
-                        {
-                            <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                                <input type="hidden" name="bookingId" value="@item.BookingId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
-                            </form>
-                        }
+                     
                         else if (item.ApprovalStatus == "Rejected")
                         {
                             <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">

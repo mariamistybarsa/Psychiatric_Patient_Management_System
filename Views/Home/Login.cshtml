@@ -128,6 +128,8 @@
                     success: function (response) {
                         if (response.success) {
                             alert('Login successful!');
+                            localStorage.setItem('userEmail',response.userInfo.email);
+                            localStorage.setItem('Password',response.userInfo.password);
                             window.location.href = response.redirectUrl;
                         } else {
                             alert('Error: ' + (response.message || 'Invalid email or password.'));

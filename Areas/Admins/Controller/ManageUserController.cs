@@ -8,6 +8,7 @@ using System.Data;
 namespace Psychiatrist_Management_System.Areas.Admins.Controllers
 {
     [Area("Admins")]
+    
     public class ManageUserController : Controller
     {
         private readonly DapperContext _context;
