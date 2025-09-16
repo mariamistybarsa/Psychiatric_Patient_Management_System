@@ -1,13 +1,10 @@
-﻿
-@* Registration.cshtml *@
-
-@model Psychiatrist_Management_System.Models.UserVM
+﻿@model Psychiatrist_Management_System.Models.UserVM
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
@@ -15,79 +12,92 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            background: linear-gradient(to right, #33d1f2); /* light info color */
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 50px; /* spacing from top */
         }
 
         .register-box {
             background: #fff;
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 400px;
+            width: 750px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 20px; /* spacing around the box */
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             color: #333;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 30px; /* distance between columns */
+        }
+
+        .form-column {
+            flex: 1;
         }
 
         label {
             font-weight: bold;
-            color: #444;
+            margin-bottom: 5px;
+            display: block;
         }
 
-        input[type="text"], input[type="email"], input[type="number"], input[type="password"], select {
+        input, select {
             width: 100%;
-            padding: 10px 12px;
-            margin-top: 5px;
+            padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
             border-radius: 8px;
-            transition: 0.3s;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s;
         }
 
             input:focus, select:focus {
                 border-color: #4e54c8;
-                outline: none;
                 box-shadow: 0 0 5px rgba(78,84,200,0.5);
+                outline: none;
             }
 
         button {
             width: 100%;
             padding: 12px;
-            background-color: #4e54c8;
+            background-color:   #33d1f2;
+            ;
             color: white;
+            font-weight: bold;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            font-size: 16px;
         }
 
             button:hover {
                 background-color: #3e44a5;
             }
 
-        #message {
-            color: green;
+        #message, #error {
+            text-align: center;
             font-weight: bold;
             margin-bottom: 15px;
-            text-align: center;
+        }
+
+        #message {
+            color: green;
         }
 
         #error {
             color: red;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
         }
     </style>
 </head>
@@ -98,46 +108,52 @@
         <div id="error"></div>
 
         <form>
-            <label asp-for="UserName">Username</label>
-            <input asp-for="UserName" type="text" id="UserName" name="UserName" required />
+            <div class="form-row">
+                <div class="form-column">
+                    <label asp-for="UserName">Username</label>
+                    <input asp-for="UserName" type="text" id="UserName" required />
 
-            <label asp-for="Email">Email</label>
-            <input asp-for="Email" type="email" id="Email" name="Email" required />
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" type="email" id="Email" required />
 
-            <label asp-for="Password">Password</label>
-            <input asp-for="Password" type="password" id="Password" name="Password" required />
+                    <label asp-for="Password">Password</label>
+                    <input asp-for="Password" type="password" id="Password" required />
 
-            <label asp-for="PhoneNumber">Phone Number</label>
-            <input asp-for="PhoneNumber" type="text" id="PhoneNumber" name="PhoneNumber" required />
+                    <label asp-for="PhoneNumber">Phone Number</label>
+                    <input asp-for="PhoneNumber" type="text" id="PhoneNumber" required />
 
-            <label asp-for="Age">Age</label>
-            <input asp-for="Age" type="number" id="Age" name="Age" min="1" required />
+                    <label asp-for="Age">Age</label>
+                    <input asp-for="Age" type="number" min="1" id="Age" required />
+                </div>
 
-            <label asp-for="Address">Address</label>
-            <input asp-for="Address" type="text" id="Address" name="Address" />
+                <div class="form-column">
+                    <label asp-for="Address">Address</label>
+                    <input asp-for="Address" type="text" id="Address" />
 
-            <label asp-for="BloodGroup">Blood Group</label>
-            <select asp-for="BloodGroup" id="BloodGroup" name="BloodGroup" required>
-                <option value="">-- Select Blood Group --</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-            </select>
-            <label asp-for="UsertypeId">User Type</label>
-            <select asp-for="UsertypeId" id="UsertypeId" name="UsertypeId" asp-items="ViewBag.UserTypeList" required>
-                <option value="">-- Select User Type --</option>
-            </select>
+                    <label asp-for="BloodGroup">Blood Group</label>
+                    <select asp-for="BloodGroup" id="BloodGroup" required>
+                        <option value="">-- Select Blood Group --</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
 
-            @* </select> *@ 
-            <label asp-for="DesignationId">Select Designation</label>
-            <select asp-for="DesignationId" id="DesignationId" name="DesignationId" asp-items="ViewBag.DesignationList" required>
-                <option value="">-- Select Designation --</option>
-            </select>
+                    <label asp-for="UsertypeId">User Type</label>
+                    <select asp-for="UsertypeId" id="UsertypeId" asp-items="ViewBag.UserTypeList" required>
+                        <option value="">-- Select User Type --</option>
+                    </select>
+
+                    <label asp-for="DesignationId">Designation</label>
+                    <select asp-for="DesignationId" id="DesignationId" asp-items="ViewBag.DesignationList" required>
+                        <option value="">-- Select Designation --</option>
+                    </select>
+                </div>
+            </div>
 
             <button type="submit" id="submitBtn">Register</button>
         </form>
@@ -146,21 +162,19 @@
     <script>
         $(document).ready(function () {
             $('#submitBtn').click(function (e) {
-                e.preventDefault(); // prevent page reload
-                debugger;
-                // Trim all input/select values
+                e.preventDefault();
+
                 const name = $('#UserName').val().trim();
                 const password = $('#Password').val().trim();
                 const email = $('#Email').val().trim();
                 const phone = $('#PhoneNumber').val().trim();
                 const designation = Number($('#DesignationId').val().trim());
                 const UserType = Number($('#UsertypeId').val().trim());
-                const age =Number($('#Age').val().trim());
+                const age = Number($('#Age').val().trim());
                 const address = $('#Address').val().trim();
                 const blood = $('#BloodGroup').val().trim();
 
-                // Basic validation
-                if (!name || !password || !email || !phone || !designation ||!UserType ||!age || !blood) {
+                if (!name || !password || !email || !phone || !designation || !UserType || !age || !blood) {
                     $('#message').text('Please fill out all required fields.').css('color', 'red');
                     return;
                 }
@@ -180,12 +194,11 @@
                 $.ajax({
                     url: '/Home/Register',
                     type: 'POST',
-                    data: model,       // send as JSON
+                    data: model,
                     success: function (response) {
                         if (response.success) {
                             $('#message').text('User registered successfully!').css('color', 'green');
 
-                            // Clear form
                             $('#UserName').val('');
                             $('#Email').val('');
                             $('#Password').val('');
@@ -194,10 +207,8 @@
                             $('#Address').val('');
                             $('#BloodGroup').val('');
                             $('#DesignationId').val('');
-                           $('#UsertypeId').val('');
+                            $('#UsertypeId').val('');
 
-
-                            // Optionally redirect
                             window.location.href = response.redirectUrl;
                         } else {
                             $('#message').text('Error: ' + (response.message || 'Unexpected response')).css('color', 'red');
@@ -210,5 +221,5 @@
             });
         });
     </script>
-    </body>
-    </html>
+</body>
+</html>

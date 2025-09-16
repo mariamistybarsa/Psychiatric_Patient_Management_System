@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            background: #33d1f2; /* slightly lighter than navbar color #0dcaf0 */
             height: 100vh;
             margin: 0;
             display: flex;
@@ -24,13 +24,14 @@
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            width: 350px;
+            width: 360px;
             text-align: center;
+            border-top: 8px solid #0dcaf0; /* top accent to match navbar color */
         }
 
         h2 {
-            margin-bottom: 30px;
-            color: #333;
+            margin-bottom: 25px;
+            color: #0c7c9e; /* darker shade of info color for text */
         }
 
         label {
@@ -42,7 +43,7 @@
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px 15px;
+            padding: 12px 15px;
             margin-top: 5px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
@@ -51,11 +52,12 @@
         }
 
         input:focus {
-            border-color: #4e54c8;
+            border-color: #0dcaf0;
+            outline: none;
         }
 
         .btn {
-            background-color: #4e54c8;
+            background-color: #0dcaf0;
             color: white;
             padding: 12px;
             width: 100%;
@@ -64,16 +66,22 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 16px;
+            transition: background 0.3s;
         }
 
             .btn:hover {
-                background-color: #3e44a5;
+                background-color: #0aa1d3; /* slightly darker hover */
             }
 
         .error {
             color: red;
             margin-bottom: 10px;
             font-size: 14px;
+        }
+
+        /* Optional: Add subtle focus shadow */
+        input:focus {
+            box-shadow: 0 0 5px rgba(13, 202, 240, 0.5);
         }
     </style>
 </head>
@@ -122,7 +130,7 @@
                 };
 
                 $.ajax({
-                    url: '/Home/Login', 
+                    url: '/Home/Login',
                     type: 'POST',
                     data: model,
                     success: function (response) {
@@ -144,3 +152,4 @@
     </script>
 </body>
 </html>
+y

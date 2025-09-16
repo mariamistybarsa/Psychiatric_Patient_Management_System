@@ -97,5 +97,12 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
             return RedirectToAction("MyBookings");
         }
 
+        public IActionResult Prescription()
+        {
+            return View();
+        }
+
+
+
     }
 }

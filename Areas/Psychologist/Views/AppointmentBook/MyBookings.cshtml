@@ -51,20 +51,29 @@
                             <!-- Complete Button: Grassy Green -->
                             <a asp-action="MarkCompleted" asp-route-id="@item.BookingId"
                                class="btn btn-sm d-inline-flex align-items-center justify-content-center mb-1"
-                               style="width: 100px; background-color: #9bc400; color: #fff;">
+                               style="width: 120px; height: 40px; font-size: 14px; padding: 0 8px; border-radius: 5px; background-color: #9bc400; color: #fff;">
                                 <i class="fa fa-check me-1"></i> Complete
                             </a>
 
-                            <!-- Reject Button: Yellow Gloves -->
                             <a asp-action="RejectBooking" asp-route-id="@item.BookingId"
                                class="btn btn-sm d-inline-flex align-items-center justify-content-center mb-1"
-                               style="width: 100px; background-color: #f2d53c; color: #000;">
+                               style="width: 120px; height: 40px; font-size: 14px; padding: 0 8px; border-radius: 5px; background-color: #f2d53c; color: #000;">
                                 <i class="fa fa-times me-1"></i> Reject
                             </a>
-                        </td>
+                            <a asp-controller="AppointmentBook" asp-action="Prescription" 
+                               class="btn btn-sm d-inline-flex align-items-center justify-content-center mb-1"
+                               style="width: 120px; height: 40px; font-size: 14px; padding: 0 8px; border-radius: 5px; background-color: #4a90e2; color: #fff;">
+                                <i class="fa fa-file-medical me-1"></i> Prescription
+                            </a>
+                           
+
 
 
                     </tr>
+                  
+
+            
+
 
                     <!-- Separate Message Row -->
                     <tr class="table-secondary">

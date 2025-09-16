@@ -1,0 +1,184 @@
+﻿@{
+    ViewData["Title"] = "Prescription Form";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<style>
+    /* Table Styling */
+    #MedicineTable {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        #MedicineTable th {
+            background: linear-gradient(90deg, #0d6efd);
+            color: #fff;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #MedicineTable tbody tr:nth-child(odd) {
+            background-color: #e9f5ff; /* light blue */
+        }
+
+        #MedicineTable tbody tr:nth-child(even) {
+            background-color: #f0f0f0; /* light gray */
+        }
+
+        #MedicineTable tbody tr:hover {
+            background-color: #ffe0b2; /* light orange on hover */
+        }
+
+        #MedicineTable td, #MedicineTable th {
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px;
+            word-wrap: break-word;
+        }
+
+            #MedicineTable td:nth-child(7), #MedicineTable th:nth-child(7) {
+                width: 250px;
+                white-space: normal;
+            }
+</style>
+
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Prescription Form</h2>
+
+    <!-- Display Patient Details -->
+    <div class="card p-3 mb-4">
+        <h5 class="text-primary">Patient Details</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <strong>Name:</strong> <span id="DisplayPatientName">John Doe</span>
+            </div>
+            <div class="col-md-4">
+                <strong>Address:</strong> <span id="DisplayPatientAddress">123 Main Street</span>
+            </div>
+            <div class="col-md-4">
+                <strong>Age:</strong> <span id="DisplayPatientAge">35</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medicine Entry -->
+    <div class="card p-3 mb-4">
+        <h5 class="text-success">Medicine Prescription</h5>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="MedicineName" class="form-label">Medicine</label>
+                <select id="MedicineName" class="form-select">
+                    <option value="">Select medicine</option>
+                    <option value="Paracetamol">Paracetamol</option>
+                    <option value="Amoxicillin">Amoxicillin</option>
+                    <option value="Ibuprofen">Ibuprofen</option>
+                    <option value="Metformin">Metformin</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="Dose" class="form-label">Dose</label>
+                <input type="text" id="Dose" class="form-control" placeholder="e.g., 2 tablets">
+            </div>
+            <div class="col-md-2">
+                <label for="Duration" class="form-label">Duration</label>
+                <input type="text" id="Duration" class="form-control" placeholder="e.g., 5 days">
+            </div>
+            <div class="col-md-2">
+                <label for="Frequency" class="form-label">Frequency</label>
+                <input type="text" id="Frequency" class="form-control" placeholder="e.g., twice daily">
+            </div>
+            <div class="col-md-3">
+                <label for="Advice" class="form-label">Advice</label>
+                <input type="text" id="Advice" class="form-control" placeholder="Any advice">
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <label for="MedicalNote" class="form-label">Medical Note</label>
+                <textarea id="MedicalNote" class="form-control" rows="5" placeholder="Enter detailed notes..."></textarea>
+            </div>
+        </div>
+
+        <div class="mt-3 text-end">
+            <button class="btn btn-primary" onclick="addMedicine()">
+                <i class="fa fa-plus me-1"></i> Add
+            </button>
+        </div>
+    </div>
+
+    <!-- Added Medicines Table -->
+    <div class="card p-3 mb-4">
+        <h5 class="text-danger">Added Medicines</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="MedicineTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Medicine</th>
+                        <th>Dose</th>
+                        <th>Duration</th>
+                        <th>Frequency</th>
+                        <th>Advice</th>
+                        <th>Medical Note</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center mb-5">
+        <button class="btn btn-success btn-lg">
+            <i class="fa fa-check me-1"></i> Submit Prescription
+        </button>
+    </div>
+</div>
+
+<script>
+    let medicineCount = 0;
+    function addMedicine() {
+        const name = document.getElementById("MedicineName").value;
+        const dose = document.getElementById("Dose").value;
+        const duration = document.getElementById("Duration").value;
+        const frequency = document.getElementById("Frequency").value;
+        const advice = document.getElementById("Advice").value;
+        const note = document.getElementById("MedicalNote").value;
+
+        if (!name) {
+            alert("Please select a medicine.");
+            return;
+        }
+
+        medicineCount++;
+        const table = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
+        const row = table.insertRow(0); // add at top
+        row.innerHTML = `
+            <td>${medicineCount}</td>
+            <td>${name}</td>
+            <td>${dose}</td>
+            <td>${duration}</td>
+            <td>${frequency}</td>
+            <td>${advice}</td>
+            <td>${note}</td>
+             <td>
+                    <button class="btn btn-sm btn-warning me-1" onclick="editMedicine(this)">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteMedicine(this)">Delete</button>
+                </td>
+        `;
+
+        // Clear inputs
+        document.getElementById("MedicineName").value = '';
+        document.getElementById("Dose").value = '';
+        document.getElementById("Duration").value = '';
+        document.getElementById("Frequency").value = '';
+        document.getElementById("Advice").value = '';
+        document.getElementById("MedicalNote").value = '';
+    }
+</script>
