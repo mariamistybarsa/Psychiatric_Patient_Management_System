@@ -1,18 +1,26 @@
-﻿namespace Psychiatrist_Management_System.Models
+﻿//PrescriptionVM
+
+namespace Psychiatrist_Management_System.Models
 {
     public class PrescriptionVM
 
     {
+        
+        public int MedicinePrescriptionId { get; set; }
         public int PrescriptionId { get; set; }
-
+        
+        public int MedicineId { get; set; }
         public int BookingId { get; set; }
         public int Age { get; set; }
         public int UserId { get; set; }
-        public int PatientId { get; set; }
-        public int PsychiatristId { get; set; }
-        public DateTime PrescriptionDate { get; set; }
-        public string Dose { get; set; }
-        public string Prescribed_Notes { get; set; }
-        public string Medicines { get; set; }
+        
+        public string MedicineDuration { get; set; }
+        public string Medicine_Notes { get; set; }
+     
+        public string MedicineDose { get; set; }
+       
+        public string Frequency { get; set; }
+        public string Advice { get; set; }
+  
     }
 }

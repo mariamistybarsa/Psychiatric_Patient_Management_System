@@ -1,4 +1,6 @@
-﻿@{
+﻿@* Prescription.cshtml *@
+
+@{
     ViewData["Title"] = "Prescription Form";
 }
 
@@ -71,19 +73,29 @@
                 <label for="MedicineName" class="form-label">Medicine</label>
                 <select id="MedicineName" class="form-select">
                     <option value="">Select medicine</option>
-                    <option value="Paracetamol">Paracetamol</option>
-                    <option value="Amoxicillin">Amoxicillin</option>
-                    <option value="Ibuprofen">Ibuprofen</option>
-                    <option value="Metformin">Metformin</option>
+                    @if (ViewBag.Medicine != null)
+                    {
+                        foreach (var med in ViewBag.Medicine)
+                        {
+                            <option value="@med.id">@med.name</option>
+                        }
+                    }
                 </select>
             </div>
+            <!-- Add a hidden input for BookingId -->
+            <input type="hidden" id="BookingId" value="@ViewBag.BookingId" />
+
+            <input type="hidden" id="PrescriptionId"  />
             <div class="col-md-2">
-                <label for="Dose" class="form-label">Dose</label>
-                <input type="text" id="Dose" class="form-control" placeholder="e.g., 2 tablets">
+                <!-- Hidden input for MedicinePrescriptionId -->
+                <input type="hidden" id="MedicinePrescriptionId" />
+
+                <label for="MedicineDose" class="form-label">Dose</label>
+                <input type="text" id="MedicineDose" class="form-control" placeholder="e.g., 2 tablets">
             </div>
             <div class="col-md-2">
-                <label for="Duration" class="form-label">Duration</label>
-                <input type="text" id="Duration" class="form-control" placeholder="e.g., 5 days">
+                <label for="MedicineDuration" class="form-label">MedicineDuration</label>
+                <input type="text" id="MedicineDuration" class="form-control" placeholder="e.g., 5 days">
             </div>
             <div class="col-md-2">
                 <label for="Frequency" class="form-label">Frequency</label>
@@ -97,8 +109,8 @@
 
         <div class="row mt-3">
             <div class="col-md-12">
-                <label for="MedicalNote" class="form-label">Medical Note</label>
-                <textarea id="MedicalNote" class="form-control" rows="5" placeholder="Enter detailed notes..."></textarea>
+                <label for="Medicine_Notes" class="form-label">Medicine_Notes</label>
+                <textarea id="Medicine_Notes" class="form-control" rows="5" placeholder="Enter detailed notes..."></textarea>
             </div>
         </div>
 
@@ -127,7 +139,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
                 </tbody>
             </table>
         </div>
@@ -135,50 +146,108 @@
 
     <!-- Submit Button -->
     <div class="text-center mb-5">
-        <button class="btn btn-success btn-lg">
+        <button class="btn btn-success btn-lg" onclick="submitPrescription()">
             <i class="fa fa-check me-1"></i> Submit Prescription
         </button>
+
+
     </div>
-</div>
+</div>MedicineDose
+<input type="hidden" id="PrescriptionId" value="0" />
 
 <script>
-    let medicineCount = 0;
-    function addMedicine() {
-        const name = document.getElementById("MedicineName").value;
-        const dose = document.getElementById("Dose").value;
-        const duration = document.getElementById("Duration").value;
+        function addMedicine() {
+            var selectedMedicine =document.getElementById("MedicineName");
+        const bookingId = document.getElementById("BookingId").value; // dynamic BookingId
+        const name = selectedMedicine.value;
+        const medicineDose = document.getElementById("MedicineDose").value;
+        const medicineDuration = document.getElementById("MedicineDuration").value;
         const frequency = document.getElementById("Frequency").value;
         const advice = document.getElementById("Advice").value;
-        const note = document.getElementById("MedicalNote").value;
+        const medicine_Notes = document.getElementById("Medicine_Notes").value;
+         const medicineName = selectedMedicine.options[selectedMedicine.selectedIndex].text;
+        debugger;
 
         if (!name) {
             alert("Please select a medicine.");
             return;
         }
 
-        medicineCount++;
         const table = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
-        const row = table.insertRow(0); // add at top
+        const row = table.insertRow(-1);
+
+        row.dataset.bookingId = bookingId; // store BookingId in row
+
         row.innerHTML = `
-            <td>${medicineCount}</td>
-            <td>${name}</td>
-            <td>${dose}</td>
-            <td>${duration}</td>
+            <td></td>
+            <td>${medicineName}</td>
+            <td>${medicineDose}</td>
+            <td>${medicineDuration}</td>
             <td>${frequency}</td>
             <td>${advice}</td>
-            <td>${note}</td>
-             <td>
-                    <button class="btn btn-sm btn-warning me-1" onclick="editMedicine(this)">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteMedicine(this)">Delete</button>
-                </td>
+            <td>${medicine_Notes}</td>
+            <td hidden>${name}</td>
+            <td>
+                <button class="btn btn-sm btn-warning me-1" onclick="editMedicine(this)">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteMedicine(this)">Delete</button>
+            </td>
         `;
 
         // Clear inputs
         document.getElementById("MedicineName").value = '';
-        document.getElementById("Dose").value = '';
-        document.getElementById("Duration").value = '';
+        document.getElementById("MedicineDose").value = '';
+        document.getElementById("MedicineDuration").value = '';
         document.getElementById("Frequency").value = '';
         document.getElementById("Advice").value = '';
-        document.getElementById("MedicalNote").value = '';
+        document.getElementById("Medicine_Notes").value = '';
+     
     }
+
+    function submitPrescription() {
+        debugger;
+        const bookingId = document.getElementById("BookingId").value;
+        const table = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+
+        if (rows.length === 0) {
+            alert("Please add at least one medicine.");
+            return;
+        }
+
+        // For single medicine, take only the first row
+        var presDetails =[];
+           for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+
+        const prescription = {
+            BookingId: bookingId, // dynamic BookingId
+            MedicineId: row.cells[7].innerText,        // assuming first column = ID
+            MedicineName: row.cells[1].innerText,      // second column = name
+            MedicineDose: row.cells[2].innerText,
+            MedicineDuration: row.cells[3].innerText,
+            Frequency: row.cells[4].innerText,
+            Advice: row.cells[5].innerText,
+            Medicine_Notes: row.cells[6].innerText
+        };
+
+        presDetails.push(prescription);
+    }
+      
+
+        $.ajax({
+            type: "POST",
+            url: "/Psychologist/AppointmentBook/SavePrescription",
+            contentType: "application/json",
+            data: JSON.stringify(presDetails),
+            success: function (response) {
+                alert(response.message);
+                // optionally clear table after success
+                table.innerHTML = '';
+            },
+            error: function () {
+                alert("Error saving prescription!");
+            }
+        });
+    }
+
 </script>

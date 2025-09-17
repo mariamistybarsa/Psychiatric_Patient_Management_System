@@ -1,10 +1,15 @@
-﻿using Dapper;
+﻿//AppointmentBookController 
+
+
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Psychiatrist_Management_System.Data;
 using Psychiatrist_Management_System.Interface;
 using Psychiatrist_Management_System.Models;
 using System.Data;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 {
@@ -68,8 +73,8 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
             try
             {
                 // Build email body
-                string subject = $"Message Regarding Your Appointment (Booking ID: {booking.BookingId})";
-                string body = $@"
+              string subject = $"Message Regarding Your Appointment (Booking ID: {booking.BookingId})";
+              string body = $@"
             Dear {booking.PatientName},<br/><br/>
             You have received a message from your psychiatrist <b>{booking.PsychiatristName}</b> regarding your appointment.<br/><br/>
             <b>Booking Details:</b><br/>
@@ -97,12 +102,76 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
             return RedirectToAction("MyBookings");
         }
 
-        public IActionResult Prescription()
+        public async Task<IActionResult> Prescription(int bookingId)
         {
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", 1);
+
+            // Assuming SP returns newly inserted PrescriptionId
+            var medicine =await _context.CreateConnection().QueryAsync<dynamic>(
+           "Sp_NewMedicine",
+           parameters,
+           commandType: CommandType.StoredProcedure
+       );
+            ViewBag.Medicine = medicine;
+            ViewBag.BookingId = bookingId;
+
+
+
+
             return View();
         }
+        [HttpPost]
+        public IActionResult SavePrescription([FromBody] List<PrescriptionVM> prescription)
+        {
+            using var connection = _context.CreateConnection();
 
+            try
+            {
+                // ✅ Insert Prescription
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", 1);
+                parameters.Add("@PrescriptionId", prescription.First().PrescriptionId);
+                parameters.Add("@BookingId", prescription.First().BookingId); // dynamic
+                parameters.Add("@Advice", prescription.First().Advice);
+                parameters.Add("@CreatedBy", "DoctorName"); // change as needed
+                parameters.Add("@CreatedAt", DateTime.Now);
 
+                // Assuming SP returns newly inserted PrescriptionId
+                var booking = connection.QueryFirstOrDefault<PrescriptionVM>(
+               "Sp_Prescription",
+               parameters,
+               commandType: CommandType.StoredProcedure
+           );
+                foreach(var item in prescription)
+                {   // ✅ Insert Medicine related to that PrescriptionId
+                    var parameters2 = new DynamicParameters();
+                    parameters2.Add("@flag", 2);
+                    //  parameters2.Add("@MedicinePrescriptionId", prescription.MedicinePrescriptionId);
+                    parameters2.Add("@PrescriptionId", booking?.PrescriptionId);
+                    parameters2.Add("@MedicineId", item.MedicineId);
 
+                    // if 0, means new medicine
+                    parameters2.Add("@MedicineDose", item.MedicineDose);
+                    parameters2.Add("@MedicineDuration", item.MedicineDuration);
+                    parameters2.Add("@Frequency", item.Frequency);
+                    parameters2.Add("@Medicine_Notes", item.Medicine_Notes);
+
+                    connection.Execute(
+                        "Sp_Medicine",
+                        parameters2,
+                        commandType: CommandType.StoredProcedure
+                    );
+                }
+
+             
+
+                return Json(new { message = "Saved successfully",  });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = "Error: " + ex.Message });
+            }
+        }
     }
 }
