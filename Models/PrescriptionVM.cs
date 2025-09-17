@@ -14,6 +14,11 @@ namespace Psychiatrist_Management_System.Models
         public int Age { get; set; }
         public int UserId { get; set; }
         
+            public string PatientName { get; set; }
+            public string PsychiatristName { get; set; }
+            public string BookingSerial { get; set; }
+        
+        //public DateTime AppointmentDay { get; set; }
         public string MedicineDuration { get; set; }
         public string Medicine_Notes { get; set; }
      
