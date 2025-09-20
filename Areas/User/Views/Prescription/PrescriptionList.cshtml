@@ -11,7 +11,7 @@
             <th>Appointment Day</th>
             <th>Booking Serial</th>
             <th>Psychiatrist Name</th>
-            <th>Prescription</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +30,14 @@
                         View Prescription
                     </a>
 
+                    <!-- Review Button for each psychiatrist -->
+                    <a class="btn btn-success btn-sm"
+                       asp-area="User"
+                       asp-controller="Review"
+                       asp-action="ReviewtoPsychiatrist"
+                       asp-route-bookingId="@item.BookingId">
+                        Review
+                    </a>
                 </td>
             </tr>
         }

@@ -49,20 +49,23 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Prescription Form</h2>
 
-    <!-- Display Patient Details -->
     <div class="card p-3 mb-4">
         <h5 class="text-primary">Patient Details</h5>
-        <div class="row">
-            <div class="col-md-4">
-                <strong>Name:</strong> <span id="DisplayPatientName">John Doe</span>
+        @if (ViewBag.Prescriptions != null && ViewBag.Prescriptions.Count > 0)
+        {
+            var patient = ViewBag.Prescriptions[0];
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Name:</strong> @patient.PatientName
+                </div>
+                <div class="col-md-4">
+                    <strong>Address:</strong> @patient.Address
+                </div>
+                <div class="col-md-4">
+                    <strong>Age:</strong> @patient.Age
+                </div>
             </div>
-            <div class="col-md-4">
-                <strong>Address:</strong> <span id="DisplayPatientAddress">123 Main Street</span>
-            </div>
-            <div class="col-md-4">
-                <strong>Age:</strong> <span id="DisplayPatientAge">35</span>
-            </div>
-        </div>
+        }
     </div>
 
     <!-- Medicine Entry -->

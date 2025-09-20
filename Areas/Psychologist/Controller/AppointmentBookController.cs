@@ -104,23 +104,34 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 
         public async Task<IActionResult> Prescription(int bookingId)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@flag", 1);
+            // 1. Get medicines for dropdown
+            var medParams = new DynamicParameters();
+            medParams.Add("@flag", 1);
 
-            // Assuming SP returns newly inserted PrescriptionId
-            var medicine =await _context.CreateConnection().QueryAsync<dynamic>(
-           "Sp_NewMedicine",
-           parameters,
-           commandType: CommandType.StoredProcedure
-       );
+            var medicine = await _context.CreateConnection().QueryAsync<dynamic>(
+                "Sp_NewMedicine",
+                medParams,
+                commandType: CommandType.StoredProcedure
+            );
+
+            // 2. Get Prescription + Patient info
+            var presParams = new DynamicParameters();
+            presParams.Add("@flag", 3);
+            presParams.Add("@BookingId", bookingId);
+
+            var prescriptionInfo = await _context.CreateConnection().QueryAsync<dynamic>(
+                "Sp_Prescription",
+                presParams,
+                commandType: CommandType.StoredProcedure
+            );
+
             ViewBag.Medicine = medicine;
+            ViewBag.Prescriptions = prescriptionInfo;
             ViewBag.BookingId = bookingId;
-
-
-
 
             return View();
         }
+
         [HttpPost]
         public IActionResult SavePrescription([FromBody] List<PrescriptionVM> prescription)
         {
