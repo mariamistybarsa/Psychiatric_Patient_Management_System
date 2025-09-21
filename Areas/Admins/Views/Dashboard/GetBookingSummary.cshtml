@@ -1,0 +1,57 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewBag.Title = "Admin Dashboard";
+}
+
+<h3 class="text-center mb-4">Psychiatrist Booking Summary</h3>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped text-center">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Psychiatrist</th>
+                <th>Pending</th>
+                <th>Running</th>
+                <th>Completed</th>
+                <th>Total Users</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int count = 1; // Serial number
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.PsychiatristName</td>
+                        <td>@item.Pending</td>
+                        <td>@item.Running</td>
+                        <td>@item.Completed</td>
+                        <td>@item.TotalUsers</td>
+                        <td>
+                            <form asp-action="GetBookingMonthlys" asp-controller="Dashboard" method="get">
+                                <input type="hidden" name="psychiatristId" value="@item.PsychiatristId" />
+                                <button type="submit" class="btn btn-primary btn-sm">View Monthly</button>
+                            </form>
+                        </td>
+                       
+                    </tr>
+                    count++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No data found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-3 text-center">
+    <button class="btn btn-primary btn-sm">Refresh</button>
+</div>
