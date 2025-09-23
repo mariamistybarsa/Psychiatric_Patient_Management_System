@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Psychiatrist_Management_System.Data;
 using Psychiatrist_Management_System.Data.Migrations;
@@ -74,3 +75,16 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+

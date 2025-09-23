@@ -32,11 +32,11 @@ namespace Psychiatrist_Management_System.Controllers
         {
             return View();
         }
-        
+
         [HttpPost]
         public IActionResult Login(UserVM model)
         {
-             _mail.SendEmailAsync(model.Email, "Signup Successful", $"Your account has been created successfully. Your UserName : {model.Email} And password is: {model.Password}");
+            _mail.SendEmailAsync(model.Email, "Signup Successful", $"Your account has been created successfully. Your UserName : {model.Email} And password is: {model.Password}");
             using (var connection = _context.CreateConnection())
             {
                 var parameters = new DynamicParameters();
@@ -68,7 +68,7 @@ namespace Psychiatrist_Management_System.Controllers
                             return Json(new { success = false, message = "Your account is not approved yet." });
                         }
                     }
-                        HttpContext.Session.SetString("UserEmail", data.Email);
+                    HttpContext.Session.SetString("UserEmail", data.Email);
                     HttpContext.Session.SetString("UserName", data.UserName);
                     HttpContext.Session.SetString("UserId", data.UserId.ToString());
                     HttpContext.Session.SetString("UsertypeId", data.UsertypeId.ToString());
@@ -88,7 +88,7 @@ namespace Psychiatrist_Management_System.Controllers
                         redirecturl = Url.Action("Index", "Dashboard", new { area = "Admins" });
                     }
 
-                    return Json(new { success = true, message = "Successful", redirectUrl = redirecturl,userInfo =data });
+                    return Json(new { success = true, message = "Successful", redirectUrl = redirecturl, userInfo = data });
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace Psychiatrist_Management_System.Controllers
 
 
 
-                    [HttpGet]
+        [HttpGet]
         public IActionResult Register()
         {
             try
@@ -105,7 +105,7 @@ namespace Psychiatrist_Management_System.Controllers
                 using (var connection = _context.CreateConnection())
                 {
                     var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 3); 
+                    parameters.Add("@flag", 3);
                     var data = connection.Query<DesinationVm>(
                         "Sp_Register",
                         parameters,
@@ -133,13 +133,13 @@ namespace Psychiatrist_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register( UserVM model)
+        public IActionResult Register(UserVM model)
         {
             try
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    
+
                     var existingEmail = connection.QueryFirstOrDefault<UserVM>(
                         "SELECT * FROM Users WHERE Email = @Email",
                         new { Email = model.Email }
@@ -156,7 +156,7 @@ namespace Psychiatrist_Management_System.Controllers
                     parameters.Add("@Password", model.Password);
                     parameters.Add("@Email", model.Email);
                     parameters.Add("@UsertypeId", model.UsertypeId);
-                  
+
                     parameters.Add("@PhoneNumber", model.PhoneNumber);
                     parameters.Add("@DesignationId", model.DesignationId);
                     parameters.Add("@Age", model.Age);
@@ -182,7 +182,20 @@ namespace Psychiatrist_Management_System.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-      
+
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,6 @@
-﻿@* Prescription.cshtml *@
+﻿@model List<Psychiatrist_Management_System.Models.PrescriptionVM>
+
+@* Prescription.cshtml *@
 
 @{
     ViewData["Title"] = "Prescription Form";
@@ -50,14 +52,18 @@
     <!-- Patient Details -->
     <div class="card p-3 mb-4">
         <h5 class="text-primary">Patient Details</h5>
-        @if (ViewBag.Prescriptions != null && ViewBag.Prescriptions.Count > 0)
+        @if (Model != null && Model.Count() > 0)
         {
-            var patient = ViewBag.Prescriptions[0];
+            var patient = Model.First();
             <div class="row">
                 <div class="col-md-4"><strong>Name:</strong> @patient.PatientName</div>
                 <div class="col-md-4"><strong>Address:</strong> @patient.Address</div>
                 <div class="col-md-4"><strong>Age:</strong> @patient.Age</div>
             </div>
+        }
+        else
+        {
+            <div class="text-danger">⚠ No patient data found for this booking.</div>
         }
     </div>
 
@@ -115,9 +121,12 @@
             </div>
         </div>
 
-        <div class="mt-3 text-end">
+        <div class="mt-3 d-flex justify-content-between">
             <button class="btn btn-primary" onclick="addMedicine()">
                 <i class="fa fa-plus me-1"></i> Add
+            </button>
+            <button class="btn btn-warning" onclick="refreshPrescription()">
+                <i class="fa fa-refresh me-1"></i> Refresh
             </button>
         </div>
     </div>
@@ -137,7 +146,6 @@
                         <th>Advice</th>
                         <th>Medical Note</th>
                         <th hidden>MedicineId</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -158,9 +166,6 @@
         const bookingId = document.getElementById("BookingId").value;
         const selectedMedicine = document.getElementById("MedicineName");
         const medicineId = selectedMedicine.value;
-        const diagnose = document.getElementById("Diagnose").value;
-
-        debugger;
 
         if (!medicineId) { alert("Please select a medicine."); return; }
 
@@ -176,14 +181,16 @@
             <td>${document.getElementById("Advice").value}</td>
             <td>${document.getElementById("Medicine_Notes").value}</td>
             <td hidden>${medicineId}</td>
-            <td>
-                <button class="btn btn-sm btn-warning me-1" onclick="editMedicine(this)">Edit</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteMedicine(this)">Delete</button>
-            </td>
         `;
 
         // Clear inputs except Diagnose
         ["MedicineName","MedicineDose","MedicineDuration","Frequency","Advice","Medicine_Notes"].forEach(id => document.getElementById(id).value = '');
+    }
+
+    function refreshPrescription() {
+        document.getElementById("MedicineTable").getElementsByTagName('tbody')[0].innerHTML = '';
+        ["MedicineName","MedicineDose","MedicineDuration","Frequency","Advice","Medicine_Notes"].forEach(id => document.getElementById(id).value = '');
+        // Diagnose remains unchanged
     }
 
     function submitPrescription() {
@@ -203,7 +210,7 @@
             Frequency: row.cells[4].innerText,
             Advice: row.cells[5].innerText,
             Medicine_Notes: row.cells[6].innerText,
-           Diagnosed: diagnose  // ekbar matro pathano
+            Diagnosed: diagnose
         }));
 
         $.ajax({
@@ -213,14 +220,13 @@
             data: JSON.stringify(presDetails),
             success: function(response){
                 alert(response.message);
-                tableBody.innerHTML = '';
-                document.getElementById("Diagnose").value = '';
+                refreshPrescription(); // clear table and inputs
             },
             error: function(){ alert("Error saving prescription!"); }
         });
     }
 
-    // Optional: row numbering
+    // Row numbering
     const observer = new MutationObserver(() => {
         const rows = document.querySelectorAll("#MedicineTable tbody tr");
         rows.forEach((row, index) => row.cells[0].innerText = index + 1);

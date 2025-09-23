@@ -62,6 +62,12 @@
                 }
             </tbody>
         </table>
+        <div class="d-flex justify-content-end mb-3">
+            <button id="downloadCsv" class="btn btn-success">
+                <i class="bi bi-download"></i> Download CSV
+            </button>
+        </div>
+
     }
     else
     {
@@ -70,3 +76,39 @@
         </div>
     }
 </div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#downloadCsv").click(function () {
+            var csv = [];
+            var rows = $("table tbody tr");
+
+            // Add table headers
+            var headers = [];
+            $("table thead th").each(function () {
+                headers.push($(this).text().trim());
+            });
+            csv.push(headers.join(","));
+
+            // Add table rows
+            rows.each(function () {
+                var row = [];
+                $(this).find("td").each(function () {
+                    var text = $(this).text().trim();
+                    text = text.replace(/,/g, ""); // Remove commas from data
+                    row.push(text);
+                });
+                csv.push(row.join(","));
+            });
+
+            // Create CSV file
+            var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            var downloadLink = document.createElement("a");
+            downloadLink.download = "PsychiatristRecords.csv";
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        });
+    </script>
+}

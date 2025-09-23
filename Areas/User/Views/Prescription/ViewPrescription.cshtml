@@ -2,48 +2,43 @@
 
 <div class="container">
 
-    <h2>Psychiatrist Prescription</h2>
+    <h2 class="text-center text-white bg-info p-2 rounded">Prescription</h2>
 
     @if (Model.Any())
     {
         var first = Model.First();
 
-        <!-- Doctor Info -->
-        <div class="section">
-            <center><h2>Doctor Information</h2></center>
-            <p><label>Full Name:</label> @first.PsychiatristName <span class="underline"></span></p>
-            <p><label>Qualification:</label> @first.PsychiatristName  <span class="underline"></span></p>
-            <p><label>Booking Serial No.:</label> @first.BookingSerial <span class="underline"></span></p>
-            <p><label>Contact:</label> @first.Age<span class="underline"></span></p>
-        </div>
-
-        <!-- Patient Info -->
-        <div class="section">
-            <h3>Patient Information</h3>
-            <p><label>Name:</label> @first.PatientName <span class="underline"></span></p>
-            <p><label>Address / Contact:</label> <span class="underline"></span></p>
-            <div class="row">
-                <div><label>Age:</label> @first.Age <span class="underline"></span></div>
-                <div><label>Sex:</label> <span class="underline"></span></div>
-                
-                <div><label>Identity Marks:</label> @first.Diagnosed <span class="underline"></span></div>
+        <!-- Info Section -->
+        <div class="info-section">
+            <div class="patient-info">
+                <h4>Patient Info</h4>
+                <p><label>Name:</label> <span class="underline">@first.PatientName</span></p>
+                <p><label>Age:</label> <span class="underline">@first.Age</span></p>
+                <p><label>Address:</label> <span class="underline">@first.Address</span></p>
+            </div>
+            <div class="doctor-info">
+                <h4>Psychiatrist Info</h4>
+                <p><label>Name:</label> <span class="underline">@first.PsychiatristName</span></p>
+                <p><label>Qualification:</label> <span class="underline">@first.PsychiatristName</span></p>
+                <p><label>Booking No:</label> <span class="underline">@first.BookingSerial</span></p>
+                <p><label>Contact:</label> <span class="underline">@first.Age</span></p>
             </div>
         </div>
 
+        <p><label>Identity Marks:</label> <span class="underline">@first.Diagnosed</span></p>
         <!-- Prescription Table -->
         <div class="section">
-            <h3>Prescription Details</h3>
+            <h4>Prescription Details</h4>
             <table>
                 <thead>
                     <tr>
                         <th>Sr.</th>
-                      
                         <th>Medicine</th>
                         <th>Notes</th>
                         <th>Dose</th>
                         <th>Duration</th>
                         <th>Frequency</th>
-                        <th>Medical Advice</th>
+                        <th>Advice</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +49,6 @@
                     {
                         <tr>
                             <td>@sr</td>
-                            
                             <td>@med.MedicineName</td>
                             <td>@med.Medicine_Notes</td>
                             <td>@med.MedicineDose</td>
@@ -68,10 +62,10 @@
             </table>
         </div>
 
-        <!-- Advice Section -->
+        <!-- Advice -->
         <div class="section advice">
-            <h3>Advice / Diet Instructions</h3>
-            <p><span class="underline">@first.Advice</span></p>
+            <h4>Advice / Diet Instructions</h4>
+            <p>@first.Advice</p>
         </div>
 
         <!-- Signatures -->
@@ -80,138 +74,148 @@
             <div>Authentication</div>
         </div>
 
-        <div class="text-center" style="margin-top:20px;">
-            <button id="printBtn" style="padding:10px 20px; font-size:16px; cursor:pointer;">Print / Download PDF</button>
+        <!-- Print Button -->
+        <div class="text-center mt-3">
+            <button id="printBtn">Print / Download PDF</button>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         <script>
             document.getElementById("printBtn").addEventListener("click", function () {
                 const element = document.querySelector(".container");
-                var opt = {
-                    margin:       0.5,
-                    filename:     'Prescription.pdf',
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2 },
-                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-                html2pdf().set(opt).from(element).save();
+                html2pdf().set({
+                    margin: 0.5,
+                    filename: 'Prescription.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                }).from(element).save();
             });
         </script>
-
     }
     else
     {
         <p class="text-danger">No prescription data found.</p>
     }
-
 </div>
 
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 0;
         background: #f3f3f3;
         color: #000;
-        line-height: 1.3; /* line spacing komano */
+        margin: 0;
     }
 
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
-        background: #fff;
-        padding: 25px 30px; /* padding slightly komano */
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
 
-    h2 {
-        text-align: center;
-        text-decoration: underline;
-        margin-bottom: 20px; /* margin komano */
-        font-size: 24px;
-        font-weight: 600;
-        line-height: 1.2;
-    }
-
-    h3 {
-        margin-top: 20px;
-        margin-bottom: 8px; /* komano */
-        font-size: 15px;
-        color: #333;
-        line-height: 1.2;
-    }
-
-    .section {
-        margin-bottom: 18px; /* komano */
-    }
-
-    .row {
+    
+    .info-section {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* komano */
+        justify-content: space-between;
+        gap: 10px; /* komano gap */
+        margin: 10px 0; /* komano top-bottom margin */
+        background: #e9f7ff;
+        padding: 8px; /* komano padding */
+        border-radius: 6px;
     }
 
-        .row div {
-            flex: 1 1 48%;
-        }
+    .patient-info h4, .doctor-info h4 {
+        margin: 0 0 4px 0; /* heading er niche kom margin */
+        font-size: 14px;
+    }
+
+    .patient-info p, .doctor-info p {
+        margin: 2px 0; /* p er margin komano */
+        font-size: 13px;
+    }
 
     label {
         font-weight: 600;
+        width: 90px; /* slightly komano width */
         display: inline-block;
-        width: 120px;
-        margin-bottom: 3px; /* label er niche kom spacing */
     }
 
     .underline {
         border-bottom: 1px solid #000;
+        min-height: 16px;
         display: inline-block;
-        width: calc(100% - 130px);
-        min-height: 18px; /* slightly komano */
+        width: calc(100% - 95px);
+    }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px 25px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .info-section {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin: 15px 0;
+        background: #e9f7ff;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .patient-info, .doctor-info {
+        flex: 1;
+    }
+
+    label {
+        font-weight: 600;
+        width: 110px;
+        display: inline-block;
+    }
+
+    .underline {
+        border-bottom: 1px solid #000;
+        min-height: 18px;
+        display: inline-block;
+        width: calc(100% - 120px);
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
+        font-size: 13px;
         margin-top: 10px;
-        font-size: 13px; /* slightly komano */
-        table-layout: fixed;
-        word-wrap: break-word;
     }
 
     th, td {
-        padding: 6px 6px; /* komano */
-        text-align: left;
-        vertical-align: top;
-        min-height: 40px; /* komano */
+        border: 1px solid #ccc;
+        padding: 6px 5px;
+        text-align: center;
     }
 
     th {
         background-color: #f0f0f0;
-        text-align: center;
+    }
+
+    .section {
+        margin-top: 15px;
+    }
+
+    .advice {
+        min-height: 40px;
+        padding: 5px;
     }
 
     .signature {
-        margin-top: 25px; /* komano */
         display: flex;
         justify-content: space-between;
-        flex-wrap: wrap;
+        margin-top: 20px;
     }
 
         .signature div {
             width: 48%;
             text-align: center;
-            font-weight: 600;
             border-top: 1px solid #000;
-            padding-top: 6px; /* komano */
+            padding-top: 5px;
+            font-weight: 600;
         }
-
-    .advice span.underline {
-        min-height: 40px;
-        width: 100%;
-        display: block;
-    }
 
     button {
         background-color: #007bff;
@@ -219,11 +223,10 @@
         border: none;
         border-radius: 5px;
         padding: 8px 18px;
-        font-size: 15px;
+        cursor: pointer;
     }
 
         button:hover {
             background-color: #0056b3;
         }
-
 </style>

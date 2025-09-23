@@ -14,6 +14,7 @@ namespace Psychiatrist_Management_System.Models
         public int Age { get; set; }
         public int UserId { get; set; }
         public string Diagnosed { get; set; }
+        public string Address { get; set; }
 
 
         public string PatientName { get; set; }

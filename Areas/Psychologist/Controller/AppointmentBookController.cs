@@ -103,34 +103,34 @@ Regards,<br/>
 
 
         public async Task<IActionResult> Prescription(int bookingId)
-        {
-            // 1. Get medicines for dropdown
-            var medParams = new DynamicParameters();
-            medParams.Add("@flag", 1);
+{
+    var medParams = new DynamicParameters();
+    medParams.Add("@flag", 1);
 
-            var medicine = await _context.CreateConnection().QueryAsync<dynamic>(
-                "Sp_NewMedicine",
-                medParams,
-                commandType: CommandType.StoredProcedure
-            );
+    var medicine = await _context.CreateConnection().QueryAsync<dynamic>(
+        "Sp_NewMedicine",
+        medParams,
+        commandType: CommandType.StoredProcedure
+    );
 
-            // 2. Get Prescription + Patient info
-            var presParams = new DynamicParameters();
-            presParams.Add("@flag", 3);
-            presParams.Add("@BookingId", bookingId);
+    var presParams = new DynamicParameters();
+    presParams.Add("@flag", 3);
+    presParams.Add("@BookingId", bookingId);
 
-            var prescriptionInfo = await _context.CreateConnection().QueryAsync<dynamic>(
-                "Sp_Prescription",
-                presParams,
-                commandType: CommandType.StoredProcedure
-            );
+    var prescriptionInfo = await _context.CreateConnection().QueryAsync<PrescriptionVM>(
+        "Sp_Prescription",
+        presParams,
+        commandType: CommandType.StoredProcedure
+    );
 
-            ViewBag.Medicine = medicine;
-            ViewBag.Prescriptions = prescriptionInfo;
-            ViewBag.BookingId = bookingId;
+    ViewBag.Medicine = medicine;
+    ViewBag.BookingId = bookingId;
 
-            return View();
-        }
+    // Model হিসাবে পাঠানো হচ্ছে
+    return View(prescriptionInfo.ToList());
+}
+
+
 
         [HttpPost]
         public IActionResult SavePrescription([FromBody] List<PrescriptionVM> prescription)
