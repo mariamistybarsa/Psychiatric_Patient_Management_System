@@ -49,11 +49,11 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendMessage(int BookingId, string Message)
+        public async Task<IActionResult> SendMessage(int BookingId, string Message, string AppointmentTime)
         {
             using var connection = _context.CreateConnection();
 
-            // Get booking details including patient email
+            // Get booking details
             var parameters = new DynamicParameters();
             parameters.Add("@flag", 16);
             parameters.Add("@BookingId", BookingId);
@@ -72,24 +72,23 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 
             try
             {
-                // Build email body
-              string subject = $"Message Regarding Your Appointment (Booking ID: {booking.BookingId})";
-              string body = $@"
-            Dear {booking.PatientName},<br/><br/>
-            You have received a message from your psychiatrist <b>{booking.PsychiatristName}</b> regarding your appointment.<br/><br/>
-            <b>Booking Details:</b><br/>
-            Booking ID: {booking.BookingId}<br/>
-            Patient Name: {booking.PatientName}<br/>
-            Psychiatrist: {booking.PsychiatristName}<br/>
-            Appointment Date: {booking.AppointmentDate}<br/>
-            Appointment Time: {booking.AppointmentTime}<br/>
-            Appointment Day: {booking.AppointmentDay}<br/>
-            BookingSerial: {booking.BookingSerial}<br/><br/>
-            <b>Message from Psychiatrist:</b><br/>
-            {Message}<br/><br/>
-            Regards,<br/>
-            {booking.PsychiatristName}
-        ";
+                string subject = $"Message Regarding Your Appointment (Booking ID: {booking.BookingId})";
+                string body = $@"
+Dear {booking.PatientName},<br/><br/>
+You have received a message from your psychiatrist <b>{booking.PsychiatristName}</b> regarding your appointment.<br/><br/>
+<b>Booking Details:</b><br/>
+Booking ID: {booking.BookingId}<br/>
+Patient Name: {booking.PatientName}<br/>
+Psychiatrist: {booking.PsychiatristName}<br/>
+Appointment Date: {booking.AppointmentDate.ToShortDateString()}<br/>
+Appointment Time: {AppointmentTime}<br/>  <!-- Use selected time here -->
+Appointment Day: {booking.AppointmentDay}<br/>
+BookingSerial: {booking.BookingSerial}<br/><br/>
+<b>Message from Psychiatrist:</b><br/>
+{Message}<br/><br/>
+Regards,<br/>
+{booking.PsychiatristName}
+";
 
                 await _mailService.SendEmailAsync(booking.UserEmail, subject, body);
                 TempData["Success"] = "Message sent to patient successfully!";
@@ -101,6 +100,7 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 
             return RedirectToAction("MyBookings");
         }
+
 
         public async Task<IActionResult> Prescription(int bookingId)
         {
@@ -164,6 +164,11 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 
                     // if 0, means new medicine
                     parameters2.Add("@MedicineDose", item.MedicineDose);
+
+                    parameters2.Add("@Diagnosed", item.Diagnosed);
+
+
+
                     parameters2.Add("@MedicineDuration", item.MedicineDuration);
                     parameters2.Add("@Frequency", item.Frequency);
                     parameters2.Add("@Medicine_Notes", item.Medicine_Notes);
@@ -183,6 +188,19 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
             {
                 return Json(new { message = "Error: " + ex.Message });
             }
+        }
+        public IActionResult MarkCompleted(int id)
+        {
+            using var connection = _context.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", 18); // Our new flag
+            parameters.Add("@BookingId", id);
+
+            connection.Execute("Sp_BookAppointment", parameters, commandType: CommandType.StoredProcedure);
+
+       
+            // Redirect back to the booking list or same page
+            return RedirectToAction("MyBookings"); // or your listing action
         }
     }
 }

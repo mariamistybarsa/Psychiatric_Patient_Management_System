@@ -13,8 +13,10 @@ namespace Psychiatrist_Management_System.Models
         public int BookingId { get; set; }
         public int Age { get; set; }
         public int UserId { get; set; }
-        
-            public string PatientName { get; set; }
+        public string Diagnosed { get; set; }
+
+
+        public string PatientName { get; set; }
             public string PsychiatristName { get; set; }
             public string BookingSerial { get; set; }
         
@@ -23,7 +25,8 @@ namespace Psychiatrist_Management_System.Models
         public string Medicine_Notes { get; set; }
      
         public string MedicineDose { get; set; }
-       
+        public string MedicineName { get; set; }
+
         public string Frequency { get; set; }
         public string Advice { get; set; }
   

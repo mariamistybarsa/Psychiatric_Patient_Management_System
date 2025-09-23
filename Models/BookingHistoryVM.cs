@@ -1,4 +1,9 @@
-﻿namespace Psychiatrist_Management_System.Models
+﻿using Psychiatrist_Management_System.Models;
+
+//BookingHistoryVM
+
+
+namespace Psychiatrist_Management_System.Models
 {
     public class BookingHistoryVM
     {
@@ -13,6 +18,8 @@
         public string AppointmentTime { get; set; }
         public string AppointmentDay { get; set; }
         public string Notes { get; set; }
+      
+        
 
         // Add these
         public string ApprovalStatus { get; set; }
@@ -35,7 +42,9 @@
         public string? EmergencyContact { get; set; }
         public decimal? VisitFee { get; set; }
         public decimal? TestFee { get; set; }
-        public int? PaymentAmount { get; set; }
+        //public int? PaymentAmount { get; set; }
+        public decimal? PaymentAmount { get; set; }
+
         public int? HoursDifference { get; set; }
         public decimal RefundAmount { get; set; }
         public string? BookingSerial { get; set; }
@@ -45,8 +54,10 @@
        
         public string? PaymentMethod { get; set; }
         public string? AccountNumber { get; set; }
-      
-       
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+
+
 
     }
 }

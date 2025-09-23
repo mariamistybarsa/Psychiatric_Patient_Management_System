@@ -78,35 +78,6 @@
 
 
 
-                        <!-- Cancel Booking Logic -->
-                @* @if (item.PaymentStatus == "Paid" && item.HoursDifference >= 0 && item.ApprovalStatus != "Cancel")
-                        {
-                            if (item.HoursDifference <= 24)
-                            {
-                                <form asp-action="CancelBookingfor24hours" method="post" onsubmit="return confirm('Cancel this booking? You will get 15% refund.');">
-                                    <input type="hidden" name="bookingId" value="@item.BookingId" />
-                                    <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
-                                    <small class="text-muted ms-2">Cancel within 24 hours → 15% refund</small>
-                                    <small class="text-muted ms-2">Hours : @item.HoursDifference</small>
-                                </form>
-                            }
-                            else
-                            {
-                                <form asp-action="CancelBooking" method="post" onsubmit="return confirm('Cancel this booking? You cannot get refund.');">
-                                    <input type="hidden" name="bookingId" value="@item.BookingId" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Booking (No Refund)</button>
-                                    <small class="text-muted ms-2">No refund after 24 hours</small>
-                                </form>
-                            }
-                        }
-                        @if (item.PaymentStatus == "Paid")
-                        {
-                            <a asp-controller="BookAppointment" asp-action="InvoicePayment" asp-route-bookingId="@item.BookingId"
-                               class="btn btn-info btn-sm mt-2">
-                                View Invoice
-                            </a>
-                        } *@
-
                         <!-- Payment Modal -->
                         @if (item.ApprovalStatus == "Pending" && item.PaymentStatus == "NotPaid")
                         {

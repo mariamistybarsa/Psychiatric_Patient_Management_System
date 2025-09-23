@@ -7,7 +7,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
 <style>
-    /* Table Styling */
     #MedicineTable {
         border-collapse: separate;
         border-spacing: 0;
@@ -21,15 +20,15 @@
         }
 
         #MedicineTable tbody tr:nth-child(odd) {
-            background-color: #e9f5ff; /* light blue */
+            background-color: #e9f5ff;
         }
 
         #MedicineTable tbody tr:nth-child(even) {
-            background-color: #f0f0f0; /* light gray */
+            background-color: #f0f0f0;
         }
 
         #MedicineTable tbody tr:hover {
-            background-color: #ffe0b2; /* light orange on hover */
+            background-color: #ffe0b2;
         }
 
         #MedicineTable td, #MedicineTable th {
@@ -39,33 +38,38 @@
             word-wrap: break-word;
         }
 
-            #MedicineTable td:nth-child(7), #MedicineTable th:nth-child(7) {
+            #MedicineTable td:nth-child(8), #MedicineTable th:nth-child(8) {
                 width: 250px;
                 white-space: normal;
             }
 </style>
 
-
 <div class="container mt-5">
     <h2 class="mb-4 text-center">Prescription Form</h2>
 
+    <!-- Patient Details -->
     <div class="card p-3 mb-4">
         <h5 class="text-primary">Patient Details</h5>
         @if (ViewBag.Prescriptions != null && ViewBag.Prescriptions.Count > 0)
         {
             var patient = ViewBag.Prescriptions[0];
             <div class="row">
-                <div class="col-md-4">
-                    <strong>Name:</strong> @patient.PatientName
-                </div>
-                <div class="col-md-4">
-                    <strong>Address:</strong> @patient.Address
-                </div>
-                <div class="col-md-4">
-                    <strong>Age:</strong> @patient.Age
-                </div>
+                <div class="col-md-4"><strong>Name:</strong> @patient.PatientName</div>
+                <div class="col-md-4"><strong>Address:</strong> @patient.Address</div>
+                <div class="col-md-4"><strong>Age:</strong> @patient.Age</div>
             </div>
         }
+    </div>
+
+    <!-- Diagnose Entry -->
+    <div class="card p-3 mb-4">
+        <h5 class="text-info">Diagnosis</h5>
+        <div class="row g-3">
+            <div class="col-md-12">
+                <label for="Diagnose" class="form-label">Diagnose</label>
+                <input type="text" id="Diagnose" class="form-control" placeholder="Enter diagnosis here">
+            </div>
+        </div>
     </div>
 
     <!-- Medicine Entry -->
@@ -85,19 +89,13 @@
                     }
                 </select>
             </div>
-            <!-- Add a hidden input for BookingId -->
             <input type="hidden" id="BookingId" value="@ViewBag.BookingId" />
-
-            <input type="hidden" id="PrescriptionId"  />
             <div class="col-md-2">
-                <!-- Hidden input for MedicinePrescriptionId -->
-                <input type="hidden" id="MedicinePrescriptionId" />
-
                 <label for="MedicineDose" class="form-label">Dose</label>
                 <input type="text" id="MedicineDose" class="form-control" placeholder="e.g., 2 tablets">
             </div>
             <div class="col-md-2">
-                <label for="MedicineDuration" class="form-label">MedicineDuration</label>
+                <label for="MedicineDuration" class="form-label">Duration</label>
                 <input type="text" id="MedicineDuration" class="form-control" placeholder="e.g., 5 days">
             </div>
             <div class="col-md-2">
@@ -112,7 +110,7 @@
 
         <div class="row mt-3">
             <div class="col-md-12">
-                <label for="Medicine_Notes" class="form-label">Medicine_Notes</label>
+                <label for="Medicine_Notes" class="form-label">Medicine Notes</label>
                 <textarea id="Medicine_Notes" class="form-control" rows="5" placeholder="Enter detailed notes..."></textarea>
             </div>
         </div>
@@ -138,119 +136,94 @@
                         <th>Frequency</th>
                         <th>Advice</th>
                         <th>Medical Note</th>
+                        <th hidden>MedicineId</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
 
-    <!-- Submit Button -->
     <div class="text-center mb-5">
         <button class="btn btn-success btn-lg" onclick="submitPrescription()">
             <i class="fa fa-check me-1"></i> Submit Prescription
         </button>
-
-
     </div>
-</div>MedicineDose
-<input type="hidden" id="PrescriptionId" value="0" />
+</div>
 
 <script>
-        function addMedicine() {
-            var selectedMedicine =document.getElementById("MedicineName");
-        const bookingId = document.getElementById("BookingId").value; // dynamic BookingId
-        const name = selectedMedicine.value;
-        const medicineDose = document.getElementById("MedicineDose").value;
-        const medicineDuration = document.getElementById("MedicineDuration").value;
-        const frequency = document.getElementById("Frequency").value;
-        const advice = document.getElementById("Advice").value;
-        const medicine_Notes = document.getElementById("Medicine_Notes").value;
-         const medicineName = selectedMedicine.options[selectedMedicine.selectedIndex].text;
+    function addMedicine() {
+        const tableBody = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
+        const bookingId = document.getElementById("BookingId").value;
+        const selectedMedicine = document.getElementById("MedicineName");
+        const medicineId = selectedMedicine.value;
+        const diagnose = document.getElementById("Diagnose").value;
+
         debugger;
 
-        if (!name) {
-            alert("Please select a medicine.");
-            return;
-        }
+        if (!medicineId) { alert("Please select a medicine."); return; }
 
-        const table = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
-        const row = table.insertRow(-1);
-
-        row.dataset.bookingId = bookingId; // store BookingId in row
+        const row = tableBody.insertRow(-1);
+        row.dataset.bookingId = bookingId;
 
         row.innerHTML = `
             <td></td>
-            <td>${medicineName}</td>
-            <td>${medicineDose}</td>
-            <td>${medicineDuration}</td>
-            <td>${frequency}</td>
-            <td>${advice}</td>
-            <td>${medicine_Notes}</td>
-            <td hidden>${name}</td>
+            <td>${selectedMedicine.options[selectedMedicine.selectedIndex].text}</td>
+            <td>${document.getElementById("MedicineDose").value}</td>
+            <td>${document.getElementById("MedicineDuration").value}</td>
+            <td>${document.getElementById("Frequency").value}</td>
+            <td>${document.getElementById("Advice").value}</td>
+            <td>${document.getElementById("Medicine_Notes").value}</td>
+            <td hidden>${medicineId}</td>
             <td>
                 <button class="btn btn-sm btn-warning me-1" onclick="editMedicine(this)">Edit</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteMedicine(this)">Delete</button>
             </td>
         `;
 
-        // Clear inputs
-        document.getElementById("MedicineName").value = '';
-        document.getElementById("MedicineDose").value = '';
-        document.getElementById("MedicineDuration").value = '';
-        document.getElementById("Frequency").value = '';
-        document.getElementById("Advice").value = '';
-        document.getElementById("Medicine_Notes").value = '';
-     
+        // Clear inputs except Diagnose
+        ["MedicineName","MedicineDose","MedicineDuration","Frequency","Advice","Medicine_Notes"].forEach(id => document.getElementById(id).value = '');
     }
 
     function submitPrescription() {
-        debugger;
-        const bookingId = document.getElementById("BookingId").value;
-        const table = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
-        const rows = table.getElementsByTagName('tr');
+        const tableBody = document.getElementById("MedicineTable").getElementsByTagName('tbody')[0];
+        const rows = tableBody.getElementsByTagName('tr');
 
-        if (rows.length === 0) {
-            alert("Please add at least one medicine.");
-            return;
-        }
+        if (rows.length === 0) { alert("Please add at least one medicine."); return; }
 
-        // For single medicine, take only the first row
-        var presDetails =[];
-           for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
+        const diagnose = document.getElementById("Diagnose").value;
 
-        const prescription = {
-            BookingId: bookingId, // dynamic BookingId
-            MedicineId: row.cells[7].innerText,        // assuming first column = ID
-            MedicineName: row.cells[1].innerText,      // second column = name
+        const presDetails = Array.from(rows).map(row => ({
+            BookingId: row.dataset.bookingId,
+            MedicineId: row.cells[7].innerText,
+            MedicineName: row.cells[1].innerText,
             MedicineDose: row.cells[2].innerText,
             MedicineDuration: row.cells[3].innerText,
             Frequency: row.cells[4].innerText,
             Advice: row.cells[5].innerText,
-            Medicine_Notes: row.cells[6].innerText
-        };
-
-        presDetails.push(prescription);
-    }
-      
+            Medicine_Notes: row.cells[6].innerText,
+           Diagnosed: diagnose  // ekbar matro pathano
+        }));
 
         $.ajax({
             type: "POST",
             url: "/Psychologist/AppointmentBook/SavePrescription",
             contentType: "application/json",
             data: JSON.stringify(presDetails),
-            success: function (response) {
+            success: function(response){
                 alert(response.message);
-                // optionally clear table after success
-                table.innerHTML = '';
+                tableBody.innerHTML = '';
+                document.getElementById("Diagnose").value = '';
             },
-            error: function () {
-                alert("Error saving prescription!");
-            }
+            error: function(){ alert("Error saving prescription!"); }
         });
     }
 
+    // Optional: row numbering
+    const observer = new MutationObserver(() => {
+        const rows = document.querySelectorAll("#MedicineTable tbody tr");
+        rows.forEach((row, index) => row.cells[0].innerText = index + 1);
+    });
+    observer.observe(document.querySelector("#MedicineTable tbody"), { childList: true });
 </script>

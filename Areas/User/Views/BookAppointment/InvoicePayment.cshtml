@@ -17,7 +17,7 @@
             <div class="col-md-6">
                 <h6 class="border-bottom pb-1">Patient Information</h6>
                 <p><strong>Name:</strong> @Model.PatientName</p>
-                <p><strong>Age:</strong> @Model.Age</p>
+                <p><strong>Age:</strong> @(Model.Age)</p>
                 <p><strong>Phone:</strong> @Model.UserPhoneNumber</p>
                 <p><strong>Email:</strong> @Model.UserEmail</p>
                 <p><strong>Address:</strong> @Model.UserAddress</p>
@@ -25,54 +25,48 @@
             <div class="col-md-6">
                 <h6 class="border-bottom pb-1">Invoice Information</h6>
                 <p><strong>Invoice No:</strong> @Model.BookingSerial</p>
-                <p><strong>Created Date:</strong>@Model.CreatedAt </p>
+                <p><strong>Created Date:</strong> @(Model.CreatedAt.ToString("dd-MMM-yyyy HH:mm") ?? "-")</p>
                 <p><strong>Psychiatrist:</strong> @Model.PsychiatristName</p>
-                <p><strong>Appointment Date:</strong> @Model.AppointmentDate</p>
+                <p><strong>Appointment Date:</strong> @(Model.AppointmentDate.ToString("dd-MMM-yyyy") ?? "-")</p>
                 <p><strong>Day:</strong> @Model.AppointmentDay</p>
                 <p><strong>Appointment Time:</strong> @Model.AppointmentTime</p>
             </div>
         </div>
 
         <!-- Payment Details -->
-        <table class="table table-bordered mb-4">
-            <thead class="table-light">
-                <tr>
-                   
-                    <th>Payment Account</th>
-                    <th>Payment Amount</th>
-                    <th>Refund Amount</th>
-                    <th>VisitFee</th>
-                    <th>TestFee</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <tr>
-                   
-                      
-                     <td>@Model.PaymentMethod</td>
-                    <td>@Model.PaymentAmount BDT</td>
-                    <td>@Model.RefundAmount BDT</td>
-                    <td>@Model.VisitFee</td>
-                    <td>@Model.TestFee</td>
-
+        <div class="table-responsive">
+            <table class="table table-bordered mb-4">
+                <thead class="table-light">
+                    <tr>
+                        <th>Payment Method</th>
+                        <th>Payment Amount</th>
+                        <th>Refund Amount</th>
+                        <th>Visit Fee</th>
+                        <th>Test Fee</th>
                     </tr>
-              
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@(Model.PaymentMethod ?? "N/A")</td>
+                        <td>@(Model.PaymentAmount ?? 0) BDT</td>
+                        <td>@(Model.RefundAmount) BDT</td>
+                        <td>@(Model.VisitFee ?? 0) BDT</td>
+                        <td>@(Model.TestFee ?? 0) BDT</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Total -->
         <div class="text-end mb-3">
             @{
-                // Calculate total as PaymentAmount - RefundAmount
-                decimal payment = (decimal)(Model.PaymentAmount ?? 0);  // already decimal
-                decimal refund = Model.RefundAmount;   // already decimal
+                decimal payment = Model.PaymentAmount ?? 0;
+                decimal refund = Model.RefundAmount;
                 decimal totalAmount = payment - refund;
             }
             <p><strong>Total: @totalAmount BDT</strong></p>
             <p><em>In Words: @NumberToWords(totalAmount) Taka Only</em></p>
         </div>
-
 
         @functions {
             private string NumberToWords(decimal number)
@@ -92,13 +86,12 @@
                     return n.ToString();
                 }
 
-                return ConvertNumber((long)number);
+                return ConvertNumber((long)Math.Round(number));
             }
         }
 
-
         <!-- Signatures -->
-        <div class="d-flex justify-content-between signatures">
+        <div class="d-flex justify-content-between signatures mt-4">
             <div class="text-center flex-fill">
                 <hr class="mb-1">
                 <p>Patient Signature</p>
@@ -127,7 +120,7 @@
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
-            location.reload(); // reload to restore dashboard layout
+            location.reload(); // restore page layout
         }
     </script>
 }

@@ -1,4 +1,4 @@
-﻿
+﻿//Bookcontroller
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,31 +65,31 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
             return View(data);
         }
-        public async Task<IActionResult> BkashPay(int bookingId)
-        {
-            using var connection = _context.CreateConnection();
-            var parameters = new DynamicParameters();
-            parameters.Add("@BookingId", bookingId);
-            parameters.Add("@flag", 13);
-            var data = await connection.QueryFirstOrDefaultAsync<dynamic>(
-                "Sp_BookAppointment",
-                parameters,
-                commandType: CommandType.StoredProcedure
-            );
-            if (data != null)
-            {
-                var visitfee = Convert.ToDecimal(data.VisitFee).ToString("F2");
-                //var visitfee = Convert.ToString(Convert.ToInt32(data.VisitFee).tofix(2));
-                JObject? result = await BkashPayment.CreatePaymentLink(visitfee);
-                //return Redirect(result.bkashURL);
-                return Redirect(result["bkashURL"]?.ToString());
+        //public async Task<IActionResult> BkashPay(int bookingId)
+        //{
+        //    using var connection = _context.CreateConnection();
+        //    var parameters = new DynamicParameters();
+        //    parameters.Add("@BookingId", bookingId);
+        //    parameters.Add("@flag", 13);
+        //    var data = await connection.QueryFirstOrDefaultAsync<dynamic>(
+        //        "Sp_BookAppointment",
+        //        parameters,
+        //        commandType: CommandType.StoredProcedure
+        //    );
+        //    if (data != null)
+        //    {
+        //        var visitfee = Convert.ToDecimal(data.VisitFee).ToString("F2");
+        //        //var visitfee = Convert.ToString(Convert.ToInt32(data.VisitFee).tofix(2));
+        //        JObject? result = await BkashPayment.CreatePaymentLink(visitfee);
+        //        //return Redirect(result.bkashURL);
+        //        return Redirect(result["bkashURL"]?.ToString());
 
 
 
-            }
-            //var bkash = await BkashPayment.CreatePaymentLink(10);
-            return Redirect("https://google.com");
-        }
+        //    }
+        //    //var bkash = await BkashPayment.CreatePaymentLink(10);
+        //    return Redirect("https://google.com");
+        //}
         public async Task<IActionResult> PaymentStatus()
         {
             return View();

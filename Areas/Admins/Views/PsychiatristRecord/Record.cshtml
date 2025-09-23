@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Psychiatrist_Management_System.Models.PsychiatristRecords>
+
+<div class="container mt-4">
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-6">
+            <h3 class="text-primary fw-bold">Psychiatrist Info</h3>
+        </div>
+
+        <form method="get" asp-action="Record" class="row g-2">
+            <div class="col-md-4">
+                <label class="form-label">Start Date</label>
+                <input type="date" class="form-control" name="StartDate" value="@( ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") )" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">End Date</label>
+                <input type="date" class="form-control" min="@(((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"))" name="EndDate" value="@( ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") )" />
+            </div>
+            <div class="col-md-4 d-flex">
+                <button type="submit" class="btn btn-primary align-self-end w-100">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-hover text-center align-middle w-100">
+            <thead class="bg-warning">
+                <tr>
+                    <th style="width:30%;">Psychiatrist Name</th>
+                    <th style="width:35%;">Approval Status</th>
+                    <th style="width:35%;">Total Records</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var groupedRecords = Model.GroupBy(r => r.PsychiatristName);
+                }
+
+                @foreach (var group in groupedRecords)
+                {
+                    bool firstRow = true;
+                    int rowCount = group.Count();
+
+                    foreach (var record in group)
+                    {
+                        <tr class="table-info">
+                            @if (firstRow)
+                            {
+                                <td class="fw-bold text-start ps-3" rowspan="@rowCount">@record.PsychiatristName</td>
+                                firstRow = false;
+                            }
+
+                            <td>
+                                <span class="badge @(record.ApprovalStatus == "Approved" ? "bg-success" :
+                                                                                                           record.ApprovalStatus == "Pending" ? "bg-warning" : "bg-secondary")">
+                        @record.ApprovalStatus
+                    </span>
+                </td>
+                <td>@record.Records</td>
+            </tr>
+                        }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            No records found.
+        </div>
+    }
+</div>
