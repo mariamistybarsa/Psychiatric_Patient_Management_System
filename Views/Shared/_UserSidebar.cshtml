@@ -15,22 +15,25 @@
                 <img src="~/Admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User">
             </div>
             <div class="info">
-                <a asp-area="" asp-controller="Account" asp-action="Profile" class="d-block">
+                @* <a asp-area="" asp-controller="Account" asp-action="Profile" class="d-block"> *@
                     Hello @HttpContextAccessor.HttpContext.Session.GetString("UserName")
-                </a>
+                @* </a> *@
             </div>
 
         </div>
 
-        <!-- Search (optional) -->
-        <div class="form-inline">
+        <!-- Sidebar Search Form -->
+        <div class="form-inline mt-2 mb-2">
             <div class="input-group" data-widget="sidebar-search">
-                <input class="form-control form-control-sidebar" type="search" placeholder="Search menu…" aria-label="Search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search menu…" aria-label="Search" id="sidebarSearchInput">
                 <div class="input-group-append">
-                    <button class="btn btn-sidebar"><i class="fas fa-search fa-fw"></i></button>
+                    <button class="btn btn-sidebar" id="sidebarSearchBtn">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
                 </div>
             </div>
         </div>
+
 
         <!-- Menu -->
         <nav class="mt-2">
@@ -43,6 +46,13 @@
                         <p>Find Psychiatrists</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a asp-area="User" asp-controller="Dashboard" asp-action="Index" class="nav-link">
+                        <i class="nav-icon fas fa-user-md"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+
 
              
                 <li class="nav-item has-treeview">
@@ -63,7 +73,7 @@
                         <li class="nav-item">
                             <a asp-area="User" asp-controller="BookAppointment" asp-action="Index" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Booking History</p>
+                                <p>Booking History </p>
                             </a>
                         </li>
                        
@@ -76,74 +86,18 @@
                 <li class="nav-item">
                     <a asp-area="User" asp-controller="Prescription" asp-action="PrescriptionList" class="nav-link">
                         <i class="nav-icon fas fa-calendar-check"></i>
-                        <p>Prescription List</p>
+                        <p>Prescriptions & Reviews</p>
                     </a>
                 </li>
 
-                @* <!-- 🧾 Payments -->
+            <!-- Logout -->
                 <li class="nav-item">
-                    <a asp-area="User" asp-controller="BookAppointment" asp-action="InvoicePayment" class="nav-link">
-                        <i class="nav-icon fas fa-money-check-alt"></i>
-                        <p>Payments</p>
-                    </a>
-
-                </li> *@
-
-                <!-- 📖 Medical History & Notes -->
-                <li class="nav-item">
-                    <a asp-area="Users" asp-controller="Records" asp-action="History" class="nav-link">
-                        <i class="nav-icon fas fa-file-medical"></i>
-                        <p>Medical History</p>
-                    </a>
-                </li>
-
-                <!-- 💬 Messages -->
-                <li class="nav-item">
-                    <a asp-area="Users" asp-controller="Messages" asp-action="Index" class="nav-link">
-                        <i class="nav-icon fas fa-comments"></i>
-                        <p>Messages</p>
-                    </a>
-                </li>
-
-                <!-- 📥 Notifications -->
-                <li class="nav-item">
-                    <a asp-area="Users" asp-controller="Notifications" asp-action="Index" class="nav-link">
-                        <i class="nav-icon fas fa-bell"></i>
-                        <p>Notifications</p>
-                    </a>
-                </li>
-
-                <!-- 🌡️ Daily Mood Tracker -->
-                <li class="nav-item">
-                    <a asp-area="Users" asp-controller="Mood" asp-action="Track" class="nav-link">
-                        <i class="nav-icon fas fa-thermometer-half"></i>
-                        <p>Daily Mood Tracker</p>
-                    </a>
-                </li>
-
-                <!-- 📌 Progress Chart -->
-                <li class="nav-item">
-                    <a asp-area="Users" asp-controller="Progress" asp-action="Index" class="nav-link">
-                        <i class="nav-icon fas fa-chart-line"></i>
-                        <p>Progress Chart</p>
-                    </a>
-                </li>
-
-                <!-- 🚨 Emergency Consultation -->
-                <li class="nav-item">
-                    <a asp-area="Users" asp-controller="Emergency" asp-action="Request" class="nav-link text-danger">
-                        <i class="nav-icon fas fa-exclamation-triangle"></i>
-                        <p>Emergency Consultation</p>
-                    </a>
-                </li>
-
-                <!-- Logout -->
-                <li class="nav-item">
-                    <a asp-area="" asp-controller="Home" asp-action="Logout" class="nav-link">
+                    <a asp-controller="Home" asp-action="Logout" class="nav-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Logout</p>
                     </a>
                 </li>
+
             </ul>
         </nav>
     </div>
@@ -155,3 +109,25 @@
 </div>
 <!-- /.sidebar -->
 </aside>
+<script>
+    document.getElementById("sidebarSearchBtn").addEventListener("click", function() {
+        var filter = document.getElementById("sidebarSearchInput").value.toLowerCase();
+        var items = document.querySelectorAll(".nav-sidebar .nav-item"); // sidebar menu items
+
+        items.forEach(function(item) {
+            var text = item.innerText.toLowerCase();
+            if (text.includes(filter)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    });
+
+    // Enter key press এও search
+    document.getElementById("sidebarSearchInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            document.getElementById("sidebarSearchBtn").click();
+        }
+    });
+</script>

@@ -1,31 +1,31 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    var userType = Context.Session.GetString("UsertypeId");
+    var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+}
+
 <aside class="main-sidebar sidebar-light-info elevation-4 user-sidebar" style="min-height:100vh;">
-    <!-- Brand Logo -->
-    @* <a href="~/Admin/index3.html" class="brand-link">
-        <img src="~/Admin/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Admin Panel</span> *@
-    @* </a> *@
-    @if (Context.Session.GetString("UsertypeId") == "1"){
-
-    <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user (optional) -->
-         
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                <div class="image">
-                    <img src="~/Admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                </div>
-                <div class="info">
-                    <a href="#" class="d-block">
-                        @HttpContextAccessor.HttpContext.Session.GetString("UserName") -Admin
-                    </a>
-                </div>
+        <!-- User Panel -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="~/Admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
+            <div class="info">
+                @if (userType == "1")
+                {
+                    <a href="#" class="d-block">@userName - Admin</a>
+                }
+                else if (userType == "2")
+                {
+                    <a href="#" class="d-block">@userName - Psychiatrist</a>
+                }
+            </div>
+        </div>
 
-
-        <!-- SidebarSearch Form -->
+        <!-- Search Form (optional, mainly for Admin) -->
         <div class="form-inline">
             <div class="input-group" data-widget="sidebar-search">
                 <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
@@ -40,173 +40,104 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- Dashboard -->
-                <li class="nav-item">
-                        @* <a asp-area="Admins" asp-controller="Dashboard" asp-action="GetBookingSummaryss" class="nav-link">
-                            <i class="nav-icon fas fa-clipboard-list"></i>
-                            <p>Appointment Overview</p>
-                        </a> *@
-                </li>
+
+                @* Admin Menu *@
+                @if (userType == "1")
+                {
                     <li class="nav-item">
                         <a asp-area="Admins" asp-controller="PsychiatristRecord" asp-action="Record" class="nav-link">
                             <i class="nav-icon fas fa-clipboard-list"></i>
                             <p>Psychiatrist-Record</p>
                         </a>
                     </li>
-                <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="ManageUser" asp-action="Index" class="nav-link">
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p> Manage User Types</p>
-                    </a>
-                </li>
-               
+                    <li class="nav-item">
+                        <a asp-area="Admins" asp-controller="ManageUser" asp-action="Index" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Manage User Types</p>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a asp-area="Admins" asp-controller="Designation" asp-action="Index" class="nav-link">
                             <i class="nav-icon fas fa-clipboard-list"></i>
                             <p>Users - Designation</p>
                         </a>
                     </li>
-
-                  
-               
-
-
-                <!-- Patients -->
-                <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="PatientList" asp-action="Psychiatrist" class="nav-link">
-                        <i class="nav-icon fas fa-user-md"></i>
-                        <p>Psychiatrists</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a asp-area="Admins" asp-controller="PatientList" asp-action="PatientInfo" class="nav-link">
-                        <i class="nav-icon fas fa-procedures"></i>
-                        <p>Patients</p>
-                    </a>
-                </li>
-
-                <!-- Appointments -->
-                <li class="nav-item">
+                    <li class="nav-item">
+                        <a asp-area="Admins" asp-controller="PatientList" asp-action="Psychiatrist" class="nav-link">
+                            <i class="nav-icon fas fa-user-md"></i>
+                            <p>Psychiatrists</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Admins" asp-controller="PatientList" asp-action="PatientInfo" class="nav-link">
+                            <i class="nav-icon fas fa-procedures"></i>
+                            <p>Patients</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a asp-area="Admins" asp-controller="BookAppointmentPatients" asp-action="AppointmentPatientLists" class="nav-link">
-                        <i class="nav-icon fas fa-calendar-check"></i>
-                        <p>Appointmented Patient</p>
-                    </a>
-                </li>
+                            <i class="nav-icon fas fa-calendar-check"></i>
+                            <p>Appointmented Patient</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="~/Admin/PaymentTracking" class="nav-link">
+                            <i class="nav-icon fas fa-money-check-alt"></i>
+                            <p>Payment List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="~/Admin/Notifications" class="nav-link">
+                            <i class="nav-icon fas fa-bell"></i>
+                            <p>Notifications</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="~/Admin/Reports" class="nav-link">
+                            <i class="nav-icon fas fa-file-alt"></i>
+                            <p>Reports</p>
+                        </a>
+                    </li>
+                }
 
-              
-             
-               
-                <!-- Payment Tracking -->
-                <li class="nav-item">
-                    <a href="~/Admin/PaymentTracking" class="nav-link">
-                        <i class="nav-icon fas fa-money-check-alt"></i>
-                        <p>Payment List</p>
-                    </a>
-                </li>
+                @* Psychiatrist Menu *@
+                @if (userType == "2")
+                {
+                    <li class="nav-item">
+                        <a asp-area="Psychologist" asp-controller="PsyProfile" asp-action="Index" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>ProfileCreates</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Psychologist" asp-controller="PsychiatristSchedule" asp-action="Index" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Schedule</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Psychologist" asp-controller="AppointmentBook" asp-action="MyBookings" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Patient-Appointment</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Psychologist" asp-controller="Reviews" asp-action="Reviews" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>Reviews Patients</p>
+                        </a>
+                    </li>
+                }
 
-                <!-- Notifications -->
-                <li class="nav-item">
-                    <a href="~/Admin/Notifications" class="nav-link">
-                        <i class="nav-icon fas fa-bell"></i>
-                        <p>Notifications</p>
-                    </a>
-                </li>
-
-          
-
-                <!-- Reports -->
-                <li class="nav-item">
-                    <a href="~/Admin/Reports" class="nav-link">
-                        <i class="nav-icon fas fa-file-alt"></i>
-                        <p>Reports</p>
-                    </a>
-                </li>
-                 
-
-
-                <!-- Logout -->
+                <!-- Logout for both -->
                 <li class="nav-item">
                     <a href="~/Home/Logout" class="nav-link">
                         <i class="nav-icon fas fa-sign-out-alt text-danger"></i>
                         <p class="text">Logout</p>
                     </a>
                 </li>
+
             </ul>
         </nav>
-        <!-- /.sidebar-menu -->
     </div>
-    }
-
-
-    @* Psychiatrist *@
-    @if (Context.Session.GetString("UsertypeId") == "2")
-    {
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <div class="sidebar">
-                <!-- Sidebar user (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="~/Admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                    </div>
-                    <div class="info">
-                        <a href="#" class="d-block">
-                            @Context.Session.GetString("UserName")
-                        </a>
-                    </div>
-                </div>
-           
-
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-                        <li class="nav-item">
-                            <a asp-area="Psychologist" asp-controller="PsyProfile" asp-action="Index" class="nav-link">
-                                <i class="nav-icon fas fa-clipboard-list"></i>
-                                <p>ProfileCreates</p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-                        <li class="nav-item">
-                            <a asp-area="Psychologist" asp-controller="PsychiatristSchedule" asp-action="Index" class="nav-link">
-                                <i class="nav-icon fas fa-clipboard-list"></i>
-                                <p>Schedule</p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-                        <li class="nav-item">
-                            <a asp-area="Psychologist" asp-controller="AppointmentBook" asp-action="MyBookings" class="nav-link">
-                                <i class="nav-icon fas fa-clipboard-list"></i>
-                                <p>Patient-Appointment</p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-                        <li class="nav-item">
-                            <a asp-area="Psychologist" asp-controller="Reviews" asp-action="Reviews" class="nav-link">
-                                <i class="nav-icon fas fa-clipboard-list"></i>
-                                <p>Reviews Patients</p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-              
-                <!-- /.sidebar-menu -->
-            </div>
-            <!-- /.sidebar -->
-        </aside>
-    }
-
-
-       
-    </div>
-    <!-- /.sidebar -->
 </aside>

@@ -92,7 +92,7 @@
                 <div class="row mb-2">
                     <div class="col-md-4"><b>Approval Status:</b></div>
                     <div class="col-md-8">
-                        @if (item.ApprovalStatus == "Pending")
+                        @if (item.ApprovalStatus != "NotPaid" && item.ApprovalStatus == "Pending")
                         {
                             <span class="badge bg-warning">Pending</span>
                         }
@@ -100,13 +100,10 @@
                         {
                             <span class="badge bg-success">Approved</span>
                         }
-                        else if (item.ApprovalStatus == "Rejected")
-                        {
-                            <span class="badge bg-danger">Rejected</span>
-                        }
+                      
                         else
                         {
-                            <span class="badge bg-secondary">Unknown</span>
+                            <span class="badge bg-secondary">Completed</span>
                         }
                     </div>
                 </div>

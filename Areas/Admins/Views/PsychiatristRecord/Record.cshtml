@@ -3,112 +3,84 @@
 <div class="container mt-4">
     <div class="row mb-4 align-items-end">
         <div class="col-md-6">
-            <h3 class="text-primary fw-bold">Psychiatrist Info</h3>
+            <h3 class="fw-bold text-dark">Psychiatrist Records Report</h3>
         </div>
 
         <form method="get" asp-action="Record" class="row g-2">
             <div class="col-md-4">
                 <label class="form-label">Start Date</label>
-                <input type="date" class="form-control" name="StartDate" value="@( ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") )" />
+                <input type="date" class="form-control" name="StartDate"
+                       value="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : "")" />
             </div>
             <div class="col-md-4">
                 <label class="form-label">End Date</label>
-                <input type="date" class="form-control" min="@(((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd"))" name="EndDate" value="@( ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") )" />
+                <input type="date" class="form-control"
+                       min="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : "")"
+                       name="EndDate"
+                       value="@(ViewBag.EndDate != null ? ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") : "")" />
             </div>
             <div class="col-md-4 d-flex">
-                <button type="submit" class="btn btn-primary align-self-end w-100">Submit</button>
+                <button type="submit" class="btn btn-dark align-self-end w-100">Submit</button>
             </div>
         </form>
     </div>
 
     @if (Model != null && Model.Any())
     {
-        <table class="table table-bordered table-hover text-center align-middle w-100">
-            <thead class="bg-warning">
+        var groupedRecords = Model
+        .GroupBy(r => new { r.PsychiatristId, r.PsychiatristName })
+        .Select(g => new
+        {
+            PsychiatristId = g.Key.PsychiatristId,
+            PsychiatristName = g.Key.PsychiatristName,
+            TotalRecords = g.Sum(x => x.Records)
+        });
+            <table id="designationTable" class="w-100" style="border-collapse: collapse; margin-top:20px;">
+            <thead>
                 <tr>
-                    <th style="width:30%;">Psychiatrist Name</th>
-                    <th style="width:35%;">Approval Status</th>
-                    <th style="width:35%;">Total Records</th>
+                    <th style="border:1px solid #000; padding:6px; text-align:left;">Psychiatrist</th>
+                    <th style="border:1px solid #000; padding:6px; text-align:left;">Total Booking</th>
+                    <th style="border:1px solid #000; padding:6px; text-align:left;">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @{
-                    var groupedRecords = Model.GroupBy(r => r.PsychiatristName);
-                }
-
-                @foreach (var group in groupedRecords)
+                @foreach (var item in groupedRecords)
                 {
-                    bool firstRow = true;
-                    int rowCount = group.Count();
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px;">@item.PsychiatristName</td>
+                        <td style="border:1px solid #000; padding:6px;">@item.TotalRecords</td>
+                        <td style="border:1px solid #000; padding:6px;">
+                            <a class="btn btn-sm btn-outline-dark"
+                               asp-controller="PsychiatristRecord"
+                               asp-action="Details"
+                               asp-route-psychiatristId="@item.PsychiatristId">
+                                View Report
+                            </a>
 
-                    foreach (var record in group)
-                    {
-                        <tr class="table-info">
-                            @if (firstRow)
-                            {
-                                <td class="fw-bold text-start ps-3" rowspan="@rowCount">@record.PsychiatristName</td>
-                                firstRow = false;
-                            }
-
-                            <td>
-                                <span class="badge @(record.ApprovalStatus == "Approved" ? "bg-success" :
-                                                                                                           record.ApprovalStatus == "Pending" ? "bg-warning" : "bg-secondary")">
-                        @record.ApprovalStatus
-                    </span>
-                </td>
-                <td>@record.Records</td>
-            </tr>
-                        }
+                        </td>
+                    </tr>
                 }
+
             </tbody>
         </table>
-        <div class="d-flex justify-content-end mb-3">
-            <button id="downloadCsv" class="btn btn-success">
-                <i class="bi bi-download"></i> Download CSV
+
+        <div class="d-flex justify-content-end mb-3 mt-3">
+            <button id="downloadPdf" class="btn btn-dark">
+                <i class="bi bi-download"></i> Download PDF
             </button>
         </div>
-
     }
     else
     {
-        <div class="alert alert-warning text-center">
+        <div class="alert alert-secondary text-center">
             No records found.
         </div>
     }
 </div>
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $("#downloadCsv").click(function () {
-            var csv = [];
-            var rows = $("table tbody tr");
-
-            // Add table headers
-            var headers = [];
-            $("table thead th").each(function () {
-                headers.push($(this).text().trim());
-            });
-            csv.push(headers.join(","));
-
-            // Add table rows
-            rows.each(function () {
-                var row = [];
-                $(this).find("td").each(function () {
-                    var text = $(this).text().trim();
-                    text = text.replace(/,/g, ""); // Remove commas from data
-                    row.push(text);
-                });
-                csv.push(row.join(","));
-            });
-
-            // Create CSV file
-            var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-            var downloadLink = document.createElement("a");
-            downloadLink.download = "PsychiatristRecords.csv";
-            downloadLink.href = window.URL.createObjectURL(csvFile);
-            downloadLink.style.display = "none";
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
+        $(document).ready(function () {
+            $('#designationTable').DataTable(); // Different ID
         });
     </script>
 }

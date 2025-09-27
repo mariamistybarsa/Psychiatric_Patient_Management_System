@@ -4,6 +4,47 @@
     ViewData["Title"] = "Pending Appointments";
 }
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    #designationTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+        #designationTable th, #designationTable td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+    .header {
+        background-color: #8B0000;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: left;
+        padding: 10px;
+        margin: 0 auto 5px auto;
+        width: 100%;
+    }
+
+    .sub-header {
+        background-color: #d46a6a;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+    }
+
+    .date {
+        float: right;
+        font-weight: normal;
+    }
+</style>
+
 <h3 class="mb-3">Appointed Patients</h3>
 
 @if (TempData["Message"] != null)
@@ -13,8 +54,12 @@
 
 @if (Model != null && Model.Count > 0)
 {
-    <table class="table table-bordered table-striped align-middle">
-        <thead class="table-dark">
+    <div class="header" style="text-align:center; font-size:20px; font-weight:bold; margin-bottom:15px;">
+        Appointment Lists (Patients)
+    </div>
+
+    <table id="designationTable">
+        <thead class="sub-header">
             <tr>
                 <th>#</th>
                 <th>Psychiatrist</th>
@@ -89,12 +134,10 @@ else
     <div class="alert alert-warning">No pending appointments found.</div>
 }
 
-<style>
-    .table {
-        border: 3px solid;
-        border-image-slice: 1;
-        border-image-source: linear-gradient(90deg, #A8DADC, #457B9D);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-</style>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#designationTable').DataTable();
+        });
+    </script>
+}

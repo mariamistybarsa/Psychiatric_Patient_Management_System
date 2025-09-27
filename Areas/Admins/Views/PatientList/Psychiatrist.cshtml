@@ -3,19 +3,55 @@
 @{
     ViewData["Title"] = "Psychiatrist Information";
 }
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    #psychiatristtable {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+        #psychiatristtable th, #psychiatristtable td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+    .header {
+        background-color: #8B0000;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: left;
+        padding: 10px;
+        margin: 0 auto 5px auto;
+        width: 100%;
+    }
+
+    .sub-header {
+        background-color: #d46a6a;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+    }
+
+    .date {
+        float: right;
+        font-weight: normal;
+    }
+</style>
+
 <br />
 <br />
-<form method="get" asp-controller="PatientList" asp-action="Search" class="d-flex mb-3">
-    <input type="text" name="UserName" class="form-control me-2" placeholder="Search by ID, Name, or Email" />
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
 
+<h2 class="header">Psychiatrist Information</h2>
 
-
-<h2>Psychiatrist Information</h2>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
+<table id="psychiatristtable">
+    <thead class="sub-header">
         <tr>
             <th>User ID</th>
             <th>User Name</th>
@@ -81,5 +117,10 @@
     </tbody>
 </table>
 
-
-
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#psychiatristtable').DataTable();
+        });
+    </script>
+}

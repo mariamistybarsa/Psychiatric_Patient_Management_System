@@ -3,17 +3,55 @@
 @{
     ViewData["Title"] = "Patient Information";
 }
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    #patienttable {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+        #patienttable th, #patienttable td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+    .header {
+        background-color: #8B0000;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: left;
+        padding: 10px;
+        margin: 0 auto 5px auto;
+        width: 100%;
+    }
+
+    .sub-header {
+        background-color: #d46a6a;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+    }
+
+    .date {
+        float: right;
+        font-weight: normal;
+    }
+</style>
+
 <br />
 <br />
-<form method="get" asp-controller="PatientList" asp-action="Search" class="d-flex mb-3">
-    <input type="text" name="UserName" class="form-control me-2" placeholder="Search by ID, Name, or Email" />
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
 
-<h2>Patient Information</h2>
+<h2 class="header">Patient Information</h2>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
+<table id="patienttable">
+    <thead class="sub-header">
         <tr>
             <th>User ID</th>
             <th>User Name</th>
@@ -25,7 +63,7 @@
             <th>Blood Group</th>
             <th>Action</th>
             <th>Status</th>
-            <th>Appointment Details</th>   @* <-- new column *@
+            <th>Appointment Details</th>
         </tr>
     </thead>
     <tbody>
@@ -87,3 +125,11 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#patienttable').DataTable();
+        });
+    </script>
+}

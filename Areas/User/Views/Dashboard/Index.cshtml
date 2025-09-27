@@ -1,4 +1,6 @@
-﻿@{
+﻿@* dashboard/index *@
+
+@{
     ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -8,3 +10,168 @@
         <p class="text-muted">Here’s a quick look at your health dashboard.</p>
     </div>
 </div>
+@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container py-4">
+
+    <!-- Page Title -->
+    <div class="mb-4 text-center">
+        <h2 class="fw-bold">User Dashboard</h2>
+        <p class="text-muted mb-0">Manage your appointments, payments, reviews & prescriptions</p>
+    </div>
+
+    <!-- Top Action Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title">Book Appointment</h5>
+                        <p class="card-text">Choose psychiatrist & schedule</p>
+                    </div>
+                    <a asp-area="User" asp-controller="BookAppointment" asp-action="BookFrontPage" class="btn btn-primary btn-sm mt-auto">
+                        <i class="far fa-calendar-check"></i> New Appointment
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title">Make Payment</h5>
+                        <p class="card-text">Pay consultation fees</p>
+                    </div>
+                    <a asp-area="User" asp-controller="BookAppointment" asp-action="Index" class="btn btn-success btn-sm mt-auto">
+                        <i class="fas fa-credit-card"></i> Pay Now
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title">Review Psychiatrist</h5>
+                        <p class="card-text">Share your experience</p>
+                    </div>
+                    <a asp-area="User" asp-controller="Prescription" asp-action="PrescriptionList" class="btn btn-outline-primary btn-sm mt-auto">
+                        <i class="fas fa-star"></i> Write Review
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title">Prescription</h5>
+                        <p class="card-text">See the prescription</p>
+                    </div>
+                    <a asp-area="User" asp-controller="Prescription" asp-action="PrescriptionList" class="btn btn-outline-primary btn-sm mt-auto">
+                        <i class="fas fa-star"></i>prescription
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking History -->
+    @model List<Psychiatrist_Management_System.Models.BookingHistoryVM>
+
+    <h4>Hello, @ViewBag.UserName!</h4>
+
+    <!-- Booking History -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Booking History</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Psychiatrist</th>
+                            <th>Date & Time</th>
+                            <th>Mode</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            int i = 1;
+                            foreach (var booking in Model)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@booking.PsychiatristName</td>
+                                    <td>@booking.AppointmentDate.ToString("dd MMM yyyy"), @booking.AppointmentTime</td>
+                                    <td>@(booking.AppointmentDay.Contains("Online") ? "Online" : "In-Person")</td>
+                                    <td>
+                                        @if (booking.ApprovalStatus == "Approved")
+                                        {
+                                            <span class="badge bg-success">Confirmed</span>
+                                        }
+                                        else if (booking.ApprovalStatus == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        }
+                                        else if (booking.ApprovalStatus == "Cancelled")
+                                        {
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                    <td class="text-end">
+                                        <a asp-area="User"
+                                           asp-controller="Prescription"
+                                           asp-action="ViewPrescription"
+                                           asp-route-bookingId="@booking.BookingId"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            Prescription
+                                        </a>
+                                    </td>
+
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No bookings found</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+</style>
+
