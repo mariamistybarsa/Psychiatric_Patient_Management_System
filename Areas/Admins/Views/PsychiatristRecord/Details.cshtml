@@ -26,7 +26,7 @@
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
-                    <th>Booking Id</th>
+                    <th>PatientName</th>
 
                     <th>Appointment Date</th>
                     <th>Appointment Time</th>
@@ -42,7 +42,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.BookingId</td>
+                        <td>@item.PatientName</td>
                         <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
                         <td>@item.AppointmentTime</td>
                         <td>@item.ApprovalStatus</td>

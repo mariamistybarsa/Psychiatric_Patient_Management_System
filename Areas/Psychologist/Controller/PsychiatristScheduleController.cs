@@ -1,8 +1,14 @@
-﻿using Dapper;
+﻿//PsychiatristScheduleController
+
+
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Psychiatrist_Management_System.Data;
 using Psychiatrist_Management_System.Models;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
 {
@@ -44,10 +50,43 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
         }
 
         [HttpGet]
-        public IActionResult Form()
+        public async Task<IActionResult> Form()
         {
+            List<string> allDays = new List<string>
+    {
+        "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"
+    };
+
+            // Get psychiatrist's already booked schedules
+            int id = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            string sql = @"SELECT StartDay, EndDay FROM PsychiatristSchedule 
+                   WHERE PsychiatristId = @Id AND Status = 'Available'";
+            var schedules = (await _context.CreateConnection()
+                                .QueryAsync<(string StartDay, string EndDay)>(sql, new { Id = id }))
+                                .ToList();
+
+            foreach (var schedule in schedules)
+            {
+                int startIndex = allDays.IndexOf(schedule.StartDay.Replace(" ",""));
+                int endIndex = allDays.IndexOf(schedule.EndDay.Replace(" ",""));
+
+                if (startIndex == -1 || endIndex == -1)
+                    continue;
+
+                List<string> bookedDays;
+
+                if (startIndex <= endIndex)
+                    bookedDays = allDays.GetRange(startIndex, (endIndex - startIndex) + 1);
+                else
+                    bookedDays = allDays.Skip(startIndex).Concat(allDays.Take(endIndex + 1)).ToList();
+
+                allDays = allDays.Except(bookedDays).ToList(); // Remove booked days
+            }
+
+            ViewBag.AvailableDays = allDays;
             return View();
         }
+
 
         [HttpPost]
         public IActionResult Save(PsychiatristSchedule p)
@@ -87,15 +126,20 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-        [HttpGet]
         public IActionResult Edit(int id)
         {
             try
             {
+                List<string> allDays = new List<string>
+        {
+            "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"
+        };
+                ViewBag.AvailableDays = allDays;
+
                 using (var connection = _context.CreateConnection())
                 {
                     var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 4); // Flag for fetching single record
+                    parameters.Add("@flag", 4); // fetch single record
                     parameters.Add("@PsychiatristScheduleId", id);
 
                     var schedule = connection.QuerySingleOrDefault<PsychiatristSchedule>(
@@ -107,8 +151,7 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
                     if (schedule == null)
                         return NotFound();
 
-                    // Return the same Form view with data pre-filled
-                    return View("Form", schedule);
+                    return View(schedule); // Pass the schedule to pre-fill form
                 }
             }
             catch (Exception ex)
@@ -117,6 +160,7 @@ namespace Psychiatrist_Management_System.Areas.Psychologist.Controllers
                 return RedirectToAction("Index");
             }
         }
+
 
 
         [HttpPost]

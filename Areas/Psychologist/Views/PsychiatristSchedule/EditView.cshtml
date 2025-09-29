@@ -1,18 +1,12 @@
-﻿@* //form.cshtml *@
-
-
-@model Psychiatrist_Management_System.Models.PsychiatristSchedule
+﻿@model Psychiatrist_Management_System.Models.PsychiatristSchedule
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Psychiatrist Schedule";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h2>Psychiatrist Schedule</h2>
 
 <form id="scheduleForm">
-    <!-- Hidden PsychiatristId, e.g., from logged-in user or controller -->
-    @* <input type="hidden" id="PsychiatristId" value="@Model.PsychiatristId" /> *@
-
     <div class="form-group">
         <label asp-for="StartDay">Start Day</label>
         <select asp-for="StartDay" class="form-control" id="StartDay">
@@ -27,7 +21,6 @@
     <div class="form-group">
         <label asp-for="EndDay">End Day</label>
         <select asp-for="EndDay" class="form-control" id="EndDay">
-            <!-- fix id -->
             <option value="">-- Select Day --</option>
             @foreach (var day in ViewBag.AvailableDays as List<string>)
             {
@@ -36,20 +29,18 @@
         </select>
     </div>
 
-
-
     <div class="form-group">
-        <label asp-for="StartTime"></label>
-        <input asp-for="StartTime" class="form-control" type="time" id="StartTime" placeholder="Start Time" />
+        <label asp-for="StartTime">Start Time</label>
+        <input asp-for="StartTime" class="form-control" type="time" id="StartTime" />
     </div>
 
     <div class="form-group">
-        <label asp-for="EndTime"></label>
-        <input asp-for="EndTime" class="form-control" type="time" id="EndTime" placeholder="End Time" />
+        <label asp-for="EndTime">End Time</label>
+        <input asp-for="EndTime" class="form-control" type="time" id="EndTime" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Status"></label>
+        <label asp-for="Status">Status</label>
         <select asp-for="Status" class="form-control" id="Status">
             <option value="">-- Select Status --</option>
             <option value="Available">Available</option>
@@ -68,55 +59,48 @@
         $(document).ready(function () {
             $('#submitSchedule').click(function (e) {
                 e.preventDefault();
-                debugger;
 
-                const startDay = $('#StartDay').val()
-                const endDay = $('#EndDay').val()
-                const startTime = $('#StartTime').val()
-                const endTime = $('#EndTime').val()
+                const startDay = $('#StartDay').val();
+                const endDay = $('#EndDay').val();
+                const startTime = $('#StartTime').val();
+                const endTime = $('#EndTime').val();
                 const status = $('#Status').val().trim();
 
                 // Validation
-                if ( !StartDay ||!EndDay ||  !startTime || !endTime || !status) {
+                if (!startDay || !endDay || !startTime || !endTime || !status) {
                     $('#resultMessage').text('Please fill out all fields.').css('color', 'red');
                     return;
                 }
 
                 const model = {
-                    PsychiatristId: 0,
-                   StartDay: startDay,
-                   EndDay:endDay,
+                    PsychiatristId: 0, // can set from session or hidden field
+                    StartDay: startDay,
+                    EndDay: endDay,
                     StartTime: startTime,
                     EndTime: endTime,
                     Status: status
                 };
-    
-
 
                 $.ajax({
-                     url: '/Psychologist/PsychiatristSchedule/Save', 
-            type: 'POST',
-            data: model,
-                    success: function(response) {
+                    url: '/Psychologist/PsychiatristSchedule/Save',
+                    type: 'POST',
+                    data: model,
+                    success: function (response) {
                         if (response.success) {
                             $('#resultMessage').text('Schedule saved successfully!').css('color', 'green');
                             $('#scheduleForm')[0].reset();
-
-
-
-                              setTimeout(function () {
-                           window.location.href = '/Psychologist/PsychiatristSchedule/Index';
-                        }, 2000);
+                            setTimeout(function () {
+                                window.location.href = '/Psychologist/PsychiatristSchedule/Index';
+                            }, 2000);
                         } else {
                             $('#resultMessage').text('Error: ' + response.message).css('color', 'red');
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         $('#resultMessage').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
                     }
                 });
             });
         });
-              
     </script>
 }
