@@ -13,6 +13,7 @@ namespace Psychiatrist_Management_System.Models
         [Required]
         public string Email { get; set; }
         public int UsertypeId { get; set; }
+
         [Required]
         public string PhoneNumber { get; set; }
         public int DesignationId { get; set; }

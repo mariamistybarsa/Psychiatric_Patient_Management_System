@@ -12,6 +12,10 @@
                     <th>Patient Name</th>
                     <th>Rating</th>
                     <th>Comment</th>
+                    <th>Appointment Date</th>
+                    <th>Booking Serial</th>
+
+                    <th>ReviewDate</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +41,10 @@
                             }
                         </td>
                         <td>@review.Comment</td>
+                        <td>@review.CreatedAt</td>
+                        <td>@review.AppointmentDate</td>
+                        <td>@review.BookingSerial</td>
+
                     </tr>
                     serial++;
                 }
