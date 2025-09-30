@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Psychiatrist_Management_System.Models.PaymentVM>
+
+@{
+    ViewData["Title"] = "My Payment History";
+}
+
+<h3 class="mb-4">@ViewData["Title"]</h3>
+<!-- Date Range Filter -->
+<form method="get" asp-action="Index" class="row g-2 mb-3" style="margin:0 20px;">
+    <div class="col-md-3">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control" name="startDate"
+               value="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : "")" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control" name="endDate"
+               min="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : "")"
+               value="@(ViewBag.EndDate != null ? ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") : "")"
+              />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-dark w-100">Search</button>
+    </div>
+</form>
+
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Booking ID</th>
+            <th>Appointment Date</th>
+            <th>Psychiatrist</th>
+            <th>Payment Amount</th>
+            <th>Refund Amount</th>
+            <th>Payment Method</th>
+            <th>Test Fee</th>
+            <th>Visit Fee</th>
+            <th>Payment Status</th>
+            <th>Created Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int serial = 1;
+            foreach (var payment in Model)
+            {
+                <tr>
+                    <td>@serial</td>
+                    <td>@payment.BookingId</td>
+                    <td>@payment.AppointmentDate</td>
+                    <td>@payment.PsychiatristName</td>
+                    <td>@payment.PaymentAmount</td>
+                    <td>@payment.RefundAmount</td>
+                    <td>@payment.PaymentMethod</td>
+                    <td>@payment.TestFee</td>
+                    <td>@payment.VisitFee</td>
+                    <td>@payment.PaymentStatus</td>
+                    <td>@payment.CreatedDate</td>
+                </tr>
+                serial++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11" class="text-center">No payment history found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

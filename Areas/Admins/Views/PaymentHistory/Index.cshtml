@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Psychiatrist_Management_System.Models.PaymentVM>
+
+@{
+    ViewData["Title"] = "Payment History";
+}
+
+<div class="header">
+    Payment History
+    <span class="date">@DateTime.Now.ToString("dd MMM yyyy")</span>
+</div>
+
+<!-- Date Range Filter -->
+<form method="get" asp-action="Index" class="row g-2 mb-3" style="margin:0 20px;">
+    <div class="col-md-3">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control" name="startDate"
+               value="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : "")" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control" name="endDate"
+               min="@(ViewBag.StartDate != null ? ((DateTime)ViewBag.StartDate).ToString("yyyy-MM-dd") : "")"
+               value="@(ViewBag.EndDate != null ? ((DateTime)ViewBag.EndDate).ToString("yyyy-MM-dd") : "")" 
+                />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-dark w-100">Search</button>
+    </div>
+</form>
+
+
+<table id="patienttable">
+    <thead>
+        <tr class="sub-header">
+            <th>Payment ID</th>
+            <th>User Name</th>
+            <th>Booking Serial</th>
+            <th>Psychiatrist Name</th>
+            <th>Appointment Date</th>
+            <th>Refund Amount</th>
+            <th>Payment Amount</th>
+            <th>Test Fee</th>
+            <th>Visit Fee</th>
+            <th>Payment Method</th>
+            <th>Paid Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PaymentId</td>
+                <td>@item.UserName</td>
+                <td>@item.BookingSerial</td>
+                <td>@item.PsychiatristName</td>
+                <td>@item.AppointmentDate.ToString("dd-MMM-yyyy")</td>
+                <td>@item.RefundAmount</td>
+                <td>@item.PaymentAmount</td>
+                <td>@item.TestFee</td>
+                <td>@item.VisitFee</td>
+                <td>@item.PaymentMethod</td>
+                <td>@item.CreatedDate.ToString("dd-MMM-yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    #patienttable {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+        #patienttable th, #patienttable td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+    .header {
+        background-color: #8B0000;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: left;
+        padding: 10px;
+        margin: 0 auto 5px auto;
+        width: 100%;
+    }
+
+    .sub-header {
+        background-color: #d46a6a;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+    }
+
+    .date {
+        float: right;
+        font-weight: normal;
+    }
+</style>

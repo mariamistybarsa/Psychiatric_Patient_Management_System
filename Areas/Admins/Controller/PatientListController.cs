@@ -94,6 +94,10 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 }
 
                 TempData["Message"] = "User updated successfully!";
+                if(model.UsertypeId == 2)
+                {
+                    return RedirectToAction("Psychiatrist");
+                }
                 return RedirectToAction("PatientInfo");
             }
             catch (Exception ex)

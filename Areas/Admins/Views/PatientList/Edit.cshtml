@@ -9,7 +9,9 @@
 <div class="card p-4 shadow-sm">
     <form asp-controller="PatientList" asp-action="Edit" method="post">
         <input type="hidden" asp-for="UserId" />
-        <input type="hidden" asp-for="DesignationId" /> @* এটা SP update এর জন্য দরকার *@
+        <input type="hidden" asp-for="DesignationId" />
+        <input type="hidden" asp-for="UsertypeId" />
+        @* এটা SP update এর জন্য দরকার *@
 
 
         <div class="mb-3">

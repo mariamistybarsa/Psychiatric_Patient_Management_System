@@ -51,28 +51,38 @@
                         }
 
                         @* ---- Cancel Booking Logic ---- *@
-                        @if (item.PaymentStatus == "Paid" && item.HoursDifference >= 0 && item.ApprovalStatus != "Cancel")
+                        @* ---- Cancel Booking Logic ---- *@
+                        @if (item.ApprovalStatus != "Cancel")
                         {
-                            if (item.HoursDifference <= 24)
-                            {
-                                <form asp-action="CancelBookingfor24hours" method="post"
-                                      onsubmit="return confirm('Cancel this booking? You will get 15% refund.');">
-                                    <input type="hidden" name="bookingId" value="@item.BookingId" />
-                                    <button type="submit" class="btn btn-warning btn-sm">Cancel</button>
-                                    <small class="text-muted ms-2">Cancel within 24 hours → 15% refund</small>
-                                    <small class="text-muted ms-2">Hours: @item.HoursDifference</small>
-                                </form>
-                            }
-                            else
+                            // ✅ Case 1: Before payment (NotPaid)
+                            if (item.PaymentStatus == "NotPaid")
                             {
                                 <form asp-action="CancelBooking" method="post"
-                                      onsubmit="return confirm('Cancel this booking? You cannot get refund.');">
+                                      onsubmit="return confirm('Cancel this booking? It will be deleted permanently.');">
                                     <input type="hidden" name="bookingId" value="@item.BookingId" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Booking (No Refund)</button>
-                                    <small class="text-muted ms-2">No refund after 24 hours</small>
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
                                 </form>
                             }
+                            // ✅ Case 2: After payment + Approved (Refund rules apply)
+                            else if (item.PaymentStatus == "Paid" && (item.ApprovalStatus == "Pending" || item.ApprovalStatus == "Approved"))
+                            {
+                                if (item.HoursDifference >= 0 && item.HoursDifference <= 24)
+                                {
+                                    <form asp-action="CancelBookingfor24hours" method="post"
+                                          onsubmit="return confirm('Cancel this booking? You will get 15% refund.');">
+                                        <input type="hidden" name="bookingId" value="@item.BookingId" />
+                                        <button type="submit" class="btn btn-warning btn-sm">Cancel (15% Refund)</button>
+                                        <small class="text-muted ms-2">Within 24 hours → 15% refund</small>
+                                        <small class="text-muted ms-2">Hours: @item.HoursDifference</small>
+                                    </form>
+                                }
+                                else
+                                {
+                                    @* ❌ After 24 hours → hide cancel button completely *@
+                                }
+                            }
                         }
+
 
                         @if (item.PaymentStatus == "Paid")
                         {
@@ -105,7 +115,7 @@
                                                     <button type="button" class="btn btn-outline-primary" onclick="showForm('bkash', @item.BookingId)">Bkash</button>
                                                     <button type="button" class="btn btn-outline-success" onclick="showForm('nagad', @item.BookingId)">Nagad</button>
                                                     <button type="button" class="btn btn-outline-warning" onclick="showForm('rocket', @item.BookingId)">Rocket</button>
-                                                    <button type="button" class="btn btn-outline-info" onclick="showForm('card', @item.BookingId)">Card</button>
+                                                    @* <button type="button" class="btn btn-outline-info" onclick="showForm('card', @item.BookingId)">Card</button> *@
                                                 </div>
                                             </div>
 
