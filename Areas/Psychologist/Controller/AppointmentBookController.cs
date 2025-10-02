@@ -202,5 +202,18 @@ Regards,<br/>
             // Redirect back to the booking list or same page
             return RedirectToAction("MyBookings"); // or your listing action
         }
+        public IActionResult RejectBooking(int id)
+        {
+            using var connection = _context.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", 19); // Our new flag
+            parameters.Add("@BookingId", id);
+
+            connection.Execute("Sp_BookAppointment", parameters, commandType: CommandType.StoredProcedure);
+
+
+            // Redirect back to the booking list or same page
+            return RedirectToAction("MyBookings"); // or your listing action
+        }
     }
 }

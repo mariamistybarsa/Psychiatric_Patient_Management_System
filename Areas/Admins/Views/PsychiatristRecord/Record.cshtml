@@ -78,9 +78,36 @@
     }
 </div>
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#designationTable').DataTable(); // Different ID
         });
+    
+   
+        $(document).ready(function () {
+            // Initialize DataTable
+            $('#designationTable').DataTable();
+
+            // Download PDF
+            $('#downloadPdf').click(function () {
+                const { jsPDF } = window.jspdf;
+                var doc = new jsPDF('p', 'pt', 'a4');
+
+                html2canvas(document.querySelector("#designationTable")).then(canvas => {
+                    var imgData = canvas.toDataURL("image/png");
+                    var imgProps = doc.getImageProperties(imgData);
+
+                    var pdfWidth = doc.internal.pageSize.getWidth();
+                    var pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                    doc.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight);
+                    doc.save("Psychiatrist_Records_Report.pdf");
+                });
+            });
+        });
     </script>
 }
+

@@ -108,53 +108,141 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             }
         }
 
-
-
         public IActionResult Delete(int id)
         {
             try
             {
+                int userTypeId;
                 using (var connection = _context.CreateConnection())
                 {
+                    // First fetch the user type
+                    userTypeId = connection.QueryFirstOrDefault<int>(
+                        "SELECT UsertypeId FROM Users WHERE UserId = @UserId",
+                        new { UserId = id }
+                    );
+
+                    // Now delete the user
                     var parameters = new DynamicParameters();
                     parameters.Add("@flag", 10); // Delete
                     parameters.Add("@UserId", id);
+
                     connection.Execute(
-                       "Sp_User",
+                        "Sp_User",
                         parameters,
                         commandType: CommandType.StoredProcedure
                     );
                 }
+
+                TempData["Message"] = "User deleted successfully!";
+
+                if (userTypeId == 2)
+                {
+                    return RedirectToAction("Psychiatrist");
+                }
                 return RedirectToAction("PatientInfo");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                TempData["Error"] = "An error occurred while deleting the user.";
+                return RedirectToAction("PatientInfo");
             }
         }
+
+
+        //public IActionResult Delete(int id)
+        //{
+        //    try
+        //    {
+        //        using (var connection = _context.CreateConnection())
+        //        {
+        //            var parameters = new DynamicParameters();
+        //            parameters.Add("@flag", 10); // Delete
+        //            parameters.Add("@UserId", id);
+        //            connection.Execute(
+        //               "Sp_User",
+        //                parameters,
+        //                commandType: CommandType.StoredProcedure
+        //            );
+        //        }
+        //        return RedirectToAction("PatientInfo");
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+
 
         public IActionResult Approve(int id)
         {
             try
             {
+                int userTypeId;
                 using (var connection = _context.CreateConnection())
                 {
+                    // Get the user type first (same idea as Delete)
+                    userTypeId = connection.QueryFirstOrDefault<int>(
+                        "SELECT UsertypeId FROM Users WHERE UserId = @UserId",
+                        new { UserId = id }
+                    );
+
+                    // Now approve the user
                     var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 11); // Delete
+                    parameters.Add("@flag", 11); // Approve
                     parameters.Add("@UserId", id);
+
                     connection.Execute(
-                       "Sp_User",
+                        "Sp_User",
                         parameters,
                         commandType: CommandType.StoredProcedure
                     );
+                }
+
+                TempData["Message"] = "User approved successfully!";
+
+                if (userTypeId == 2)
+                {
+                    return RedirectToAction("Psychiatrist");
                 }
                 return RedirectToAction("PatientInfo");
             }
             catch (Exception)
             {
-                throw;
+                TempData["Error"] = "An error occurred while approving the user.";
+                return RedirectToAction("PatientInfo");
             }
         }
+
+
+
+
+
+
+
+
+        //public IActionResult Approve(int id)
+        //{
+        //    try
+        //    {
+        //        using (var connection = _context.CreateConnection())
+        //        {
+        //            var parameters = new DynamicParameters();
+        //            parameters.Add("@flag", 11); // Delete
+        //            parameters.Add("@UserId", id);
+        //            connection.Execute(
+        //               "Sp_User",
+        //                parameters,
+        //                commandType: CommandType.StoredProcedure
+        //            );
+        //        }
+        //        return RedirectToAction("PatientInfo");
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
         [HttpGet]
  
         public IActionResult Search(string userName)

@@ -42,8 +42,8 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
             parameters.Add("@flag", 8); // flag for approval in SP
             parameters.Add("@BookingId", bookingId);
             connection.Execute("Sp_BookAppointment", parameters, commandType: CommandType.StoredProcedure);
-
-            TempData["Message"] = "Booking approved. Please payment first.";
+            
+            TempData["Message"] = "Booking approved.";
             return RedirectToAction("AppointmentPatientLists");
         }
 

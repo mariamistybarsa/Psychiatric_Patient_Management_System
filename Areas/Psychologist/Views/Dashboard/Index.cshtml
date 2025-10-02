@@ -1,6 +1,7 @@
 ﻿@* Index.cshtml *@
 @{
     ViewData["Title"] = "Psychiatrist Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var summary = ViewBag.Summary;
     var patients = ViewBag.Patients as List<PsychiatristDashboardVM>;

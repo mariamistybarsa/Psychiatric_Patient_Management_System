@@ -3,10 +3,10 @@
 
 <h3 class="mb-4">Booking History</h3>
 
-<form method="get" asp-controller="PatientList" asp-action="Search" class="d-flex mb-3">
+@* <form method="get" asp-controller="PatientList" asp-action="Search" class="d-flex mb-3">
     <input type="text" name="UserName" class="form-control me-2" placeholder="Search by ID, Name, or Email" />
     <button type="submit" class="btn btn-primary">Search</button>
-</form>
+</form> *@
 
 @if (TempData["Message"] != null)
 {
@@ -21,7 +21,7 @@
             <div class="col-md-6 mb-3">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        Booking ID: @item.BookingId — @item.AppointmentDay
+                        Booking Day: @item.AppointmentDay
                     </div>
                     <div class="card-body">
                         <p><strong>Psychiatrist:</strong> @item.PsychiatristName</p>
@@ -152,7 +152,7 @@
                                                     <input type="hidden" name="Method" value="@method" />
                                                     <div class="mb-3">
                                                         <label class="form-label">Account Number</label>
-                                                        <input type="text" name="AccountNumber" class="form-control" />
+                                                        <input type="number" name="AccountNumber" class="form-control" />
                                                     </div>
                                                     <button type="button" class="btn btn-primary pay-now-btn">Pay Now</button>
                                                 </div>

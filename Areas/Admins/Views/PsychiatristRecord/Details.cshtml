@@ -1,5 +1,97 @@
 ﻿@model IEnumerable<Psychiatrist_Management_System.Models.PsychiatristRecords>
 
+@{
+    ViewData["Title"] = "Patient Information";
+}
+
+<!-- CSS Styles -->
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h3 {
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 20px;
+    }
+
+    #designationTable, .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        #designationTable th, #designationTable td,
+        .table th, .table td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        #designationTable th, .table th {
+            background-color: #8B0000;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        #designationTable tr:nth-child(even), .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #designationTable tr:hover, .table tr:hover {
+            background-color: #ffe6e6;
+            transition: 0.3s;
+        }
+
+    .header {
+        background-color: #8B0000;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-align: left;
+        padding: 12px;
+        margin: 0 auto 10px auto;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .sub-header {
+        background-color: #d46a6a;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .date {
+        float: right;
+        font-weight: normal;
+        font-size: 13px;
+        color: #f1f1f1;
+    }
+
+    .btn-danger {
+        background-color: #8B0000;
+        border: none;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+        .btn-danger:hover {
+            background-color: #a83232;
+        }
+</style>
+
+<!-- Container -->
 <div class="container mt-4">
     <h3>@ViewBag.PsychiatristName - Booking Details</h3>
 
@@ -21,80 +113,98 @@
         </div>
     </form>
 
-    @if (Model != null && Model.Any())
-    {
-        <table class="table table-bordered mt-3">
-            <thead>
-                <tr>
-                    <th>PatientName</th>
-
-                    <th>Appointment Date</th>
-                    <th>Appointment Time</th>
-                    <th>Status</th>
-                    <th>Approved At</th>
-                    <th>Cancelled At</th>
-                    <th>Cancel Reason</th>
-                    <th>Completed At</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+    <!-- PDF / Table Container -->
+    <div id="table-container">
+        @if (Model != null && Model.Any())
+        {
+            <table id="designationTable" class="display w-100">
+                <thead>
                     <tr>
-                        <td>@item.PatientName</td>
-                        <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                        <td>@item.AppointmentTime</td>
-                        <td>@item.ApprovalStatus</td>
-                        <td>@(item.ApprovedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                        <td>@(item.CancelledAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                        <td>@item.CancelReason</td>
-                        <td>@(item.CompletedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                        <td>@item.Notes</td>
+                        <th>PatientName</th>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
+                        <th>Status</th>
+                        <th>Approved At</th>
+                        <th>Cancelled At</th>
+                        <th>Cancel Reason</th>
+                        <th>Completed At</th>
+                        <th>Notes</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-        <div class="mb-3">
-            <button class="btn btn-danger" onclick="downloadPDF()">Download PDF</button>
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-secondary text-center">No booking records found.</div>
-        <div class="mb-3">
-            <button class="btn btn-danger" onclick="downloadPDF()">Download PDF</button>
-        </div>
-}
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PatientName</td>
+                            <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                            <td>@item.AppointmentTime</td>
+                            <td>@item.ApprovalStatus</td>
+                            <td>@(item.ApprovedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                            <td>@(item.CancelledAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                            <td>@item.CancelReason</td>
+                            <td>@(item.CompletedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                            <td>@item.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-secondary text-center">No booking records found.</div>
+        }
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- PDF Button -->
+    <div class="mb-3 mt-3">
+        <button class="btn btn-danger" onclick="downloadPDF()">Download PDF</button>
+    </div>
+</div>
 
-    <script>
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const element = document.getElementById('table-container');
+<!-- JS Libraries -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-            html2canvas(element, { scale: 2 }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 595.28; // A4 width in pt
-                const pageHeight = 841.89; // A4 height in pt
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
+<!-- DataTables & PDF Script -->
+<script>
+    $(document).ready(function () {
+        $('#designationTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            order: [[1, 'desc']]
+        });
+    });
 
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'pt', 'a4');
+        const element = document.getElementById('table-container');
+
+        html2canvas(element, { scale: 2 }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 595.28;
+            const pageHeight = 841.89;
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                doc.addPage();
                 doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
+            }
 
-                while (heightLeft > 0) {
-                    position = heightLeft - imgHeight;
-                    doc.addPage();
-                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
+            doc.save('booking-details.pdf');
+        });
+    }
+</script>
 
-                doc.save('booking-details.pdf');
-            });
-        }
-    </script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />

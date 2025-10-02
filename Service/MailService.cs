@@ -28,7 +28,7 @@ namespace Psychiatrist_Management_System.Service
             try
             {
                 var message = new MailMessage();
-                message.From = new MailAddress(SenderEmail, "Psychiatrist Management System");
+                message.From = new MailAddress(SenderEmail, "Psychiatric Patient  Management System");
                 message.To.Add(toEmail);
                 message.Subject = subject;
                 message.Body = body;
