@@ -10,7 +10,8 @@ namespace Psychiatrist_Management_System.Models
         public string? UserName { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address.")]
         public string Email { get; set; }
         public int UsertypeId { get; set; }
 

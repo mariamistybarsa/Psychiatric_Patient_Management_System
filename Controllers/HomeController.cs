@@ -137,36 +137,44 @@ namespace Psychiatrist_Management_System.Controllers
         {
             try
             {
-                using (var connection = _context.CreateConnection())
+                if (ModelState.IsValid)
                 {
-
-                    var existingEmail = connection.QueryFirstOrDefault<UserVM>(
-                        "SELECT * FROM Users WHERE Email = @Email",
-                        new { Email = model.Email }
-                    );
-
-                    if (existingEmail != null)
+                    using (var connection = _context.CreateConnection())
                     {
-                        return Json(new { success = false, message = "Email already exists!" });
+
+                        var existingEmail = connection.QueryFirstOrDefault<UserVM>(
+                            "SELECT * FROM Users WHERE Email = @Email",
+                            new { Email = model.Email }
+                        );
+
+                        if (existingEmail != null)
+                        {
+                            return Json(new { success = false, message = "Email already exists!" });
+                        }
+
+                        var parameters = new DynamicParameters();
+                        parameters.Add("@flag", 1); // insert user
+                        parameters.Add("@UserName", model.UserName);
+                        parameters.Add("@Password", model.Password);
+                        parameters.Add("@Email", model.Email);
+                        parameters.Add("@UsertypeId", model.UsertypeId);
+
+                        parameters.Add("@PhoneNumber", model.PhoneNumber);
+                        parameters.Add("@DesignationId", model.DesignationId);
+                        parameters.Add("@Age", model.Age);
+                        parameters.Add("@Address", model.Address);
+                        parameters.Add("@BloodGroup", model.BloodGroup);
+
+                        connection.Execute("Sp_Register", parameters, commandType: CommandType.StoredProcedure);
                     }
 
-                    var parameters = new DynamicParameters();
-                    parameters.Add("@flag", 1); // insert user
-                    parameters.Add("@UserName", model.UserName);
-                    parameters.Add("@Password", model.Password);
-                    parameters.Add("@Email", model.Email);
-                    parameters.Add("@UsertypeId", model.UsertypeId);
-
-                    parameters.Add("@PhoneNumber", model.PhoneNumber);
-                    parameters.Add("@DesignationId", model.DesignationId);
-                    parameters.Add("@Age", model.Age);
-                    parameters.Add("@Address", model.Address);
-                    parameters.Add("@BloodGroup", model.BloodGroup);
-
-                    connection.Execute("Sp_Register", parameters, commandType: CommandType.StoredProcedure);
+                    return Json(new { success = true, redirectUrl = Url.Action("Login", "Home") });
                 }
+                else
+                {
+                    return Json(new { success = false, message = "Please fill all required fields correctly." });
 
-                return Json(new { success = true, redirectUrl = Url.Action("Login", "Home") });
+                }
             }
             catch (Exception ex)
             {

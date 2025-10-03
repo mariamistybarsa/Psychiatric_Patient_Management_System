@@ -79,23 +79,23 @@ Book.cshtml *@
                 type: 'POST',
                 data: data,
                 success: function(response) {
+                    debugger;
                     if(response){
                         debugger;
                          $('#AppointmentDay').val(response.dayName);
-                                // var $select = $('#AppointmentTime');
+                               
         var $select = $('#AppointmentTime');
-
+        debugger;
         for (var i = 0; i < response.times.length - 1; i++) {
-            var optionText = response.times[i] + " - " + response.times[i + 1];
-            $select.append($('<option></option>').val(response.times[i]).text(optionText));
+            var optionText = response.times[i].startTime + " - " + response.times[i].endTime;
+            $select.append($('<option></option>').val(response.times[i].startTime).text(optionText));
         }
 
-        // Optionally, add the last item if you want to show it as a single time
-        // $select.append($('<option></option>').val(response[response.length - 1]).text(response[response.length - 1]));
+       
 
                         alert("Appointment date updated successfully!");
                     } else {
-                        alert("Failed to update date: " + response.message);
+                        alert("There is No Schedule Found");
                     }
                 },
                 error: function(xhr, status, error) {

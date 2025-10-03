@@ -154,72 +154,80 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group" style="text-align:center; margin-top:20px;">
+                <a asp-controller="Home" asp-action="Login">
+                    <button type="button"
+                            style="padding:8px 20px; background-color: #FFD700; color: black;
+                       font-weight: bold; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                      Login
+                    </button>
+                </a>
+            </div>
+
+
 
             <button type="submit" id="submitBtn">Register</button>
         </form>
     </div>
-
+  
     <script>
-        $(document).ready(function () {
-            $('#submitBtn').click(function (e) {
-                e.preventDefault();
+$(document).ready(function () {
+    $('#submitBtn').click(function (e) {
+        e.preventDefault();
 
-                const name = $('#UserName').val().trim();
-                const password = $('#Password').val().trim();
-                const email = $('#Email').val().trim();
-                const phone = $('#PhoneNumber').val().trim();
-                const designation = Number($('#DesignationId').val().trim());
-                const UserType = Number($('#UsertypeId').val().trim());
-                const age = Number($('#Age').val().trim());
-                const address = $('#Address').val().trim();
-                const blood = $('#BloodGroup').val().trim();
+        const name = $('#UserName').val().trim();
+        const password = $('#Password').val().trim();
+        const email = $('#Email').val().trim();
 
-                if (!name || !password || !email || !phone || !designation || !UserType || !age || !blood) {
-                    $('#message').text('Please fill out all required fields.').css('color', 'red');
-                    return;
+        const phone = $('#PhoneNumber').val().trim();
+        const designation = Number($('#DesignationId').val().trim());
+        const UserType = Number($('#UsertypeId').val().trim());
+        const age = Number($('#Age').val().trim());
+        const address = $('#Address').val().trim();
+        const blood = $('#BloodGroup').val().trim();
+
+           
+
+   
+
+
+        const model = {
+            UserName: name,
+            Email: email,
+            Password: password,
+            PhoneNumber: phone,
+            Age: parseInt(age),
+            Address: address,
+            BloodGroup: blood,
+            DesignationId: parseInt(designation),
+            UsertypeId: parseInt(UserType),
+        };
+
+        $.ajax({
+            url: '/Home/Register',
+            type: 'POST',
+            data: model,
+            success: function (response) {
+                if (response.success) {
+                    $('#message').text('User registered successfully!').css('color', 'green');
+
+                    $('#UserName, #Email, #Password, #PhoneNumber, #Age, #Address, #BloodGroup, #DesignationId, #UsertypeId').val('');
+
+                    window.location.href = response.redirectUrl;
+                } else {
+                    $('#message').text('Error: ' + (response.message || 'Unexpected response')).css('color', 'red');
                 }
-
-                const model = {
-                    UserName: name,
-                    Email: email,
-                    Password: password,
-                    PhoneNumber: phone,
-                    Age: parseInt(age),
-                    Address: address,
-                    BloodGroup: blood,
-                    DesignationId: parseInt(designation),
-                    UsertypeId: parseInt(UserType),
-                };
-
-                $.ajax({
-                    url: '/Home/Register',
-                    type: 'POST',
-                    data: model,
-                    success: function (response) {
-                        if (response.success) {
-                            $('#message').text('User registered successfully!').css('color', 'green');
-
-                            $('#UserName').val('');
-                            $('#Email').val('');
-                            $('#Password').val('');
-                            $('#PhoneNumber').val('');
-                            $('#Age').val('');
-                            $('#Address').val('');
-                            $('#BloodGroup').val('');
-                            $('#DesignationId').val('');
-                            $('#UsertypeId').val('');
-
-                            window.location.href = response.redirectUrl;
-                        } else {
-                            $('#message').text('Error: ' + (response.message || 'Unexpected response')).css('color', 'red');
-                        }
-                    },
-                    error: function (xhr) {
-                        $('#message').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
-                    }
-                });
-            });
+            },
+            error: function (xhr) {
+                $('#message').text('Error: ' + (xhr.responseText || 'Unknown error')).css('color', 'red');
+            }
         });
-    </script>
+    });
+});
+</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </body>
+
+
 </html>

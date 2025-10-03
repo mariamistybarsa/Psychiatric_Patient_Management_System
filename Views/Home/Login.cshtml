@@ -105,6 +105,15 @@
         <span asp-validation-for="Password" class="error"></span>
 
         <button type="button" class="btn" id="submitBtn">Login</button>
+        <div class="form-group" style="text-align:center; margin-top:20px;">
+            <a asp-controller="Home" asp-action="Register">
+                <button type="button"
+                        style="padding:8px 20px; background-color: #FFD700; color: black;
+                       font-weight: bold; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                    Registration for new User
+                </button>
+            </a>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

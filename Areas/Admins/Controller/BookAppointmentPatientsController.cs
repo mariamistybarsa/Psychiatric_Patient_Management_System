@@ -71,7 +71,7 @@ namespace Psychiatrist_Management_System.Areas.Admins.Controllers
                 commandType: CommandType.StoredProcedure
             ).ToList();
 
-            if (data == null || data.Count == 0)
+            if (data == null )
             {
                 TempData["Message"] = "No appointment details found for this user.";
                 return RedirectToAction("PatientInfo");

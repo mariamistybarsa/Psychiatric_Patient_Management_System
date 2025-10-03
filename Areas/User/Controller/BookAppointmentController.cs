@@ -243,9 +243,9 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
 
 
-        static List<string> GetHourlyTimes(string startTimeStr, string endTimeStr, int? userId, DateTime? appDate, DapperContext context)
+        static List<TimeSchedule> GetHourlyTimes(string startTimeStr, string endTimeStr, int? userId, DateTime? appDate, DapperContext context)
         {
-            List<string> timeList = new List<string>();
+            List<TimeSchedule> timeList = new List<TimeSchedule>();
             DateTime start, end;
 
             string[] formats = { "H:mm", "HH:mm", "h:mmtt", "hh:mmtt" }; // supports 24h and 12h wit;;h AM/PM
@@ -276,7 +276,11 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
                 if (!bookedTimes.Any(t => t.TimeOfDay == start.TimeOfDay))
                 {
-                    timeList.Add(start.ToString("HH:mm")); // add only if available
+                    timeList.Add(new TimeSchedule
+                    {
+                        StartTime = start.ToString("HH:mm"),
+                        EndTime = start.AddHours(1).ToString("HH:mm")
+                    }); // add only if available
                 }
                 start = start.AddHours(1);
             }
@@ -372,5 +376,13 @@ namespace Psychiatrist_Management_System.Areas.User.Controllers
 
         }
 
+    }
+
+
+
+    public class TimeSchedule
+    {
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }
